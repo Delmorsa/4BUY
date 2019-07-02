@@ -106,6 +106,7 @@
 						<table class="table table-bordered table-stripedtable-condensed" id="dtCuotas">
 							<thead>
 							<tr style="text-transform: capitalize">
+								<th>Gra</th>
 								<th>IdRuta</th>
 								<th>Descripcion</th>
 								<th>Nombre</th>
@@ -124,24 +125,6 @@
 							</thead>
 							<tbody style="font-size: 11.5px;">
 							</tbody>
-						<!--	<tfoot style="font-size: 11.5px; font-weight: bolder;">
-							<tr class="bg-primary">
-								<th>Totales</th>
-								<th style="display: none"></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th id="SubTotal"></th>
-								<th id="Desc"></th>
-								<th id="ISC"></th>
-								<th id="IVA"></th>
-								<th id="Total"></th>
-								<th></th>
-							</tr>
-							</tfoot> -->
 						</table>
 					</div>
 				</div>
@@ -163,3 +146,51 @@
 
 </div>
 
+<div class="modal fade" tabindex="-1" id="modalGrafica" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Libras Vendidas</h4>
+      </div>
+      <div class="modal-body" id="modal-chart">
+
+					<div class="form-group col-3 col-sm-3 col-md-3 pull-left">
+						<div class="input-group input-group-icon">
+								<span class="input-group-addon">
+									<span class="icon"><i class="fa fa-calendar"></i></span>
+								</span>
+							<input type="text" id="fecha1" data-plugin-skin="primary"
+								   data-plugin-datepicker="" class="form-control" placeholder="Fecha Inicio" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="form-group col-3 col-sm-3 col-md-3 pull-left">
+						<div class="input-group input-group-icon">
+								<span class="input-group-addon">
+									<span class="icon"><i class="fa fa-calendar"></i></span>
+								</span>
+							<input type="text" id="fecha2" data-plugin-skin="primary"
+								   data-plugin-datepicker="" class="form-control" placeholder="Fecha Fin" autocomplete="off">
+						</div>
+					</div>
+					<div class="col-2 col-sm-2 col-md-2">
+						<button id="btnActualizar2" class="mb-xs mt-xs mr-xs btn btn-primary btn-block">
+							<i class="fa fa-search"></i> Filtrar
+						</button>
+					</div>
+					<div class="col-2 col-sm-4 col-md-4">
+						<p class="text-danger text-center" >Importante: Los datos siempre se agrupan por dia</p>		
+					</div>
+
+      	<canvas id='myChart2' width='400' height='100'></canvas>
+      	
+      	
+        <!--<canvas id='myChart' width='400' height='50'></canvas>-->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

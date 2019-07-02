@@ -1,6 +1,6 @@
 <?php
 /**
- * Created by Cesar Mejía.
+ * Created by Pinky Mejía.
  * User: Sistemas
  * Date: 27/3/2019 11:08 2019
  * FileName: Cuotas_model.php
@@ -156,6 +156,7 @@ class Cuotas_model extends CI_Model
 
          if($query->num_rows() > 0){
 			 foreach ($query->result_array() as $key) {
+			 	 $json["data"][$i]["grafica"] = '<a href="#" onclick="grafica('."'"."".$key["Nombre"]." ".$key["Apellidos"].""."'".','.$key["CUOTAMENSUAL"].','.$key["LIBRAS_VENDIDAS"].','.$key["CUOTA_A_LLEVAR"].','.$key["GAP_LIBRAS"].','.$key["FALTA_VENDER"].','.$key["IdRuta"].')" ><i class="fa fa-bar-chart-o"></i></a>';
 				 $json["data"][$i]["IdRuta"] = $key["IdRuta"];
 				 $json["data"][$i]["Descripcion"] = $key["Descripcion"];
 				 $json["data"][$i]["Nombre"] = $key["Nombre"]." ".$key["Apellidos"];
@@ -279,7 +280,37 @@ class Cuotas_model extends CI_Model
 			".$queryRuta."
 			 ORDER BY IdRuta");
 
-		echo json_encode($query->result_array());		
+		echo json_encode($query->result_array());
+	}
+	public function librasXdia($fecha1,$fecha2,$codvendedor)
+	{
+		$json = array();$i = 0;
+		$query = $this->db->query("WITH TABLA AS (
+			SELECT T0.CODVENDEDOR,T0.NOMBREVENDEDOR,
+			CASE  WHEN DATEPART(dw,T0.FECHA) = 1 THEN  (T1.CANTIDAD*T1.GRAMOS)/454 ELSE 0 END AS 'DOMINGO',
+			CASE  WHEN DATEPART(dw,T0.FECHA) = 2 THEN  (T1.CANTIDAD*T1.GRAMOS)/454 ELSE 0 END AS 'LUNES',
+			CASE  WHEN DATEPART(dw,T0.FECHA) = 3 THEN  (T1.CANTIDAD*T1.GRAMOS)/454 ELSE 0 END AS 'MARTES',
+			CASE  WHEN DATEPART(dw,T0.FECHA) = 4 THEN  (T1.CANTIDAD*T1.GRAMOS)/454 ELSE 0 END AS 'MIERCOLES',
+			CASE  WHEN DATEPART(dw,T0.FECHA) = 5 THEN  (T1.CANTIDAD*T1.GRAMOS)/454 ELSE 0 END AS 'JUEVES',
+			CASE  WHEN DATEPART(dw,T0.FECHA) = 6 THEN  (T1.CANTIDAD*T1.GRAMOS)/454 ELSE 0 END AS 'VIERNES',
+			CASE  WHEN DATEPART(dw,T0.FECHA) = 7 THEN  (T1.CANTIDAD*T1.GRAMOS)/454 ELSE 0 END AS 'SABADO'
+			FROM Facturas T0 
+			INNER JOIN Facturas_Detalles T1 ON T1.IDENCABEZADO = T0.IDENCABEZADO
+			WHERE T0.ESTADOAPP <>4 AND CAST(T0.FECHA AS DATE) >= '".$fecha1."' AND CAST(T0.FECHA AS DATE) <= '".$fecha2."'
+			AND T0.CODVENDEDOR = ".$codvendedor."
+		)
+		SELECT CODVENDEDOR,NOMBREVENDEDOR,SUM(DOMINGO) 'DOMINGO', SUM(LUNES) 'LUNES',SUM(MARTES) 'MARTES',SUM(MIERCOLES) 'MIERCOLES',SUM(JUEVES) 'JUEVES',SUM(VIERNES) 'VIERNES',SUM(SABADO) 'SABADO'
+		FROM TABLA
+		GROUP BY CODVENDEDOR,NOMBREVENDEDOR
+		");
+
+
+		if($query->num_rows() > 0){
+			echo json_encode($query->result_array());
+			return;
+			
+		 }
+         echo 0; return;
 	}
 }
 

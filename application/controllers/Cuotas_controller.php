@@ -104,6 +104,17 @@ class Cuotas_controller extends CI_Controller {
 		}
 	}
 
+	public function librasXdia()
+	{
+		$permiso = $this->Autorizaciones_model->validarPermiso($this->session->userdata("id"), "1037");
+		if($permiso){
+		$this->Cuotas_model->librasXdia($this->input->get_post("fecha1"), $this->input->get_post("fecha2"), $this->input->get_post("idruta"));	
+		}else{
+			echo 0;
+		}
+	}
+
+
 }
 
 /* End of file Cuotas_controller.php */

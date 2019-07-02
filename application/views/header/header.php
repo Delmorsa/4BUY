@@ -40,7 +40,12 @@
         <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker3.css">
 		<link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-timepicker.css">
 
-
+		<!--chart-->	
+		
+		<link rel="stylesheet" href="<?php echo base_url()?>assets/css/chart/Chart.min.css">>
+		<script src="<?php echo base_url()?>assets/js/chart/Chart.js"></script>
+		<script src="<?php echo base_url()?>assets/js/chart/Chart.bundle.js"></script>
+		<script src="<?php echo base_url()?>assets/js/chart/utils.js"></script>
 		<!-- Head Libs -->
 		<script src="<?php echo base_url()?>assets/js/modernizr.js"></script>
 

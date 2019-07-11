@@ -77,6 +77,8 @@
 										<th class="text-center">Total Contado</th>
 										<th class="text-center">N° Facturas Crédito</th>
 										<th class="text-center">Total Crédito</th>
+										<th class="text-center">Deposito</th>
+										<th class="text-center">Fecha/Hora Deposito</th>
 									</tr>
 					</thead>
 				<tbody>
@@ -92,6 +94,8 @@
                                 <td class="text-right">'.number_format($key["TOTALCONTADO"],2).'</td>
                                 <td class="text-right">'.$key["NOFACTURASCREDITO"].'</td>
                                 <td class="text-right">'.number_format($key["TOTALCREDITO"],2).'</td>
+                                <td class="text-right"></td>
+                                <td class="text-right"></td>                                
 							</tr>';						
 					}
 				}

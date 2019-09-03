@@ -73,7 +73,7 @@ else {
                     //console.log("el codigo "+index+" se repite "+results);
 					//console.log("remi: "+remision+" dev: "+dev);
 				}else{
-                    remision = $(".rem"+index).eq(0).html();
+                    remision = $(".rem"+index).eq(0).html(); 
                     dev = $(".dev"+index).eq(0).html();
                     cargaPaseante = (dev/remision)*100;
                     $(".codigo1"+index).eq(0).html(Number(cargaPaseante).toFixed(2)+"%");

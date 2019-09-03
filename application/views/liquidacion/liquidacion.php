@@ -209,7 +209,7 @@
 								}else{
 									foreach ($det1 as $item) {
 										//$codanterior = $item["CODIGO"];
-										$devolucion = $item["REMISION"] - $item["UNIDTOTAL"];
+										$devolucion = str_replace(",","",$item["REMISION"]) - $item["UNIDTOTAL"];
 										if ($i<count($det1)-1)
 										{
 											$codsiguiente = $det1[$i+1]["CODIGO"];
@@ -241,7 +241,7 @@
 										".substr($item["DESCRIPCION"],0,15)."</td>
 										<td>".$item["GRAMOS"]."</td>
 										<td>".number_format($item["PRECIO"],2)."</td>
-								        <td>".number_format($item["REMISION"],2)."</td>
+								        <td>".number_format(str_replace(",","",$item["REMISION"]),2)."</td>
 								        <td class='text-dark'>".number_format($devolucion,2)."</td> 
 								        <td>".number_format($item["UVENCREDITO"],2)."</td>
 										<td>".number_format($item["UVENCONTADO"],2)."</td>

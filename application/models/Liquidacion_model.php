@@ -268,6 +268,8 @@ class Liquidacion_model extends CI_Model
 			"detFacturas" => $queryFactDet->result_array(),
 			"detFacturas1" => $json//$queryFactDet1->result_array()
 		);
+
+		//echo json_encode($retorno);
 		return $retorno;
 	}
 

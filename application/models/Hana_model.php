@@ -703,7 +703,7 @@ class Hana_model extends CI_Model
     }
          while ($fila = @odbc_fetch_array($resultado)){
             if ($fila['EXISTENCIA'] > 0) { 
-                return $fila['EXISTENCIA'];
+                return str_replace(",", "", $fila['EXISTENCIA']);
             }
         }
   }

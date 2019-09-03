@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\application",
+    "\\application\\config",
+    "\\application\\controllers",
+    "\\application\\models",
+    "\\application\\views",
+    "\\application\\views\\jsView",
+    "\\application\\views\\jsView\\autorizaciones",
+    "\\assets",
+    "\\assets\\js"
+  ],
+  "SelectedNode": "\\application\\models\\Cuotas_model.php",
+  "PreviewInSolutionExplorer": false
+}

@@ -35,6 +35,7 @@ else {
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/theme.css" />
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/skins/default.css" />
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/theme-custom.css">
+	<script src="<?php echo base_url()?>assets/js/jquery.js"></script>
 	<style>
 		body{
 			font-size: 11px;
@@ -53,6 +54,32 @@ else {
 		*/
 	</style>
 	<script type="text/javascript">
+		$(document).ready(function () {
+            let myArr = new Array(), results = '';
+            let ref = '', remision = 0, dev = 0, cargaPaseante = 0;
+
+			$("#tblDetFactLiq tbody tr").each(function (index, element) {
+				ref = $(element).find("th").eq(0).html();
+				myArr[index] = ref;
+            });
+			$.each(myArr, function (i, index) {
+                results = myArr.filter(i => i === ''+index+'').length;
+                if(results > 1){
+                    //$(".codigo"+index).eq(results-1).addClass("danger");
+                    remision = $(".rem"+index).eq(results-1).html();
+                    dev = $(".dev"+index).eq(results-1).html();
+					cargaPaseante = (dev/remision)*100;
+                    $(".codigo1"+index).eq(results-1).html(Number(cargaPaseante).toFixed(2)+"%");
+                    //console.log("el codigo "+index+" se repite "+results);
+					//console.log("remi: "+remision+" dev: "+dev);
+				}else{
+                    remision = $(".rem"+index).eq(0).html();
+                    dev = $(".dev"+index).eq(0).html();
+                    cargaPaseante = (dev/remision)*100;
+                    $(".codigo1"+index).eq(0).html(Number(cargaPaseante).toFixed(2)+"%");
+				}
+            });
+        });
 		window.print();
 	</script>
 </head>
@@ -181,19 +208,19 @@ else {
 							<th class="text-right">Dto</th>
 							<th class="text-right">Dt <br> cred</th>
 							<th class="text-right">ISC</th>
-							<th class="text-right">ISC <br> Cred</th>
 							<th class="text-right">IVA</th>
-							<th class="text-right">IVA <br> Cred</th>
 							<th class="text-right">Tot <br> Contado</th>
 							<th class="text-right">Tot <br> Credito</th>
 							<th class="text-right">Libras <br> Vendidas</th>
 							<th class="text-right">Lbs <br> Merma</th>
+							<th class="text-right">Carga<br> Paseante</th>
 						</tr>
 						</thead>
 						<tbody>
 						<?php
 						$devolucion = 0;
 						$acumulado = 0;
+						$paseante = 0;
 						$i = 0;
 						$bandera = false;
 						//$codanterior = '';
@@ -201,16 +228,15 @@ else {
 						if(!$liqdet){
 						}else{
 							foreach ($liqdet as $item) {
-
 								echo "
 									   <tr style='font-size:9px;'>
-											<th>".$item["Codigo"]."</th>
+											<th class='codigo".$item["Codigo"]."'>".$item["Codigo"]."</th>
 										<th data-toggle='tooltip' title='".$item["Descripcion"]."' data-placement='top'>
 										".substr($item["Descripcion"],0,15)."</th>
 										<th>".$item["PesoGramos"]."</th>
 										<th>".number_format($item["Precio"],2)."</th>
-								        <th>".number_format($item["Carga"],2)."</th>
-								        <th>".number_format($item["Devolucion"],2)."</th> 
+								        <th class='rem".$item["Codigo"]."'>".number_format($item["Carga"],2)."</th>
+								        <th class='dev".$item["Codigo"]."'>".number_format($item["Devolucion"],2)."</th> 
 								        <th>".number_format($item["UnidadesVenCredito"],2)."</th>
 										<th>".number_format($item["UnidadesVenContado"],2)."</th>
 										<th>".number_format($item["UnidadesVenTotal"],2)."</th>
@@ -218,18 +244,18 @@ else {
 										<th>".number_format($item["SubtotalCredito"],2)."</th>
 										<th>".number_format($item["DescContado"],2)."</th>
 										<th>".number_format($item["DescCredito"],2)."</th>
-										<th>".number_format($item["IscContado"],2)."</th>
-										<th>".number_format($item["IscCredito"],2)."</th>
-										<th>".number_format($item["IvaContado"],2)."</th>
-										<th>".number_format($item["IvaCredito"],2)."</th>
+										<th>".number_format(($item["IscContado"]+$item["IscCredito"]),2)."</th>
+										<th>".number_format(($item["IvaContado"]+$item["IvaCredito"]),2)."</th>
 										<th>".number_format($item["TotalContado"],2)."</th>
 										<th>".number_format($item["TotalCredito"],2)."</th>
 										<th>".number_format($item["LibrasVendidas"],2)."</th>
 										<th>".number_format($item["Merma"],2)."</th>
+										<th class='codigo1".$item["Codigo"]."'>0.0%</th>
 									  </tr> 
 								   ";
 								$i++;
 							}
+							//<th class='codigo1".$item["Codigo"]."'>".number_format(($item["Devolucion"]/$item["Carga"])*100,2)."</th>
 						}
 						?>
 						</tbody>
@@ -245,21 +271,6 @@ else {
 						if(!$liqdet){
 						}else{
 							foreach ($liqdet as $item) {
-								$devolucion = $item["Carga"] - $item["UnidadesVenTotal"];
-								if ($i<count($liqdet)-1)
-								{
-									$codsiguiente = $liqdet[$i+1]["Codigo"];
-								}
-								if ($bandera){
-									$item["Carga"] = $acumulado;
-									$devolucion = $acumulado - $item["UnidadesVenTotal"];
-									$bandera = false;
-								}
-								if ($item["Codigo"]==$codsiguiente){
-									$acumulado = $devolucion;
-									//$codsiguiente = $codsiguiente." entro";
-									$bandera = true;
-								}
 
 								 $remision += $item["Carga"];
 
@@ -293,13 +304,13 @@ else {
 											<th class='text-right bold'>".number_format($subcred,2)."</th>
 											<th class='text-right bold'>".number_format($dto,2)."</th>
 											<th class='text-right bold'>".number_format($dtocred,2)."</th>
-											<th class='text-right bold'>".number_format($isc,2)."</th>
-											<th class='text-right bold'>".number_format($isccred,2)."</th>
-											<th class='text-right bold'>".number_format($iva,2)."</th>
-											<th class='text-right bold'>".number_format($ivacred,2)."</th>
+											<th class='text-right bold'>".number_format(($isc+$isccred),2)."</th>
+											<th class='text-right bold'>".number_format(($iva+$ivacred),2)."</th>
 											<th class='text-right bold'>".number_format($total,2)."</th>
 											<th class='text-right bold'>".number_format($totalcred,2)."</th>
 											<th class='text-right bold'>".number_format($libras,2)."</th>
+											<th class='text-right bold'></th>
+											<th class='text-right bold'></th>
 										</tr> 
 								   ";
 						}

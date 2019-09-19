@@ -180,8 +180,8 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 								}else{
 									$ruta = $key["IdRuta"];
 								}
-								echo "RUTA ".$ruta."";
 							}
+                            echo "RUTA ".$ruta."";
 						}
 						?></span></td>
 			</tr>
@@ -203,21 +203,25 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 			<tr>
 				<td colspan="1" class="negrita">Fecha</td>
 				<td><span style="font-size:11pt;"><?php
+                        $fecha = '';
 						if (!$enc) {
 						} else {
 							foreach ($enc as $key) {
-								echo "".utf8_encode(strftime("%A %d de %B del %Y",strtotime($key["FechaEntrega"])))."";
+							    $fecha = utf8_encode(strftime("%A %d de %B del %Y",strtotime($key["FechaEntrega"])));
 							}
+                            echo $fecha;
 						}
 						?></span></td>
 				<td class="negrita"> Preparado por </td>
 				<td>
 					<?php
+                    $nombre='';
 						if (!$enc) {
 						}else {
 							foreach ($enc as $key) {
-								echo $key["Nombre"]." ".$key["Apellidos"];
+								$nombre = $key["Nombre"]." ".$key["Apellidos"];
 							}
+                            echo $nombre;
 						}
 					?>
 				</td>

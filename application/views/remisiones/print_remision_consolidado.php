@@ -162,7 +162,9 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 								$ruta = '30';
 							}elseif ($this->uri->segment(5) == 79) {
 								$ruta = '31';
-							}else{
+							}elseif ($this->uri->segment(5) == 80) {
+                                $ruta = '32';
+                            }else{
 								$ruta = $this->uri->segment(5);
 							}
 							echo "CONSOLIDADO TOTAL RUTA ".$ruta. " (".$key["TipoD"].")";

@@ -177,7 +177,9 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 									$ruta = '30';
 								}elseif($key["IdRuta"] == 79){
 									$ruta = '31';
-								}else{
+								}elseif($key["IdRuta"] == 80){
+                                    $ruta = '32';
+                                } else{
 									$ruta = $key["IdRuta"];
 								}
 							}

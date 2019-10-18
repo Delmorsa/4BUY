@@ -374,6 +374,7 @@ class Reportes_model extends CI_Model
 			View_Facturas_Liquidaciones t0
 			inner join Usuarios t1 on t0.CODVENDEDOR = t1.IdRuta
 			WHERE FECHA>='".$fechainicio."' AND FECHA <='".$fechafinal."' ".$queryRuta."
+			and t1.Estado = 1
 			GROUP BY CODVENDEDOR,t1.Nombre
 			ORDER  BY CODVENDEDOR
 			");

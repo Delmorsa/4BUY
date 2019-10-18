@@ -11,13 +11,19 @@ $(document).ready(function () {
 	cargarRemOrdenes();
 	cargarRemPreventas();
 	cargarRemRecargos();
-	cargarRemAdelantos()
+	cargarRemAdelantos();
+    cargarRemWalmart();
+    cargarRemcasaMant();
+    cargarRemIndepenientes();
 
 	setInterval(function () {
 		cargarRemOrdenes();
 		cargarRemPreventas();
 		cargarRemRecargos();
-		cargarRemAdelantos()
+		cargarRemAdelantos();
+		cargarRemWalmart();
+		cargarRemcasaMant();
+		cargarRemIndepenientes();
 	},3000000);
 });
 
@@ -170,6 +176,155 @@ function cargarRemRecargos(){
 		]
 	});
 }
+function cargarRemWalmart(){
+    let table = $("#tblwalmartList").DataTable({
+        "ajax": {
+            "url": "listaWalmartAjax",
+            "type": "POST"
+        },
+        "processing": true,
+        "serverSide": true,
+        "info": true,
+        "sort": true,
+        "destroy": true,
+        "lengthMenu": [
+            [10,20,50,100, -1],
+            [10,20,50,100, "Todo"]
+        ],
+        "order": [
+            [0, "asc"]
+        ],
+        "language": {
+            "info": "Registro _START_ a _END_ de _TOTAL_ entradas",
+            "infoEmpty": "Registro 0 a 0 de 0 entradas",
+            "zeroRecords": "No se encontro coincidencia",
+            "infoFiltered": "(filtrado de _MAX_ registros en total)",
+            "emptyTable": "NO HAY DATOS DISPONIBLES",
+            "lengthMenu": '_MENU_ ',
+            "search": '<i class="fa fa-search"></i>',
+            "loadingRecords": "",
+            "processing": "Procesando datos  <i class='fa fa-spin fa-refresh'></i>",
+            "paginate": {
+                "first": "Primera",
+                "last": "Última ",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        },
+        "columns": [
+            {"data" : "IdRemision"},
+            {"data" : "FechaEntrega"},
+            {"data" : "CantTotal"},
+            {"data" : "TotalLbs"},
+            {"data" : "FechaLiq"},
+            {"data" : "FechaCrea"},
+            {"data" : "FechaEdita"},
+            {"data" : "FechaBaja"},
+            {"data" : "Estado"},
+            {"data" : "Detalles"}
+        ]
+    });
+}
+
+function cargarRemcasaMant(){
+    let table = $("#tblmanticaList").DataTable({
+        "ajax": {
+            "url": "listaCasaMantAjax",
+            "type": "POST"
+        },
+        "processing": true,
+        "serverSide": true,
+        "info": true,
+        "sort": true,
+        "destroy": true,
+        "lengthMenu": [
+            [10,20,50,100, -1],
+            [10,20,50,100, "Todo"]
+        ],
+        "order": [
+            [0, "asc"]
+        ],
+        "language": {
+            "info": "Registro _START_ a _END_ de _TOTAL_ entradas",
+            "infoEmpty": "Registro 0 a 0 de 0 entradas",
+            "zeroRecords": "No se encontro coincidencia",
+            "infoFiltered": "(filtrado de _MAX_ registros en total)",
+            "emptyTable": "NO HAY DATOS DISPONIBLES",
+            "lengthMenu": '_MENU_ ',
+            "search": '<i class="fa fa-search"></i>',
+            "loadingRecords": "",
+            "processing": "Procesando datos  <i class='fa fa-spin fa-refresh'></i>",
+            "paginate": {
+                "first": "Primera",
+                "last": "Última ",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        },
+        "columns": [
+            {"data" : "IdRemision"},
+            {"data" : "FechaEntrega"},
+            {"data" : "CantTotal"},
+            {"data" : "TotalLbs"},
+            {"data" : "FechaLiq"},
+            {"data" : "FechaCrea"},
+            {"data" : "FechaEdita"},
+            {"data" : "FechaBaja"},
+            {"data" : "Estado"},
+            {"data" : "Detalles"}
+        ]
+    });
+}
+
+function cargarRemIndepenientes(){
+    let table = $("#tblindepenList").DataTable({
+        "ajax": {
+            "url": "listaIndependienteAjax",
+            "type": "POST"
+        },
+        "processing": true,
+        "serverSide": true,
+        "info": true,
+        "sort": true,
+        "destroy": true,
+        "lengthMenu": [
+            [10,20,50,100, -1],
+            [10,20,50,100, "Todo"]
+        ],
+        "order": [
+            [0, "asc"]
+        ],
+        "language": {
+            "info": "Registro _START_ a _END_ de _TOTAL_ entradas",
+            "infoEmpty": "Registro 0 a 0 de 0 entradas",
+            "zeroRecords": "No se encontro coincidencia",
+            "infoFiltered": "(filtrado de _MAX_ registros en total)",
+            "emptyTable": "NO HAY DATOS DISPONIBLES",
+            "lengthMenu": '_MENU_ ',
+            "search": '<i class="fa fa-search"></i>',
+            "loadingRecords": "",
+            "processing": "Procesando datos  <i class='fa fa-spin fa-refresh'></i>",
+            "paginate": {
+                "first": "Primera",
+                "last": "Última ",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        },
+        "columns": [
+            {"data" : "IdRemision"},
+            {"data" : "FechaEntrega"},
+            {"data" : "CantTotal"},
+            {"data" : "TotalLbs"},
+            {"data" : "FechaLiq"},
+            {"data" : "FechaCrea"},
+            {"data" : "FechaEdita"},
+            {"data" : "FechaBaja"},
+            {"data" : "Estado"},
+            {"data" : "Detalles"}
+        ]
+    });
+}
 
 function cargarRemAdelantos(){
 	let table = $("#tblAdelantosList").DataTable({
@@ -286,6 +441,59 @@ $("#tblAdelantosList").on("click", ".expand",function () {
 		detalleRemision(row.child,data.IdRemision);
 		tr.addClass("shown");
 	}
+
+});
+
+
+$("#tblwalmartList").on("click", ".expand",function () {
+    let table = $("#tblwalmartList").DataTable();
+    let tr = $(this).closest('tr');
+    let row = table.row(tr);
+    let data = table.row($(this).parents('tr')).data();
+    if(row.child.isShown()){
+        row.child.hide();
+        tr.removeClass("shown");
+        $("#Rem"+data.IdRemision).css("color","");
+    }else{
+        $("#Rem"+data.IdRemision).css("color","red");
+        detalleRemision(row.child,data.IdRemision);
+        tr.addClass("shown");
+    }
+
+});
+
+$("#tblmanticaList").on("click", ".expand",function () {
+    let table = $("#tblmanticaList").DataTable();
+    let tr = $(this).closest('tr');
+    let row = table.row(tr);
+    let data = table.row($(this).parents('tr')).data();
+    if(row.child.isShown()){
+        row.child.hide();
+        tr.removeClass("shown");
+        $("#Rem"+data.IdRemision).css("color","");
+    }else{
+        $("#Rem"+data.IdRemision).css("color","red");
+        detalleRemision(row.child,data.IdRemision);
+        tr.addClass("shown");
+    }
+
+});
+
+
+$("#tblindepenList").on("click", ".expand",function () {
+    let table = $("#tblindepenList").DataTable();
+    let tr = $(this).closest('tr');
+    let row = table.row(tr);
+    let data = table.row($(this).parents('tr')).data();
+    if(row.child.isShown()){
+        row.child.hide();
+        tr.removeClass("shown");
+        $("#Rem"+data.IdRemision).css("color","");
+    }else{
+        $("#Rem"+data.IdRemision).css("color","red");
+        detalleRemision(row.child,data.IdRemision);
+        tr.addClass("shown");
+    }
 
 });
 

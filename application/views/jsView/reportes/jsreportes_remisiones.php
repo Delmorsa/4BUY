@@ -14,11 +14,17 @@
 			$("#chkPreventa").prop("checked",true);
 			$("#chkRecargo").prop("checked",true);
 			$("#chkAdelanto").prop("checked",true);
+            $("#chkWalmart").prop("checked",true);
+            $("#chkcasaMant").prop("checked",true);
+            $("#chkindepend").prop("checked",true);
 		}else{
 			$("#chkOrden").prop("checked",false);
 			$("#chkPreventa").prop("checked",false);
 			$("#chkRecargo").prop("checked",false);
 			$("#chkAdelanto").prop("checked",false);
+            $("#chkWalmart").prop("checked",false);
+            $("#chkcasaMant").prop("checked",false);
+            $("#chkindepend").prop("checked",false);
 		}
 	});
 

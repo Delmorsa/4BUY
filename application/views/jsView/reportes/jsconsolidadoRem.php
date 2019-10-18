@@ -28,11 +28,18 @@ $("#chkTodos").change(function () {
 		$("#chkPreventa").prop("checked",true);
 		$("#chkRecargo").prop("checked",true);
 		$("#chkAdelanto").prop("checked",true);
+        $("#chkWalmart").prop("checked",true);
+        $("#chkcasaMant").prop("checked",true);
+        $("#chkindepend").prop("checked",true);
+
 	}else{
 		$("#chkOrden").prop("checked",false);
 		$("#chkPreventa").prop("checked",false);
 		$("#chkRecargo").prop("checked",false);
 		$("#chkAdelanto").prop("checked",false);
+        $("#chkWalmart").prop("checked",false);
+        $("#chkcasaMant").prop("checked",false);
+        $("#chkindepend").prop("checked",false);
 	}
 });
 
@@ -89,7 +96,7 @@ $("#btnConsolidadoRem").click(function () {
 						'<td><div class="btn-group dropup"><button type="button" ' +
 						'class="left btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" ' +
 						'aria-expanded="false">Acciones <span class="caret"></span></button><ul ' +
-						'class="dropdown-menu" style="width: 130px !important;" role="menu"><li><a target="_blank" ' +
+						'class="dropdown-menu" style="width: 130px !important;" role="menu"><li><a ' +
 						'href="javascript:void(0)"' +
 'onclick="DetallesModal('+"'"+value.FechaEntrega+"','"+value.Cantidad+"','"+value.CantidadLBS+"','"+value.RubroD+"','"+value.TipoD+"',"+value.Rubro+","+value.Tipo+" ,"+value.IdUsuario+" ,'"+parametro+"' "+')" >' +
 						'Detalles</a></li>' +

@@ -164,6 +164,8 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 								$ruta = '31';
 							}elseif ($this->uri->segment(5) == 80) {
                                 $ruta = '32';
+                            }elseif ($this->uri->segment(5) == 81) {
+                                $ruta = '33';
                             }else{
 								$ruta = $this->uri->segment(5);
 							}

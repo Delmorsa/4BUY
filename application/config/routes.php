@@ -78,6 +78,11 @@ $route["ListOrdensAjax"] = "Remisiones_controller/listaOrdenes";
 $route["ListPreventasAjax"] = "Remisiones_controller/listaPreventas";
 $route["ListRecargosAjax"] = "Remisiones_controller/listaRecargos";
 $route["ListaAdelantosAjax"] = "Remisiones_controller/listaAdelantos";
+
+$route["listaWalmartAjax"] = "Remisiones_controller/listaWalmart";
+$route["listaCasaMantAjax"] = "Remisiones_controller/listaCasaMant";
+$route["listaIndependienteAjax"] = "Remisiones_controller/listaIndependiente";
+
 $route["detallesRemisionesAjax/(:any)"] = "Remisiones_controller/detallesRemisiones/$1";
 $route["EditarRem/(:any)"] = "Remisiones_controller/editarRemision/$1";
 $route["DarBajaRemision/(:any)/(:any)"] = "Remisiones_controller/darBajaRemision/$1/$2";

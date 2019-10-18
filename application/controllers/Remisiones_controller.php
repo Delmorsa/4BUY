@@ -367,6 +367,144 @@ class Remisiones_controller extends CI_Controller {
 		echo json_encode($json_data);
 	}
 
+    public function listaWalmart(){
+        $start = $this->input->get_post('start');
+        $length = $this->input->get_post('length');
+        $search = $this->input->get_post('search')['value'];
+
+        $result = $this->Remisiones_model->listaWalmart($start,$length,$search);
+        $resultado = $result["datos"];
+        $totalDatos = $result["numDataTotal"];
+
+        $datos = array();
+        foreach ($resultado->result_array() as $key) {
+            $array = array();
+            $array["IdRemision"] = utf8_encode($key["IdRemision"]);
+            $array["IdUsuario"] = utf8_encode($key["IdUsuario"]);
+            $array["FechaEntrega"] = utf8_encode($key["FechaEntrega"]);
+            $array["CantTotal"] = utf8_encode($key["CantTotal"]);
+            $array["TotalLbs"] = utf8_encode($key["TotalLbs"]);
+            $array["FechaLiq"] = $key["FechaLiq"];
+            $array["FechaCrea"] = $key["FechaCrea"];
+            $array["FechaEdita"] = $key["FechaEdita"];
+            $array["FechaBaja"] = $key["FechaBaja"];
+            if ($key["Estado"] == 1){
+                $array["Estado"] = '<span class="badge badge-pill bg-primary">Activo</span>';
+            }else if($key["Estado"] == 0){
+                $array["Estado"] = '<span class="badge badge-pill bg-danger">Inactivo</span>';
+            }else{
+                $array["Estado"] = '<span class="badge badge-pill bg-danger">Cerrado</span>';
+            }
+            $array["CodRubro"] = $key["CodRubro"];
+            $array["Rubro"] = $key["Rubro"];
+            $array["CodTipo"] = $key["CodTipo"];
+            $array["Tipo"] = $key["Tipo"];
+            $array["Detalles"] = "<p style='text-align:center;' class='expand text-primary'><i id='Rem".$key["IdRemision"]."' class='center fa fa-expand'></i></p>";
+            $datos[] = $array;
+        }
+
+        $totalDatosObtenidos = $resultado->num_rows();
+        $json_data = array(
+            "draw" => intval($this->input->get_post('draw')),
+            "recordsTotal" => intval($totalDatosObtenidos),
+            "recordsFiltered" => intval($totalDatos),
+            "data" => $datos
+        );
+        echo json_encode($json_data);
+    }
+
+    public function listaCasaMant(){
+        $start = $this->input->get_post('start');
+        $length = $this->input->get_post('length');
+        $search = $this->input->get_post('search')['value'];
+
+        $result = $this->Remisiones_model->listaCasaMant($start,$length,$search);
+        $resultado = $result["datos"];
+        $totalDatos = $result["numDataTotal"];
+
+        $datos = array();
+        foreach ($resultado->result_array() as $key) {
+            $array = array();
+            $array["IdRemision"] = utf8_encode($key["IdRemision"]);
+            $array["IdUsuario"] = utf8_encode($key["IdUsuario"]);
+            $array["FechaEntrega"] = utf8_encode($key["FechaEntrega"]);
+            $array["CantTotal"] = utf8_encode($key["CantTotal"]);
+            $array["TotalLbs"] = utf8_encode($key["TotalLbs"]);
+            $array["FechaLiq"] = $key["FechaLiq"];
+            $array["FechaCrea"] = $key["FechaCrea"];
+            $array["FechaEdita"] = $key["FechaEdita"];
+            $array["FechaBaja"] = $key["FechaBaja"];
+            if ($key["Estado"] == 1){
+                $array["Estado"] = '<span class="badge badge-pill bg-primary">Activo</span>';
+            }else if($key["Estado"] == 0){
+                $array["Estado"] = '<span class="badge badge-pill bg-danger">Inactivo</span>';
+            }else{
+                $array["Estado"] = '<span class="badge badge-pill bg-danger">Cerrado</span>';
+            }
+            $array["CodRubro"] = $key["CodRubro"];
+            $array["Rubro"] = $key["Rubro"];
+            $array["CodTipo"] = $key["CodTipo"];
+            $array["Tipo"] = $key["Tipo"];
+            $array["Detalles"] = "<p style='text-align:center;' class='expand text-primary'><i id='Rem".$key["IdRemision"]."' class='center fa fa-expand'></i></p>";
+            $datos[] = $array;
+        }
+
+        $totalDatosObtenidos = $resultado->num_rows();
+        $json_data = array(
+            "draw" => intval($this->input->get_post('draw')),
+            "recordsTotal" => intval($totalDatosObtenidos),
+            "recordsFiltered" => intval($totalDatos),
+            "data" => $datos
+        );
+        echo json_encode($json_data);
+    }
+
+    public function listaIndependiente(){
+        $start = $this->input->get_post('start');
+        $length = $this->input->get_post('length');
+        $search = $this->input->get_post('search')['value'];
+
+        $result = $this->Remisiones_model->listaIndependiente($start,$length,$search);
+        $resultado = $result["datos"];
+        $totalDatos = $result["numDataTotal"];
+
+        $datos = array();
+        foreach ($resultado->result_array() as $key) {
+            $array = array();
+            $array["IdRemision"] = utf8_encode($key["IdRemision"]);
+            $array["IdUsuario"] = utf8_encode($key["IdUsuario"]);
+            $array["FechaEntrega"] = utf8_encode($key["FechaEntrega"]);
+            $array["CantTotal"] = utf8_encode($key["CantTotal"]);
+            $array["TotalLbs"] = utf8_encode($key["TotalLbs"]);
+            $array["FechaLiq"] = $key["FechaLiq"];
+            $array["FechaCrea"] = $key["FechaCrea"];
+            $array["FechaEdita"] = $key["FechaEdita"];
+            $array["FechaBaja"] = $key["FechaBaja"];
+            if ($key["Estado"] == 1){
+                $array["Estado"] = '<span class="badge badge-pill bg-primary">Activo</span>';
+            }else if($key["Estado"] == 0){
+                $array["Estado"] = '<span class="badge badge-pill bg-danger">Inactivo</span>';
+            }else{
+                $array["Estado"] = '<span class="badge badge-pill bg-danger">Cerrado</span>';
+            }
+            $array["CodRubro"] = $key["CodRubro"];
+            $array["Rubro"] = $key["Rubro"];
+            $array["CodTipo"] = $key["CodTipo"];
+            $array["Tipo"] = $key["Tipo"];
+            $array["Detalles"] = "<p style='text-align:center;' class='expand text-primary'><i id='Rem".$key["IdRemision"]."' class='center fa fa-expand'></i></p>";
+            $datos[] = $array;
+        }
+
+        $totalDatosObtenidos = $resultado->num_rows();
+        $json_data = array(
+            "draw" => intval($this->input->get_post('draw')),
+            "recordsTotal" => intval($totalDatosObtenidos),
+            "recordsFiltered" => intval($totalDatos),
+            "data" => $datos
+        );
+        echo json_encode($json_data);
+    }
+
 	public function listaAdelantos(){
 		$start = $this->input->get_post('start');
 		$length = $this->input->get_post('length');

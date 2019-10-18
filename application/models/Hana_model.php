@@ -21,7 +21,7 @@ class Hana_model extends CI_Model
            return $conn;
          }        
     }
-    
+
 
     public  function getRutas(){
         $rutas;
@@ -453,7 +453,7 @@ class Hana_model extends CI_Model
         $conn = $this->OPen_database_odbcSAp();
                     $query = 'SELECT DISTINCT "ItemCode","ItemName","SWeight1" 
                         FROM '.$this->BD.'."VIEW_BODEGAS_EXISTENCIAS"
-                        WHERE "Merma" = '."'Y'".' AND "WhsCode" = '."'01'".'
+                        WHERE "MERMA" = '."'Y'".' AND "WhsCode" = '."'01'".'
                         '.$qfilter.'
                         ORDER BY "ItemCode" ASC
                         LIMIT 10';
@@ -482,10 +482,12 @@ class Hana_model extends CI_Model
 		$i = 0;
 		while ($fila = @odbc_fetch_array($resultado)) {
 			$json[$i]["EXISTENCIA"] = utf8_encode($fila["Available QTY"]);
-      $json[$i]["GRAMOS"] = number_format($fila["SWeight1"],0);
+            $json[$i]["GRAMOS"] = number_format($fila["SWeight1"],0,",","");
+            //$json[$i]["GRAMOS"] = number_format(12,0);
 			$i++;
 		}
 		echo json_encode($json);
+        @odbc_close($conn);
 		//echo json_encode(@odbc_error($conn));
 	}
 

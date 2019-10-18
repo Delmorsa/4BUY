@@ -27,6 +27,15 @@
 				<li>
 					<a href="#adelantos" class="text-muted" data-toggle="tab">Adelantos</a>
 				</li>
+                <li>
+                    <a href="#walmart" class="text-muted" data-toggle="tab">Walmart</a>
+                </li>
+                <li>
+                <a href="#casamant" class="text-muted" data-toggle="tab">Casa Mantica</a>
+                </li>
+                <li>
+                <a href="#independiente" class="text-muted" data-toggle="tab">Independiente</a>
+                </li>
 			</ul>
 			<div class="tab-content">
 				<div id="ordenes" class="tab-pane active">
@@ -109,6 +118,66 @@
 						</tbody>
 					</table>
 				</div>
+                <div id="walmart" class="tab-pane">
+                    <table class="table compact table-responsive table-bordered table-striped mb-none table-sm" id="tblwalmartList">
+                        <thead>
+                        <tr>
+                            <th>Cod Rem.</th>
+                            <th>Fec. Entrega</th>
+                            <th>Cantidad</th>
+                            <th>Cant. LBS</th>
+                            <th>Fec. Liq.</th>
+                            <th>Fec. Registro</th>
+                            <th>Fec. Edicion</th>
+                            <th>Fec. Baja</th>
+                            <th>Estado</th>
+                            <th>Detalles</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="casamant" class="tab-pane">
+                    <table class="table compact table-responsive table-bordered table-striped mb-none table-sm" id="tblmanticaList">
+                        <thead>
+                        <tr>
+                            <th>Cod Rem.</th>
+                            <th>Fec. Entrega</th>
+                            <th>Cantidad</th>
+                            <th>Cant. LBS</th>
+                            <th>Fec. Liq.</th>
+                            <th>Fec. Registro</th>
+                            <th>Fec. Edicion</th>
+                            <th>Fec. Baja</th>
+                            <th>Estado</th>
+                            <th>Detalles</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="independiente" class="tab-pane">
+                    <table class="table compact table-responsive table-bordered table-striped mb-none table-sm" id="tblindepenList">
+                        <thead>
+                        <tr>
+                            <th>Cod Rem.</th>
+                            <th>Fec. Entrega</th>
+                            <th>Cantidad</th>
+                            <th>Cant. LBS</th>
+                            <th>Fec. Liq.</th>
+                            <th>Fec. Registro</th>
+                            <th>Fec. Edicion</th>
+                            <th>Fec. Baja</th>
+                            <th>Estado</th>
+                            <th>Detalles</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
 			</div>
 		</div>
 	</div>

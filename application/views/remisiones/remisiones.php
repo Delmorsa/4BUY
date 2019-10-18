@@ -114,32 +114,56 @@
 								<input type="text" name="" id="Ref" placeholder="Cliente" class="form-control">
 							</div>
 						</div>
-						<br>
-						<div class="form-group col-1 col-sm-1 col-md-1">
-							<div class="radio-custom radio-primary">
-								<input type="radio" id="chkOrden" name="TipoOrden" checked>
-								<label for="chkOrden">Remision</label>
-							</div>
-					    </div>
-						<div class="form-group col-1 col-sm-1 col-md-1">
-							<div class="radio-custom radio-primary">
-								<input type="radio" id="chkPreventa" name="TipoOrden">
-								<label for="chkPreventa">Preventa</label>
-							</div>
-					    </div>
-					    <div class="form-group col-1 col-sm-1 col-md-1">
-							<div class="radio-custom radio-primary">
-								<input type="radio" id="chkRecargo" name="TipoOrden">
-								<label for="chkRecargo">Recargo</label>
-							</div>
-					    </div>
-						<div class="form-group col-1 col-sm-1 col-md-1">
-							<div class="radio-custom radio-primary">
-								<input type="radio" id="chkAdelanto" name="TipoOrden">
-								<label for="chkAdelanto">Adelanto</label>
-							</div>
-						</div>
 					</div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-12">
+                         <div class="form-group col-2 col-sm-2 col-md-2">
+                            <div class="radio-custom radio-primary">
+                                <input type="radio" id="chkOrden" name="TipoOrden" checked>
+                                <label for="chkOrden">Remision</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-2 col-sm-2 col-md-2">
+                            <div class="radio-custom radio-primary">
+                                <input type="radio" id="chkPreventa" name="TipoOrden">
+                                <label for="chkPreventa">Preventa</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-2 col-sm-2 col-md-2">
+                            <div class="radio-custom radio-primary">
+                                <input type="radio" id="chkRecargo" name="TipoOrden">
+                                <label for="chkRecargo">Recargo</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-2 col-sm-2 col-md-2">
+                            <div class="radio-custom radio-primary">
+                                <input type="radio" id="chkWalmart" name="TipoOrden">
+                                <label for="chkWalmart">Walmart</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-2 col-sm-2 col-md-2">
+                            <div class="radio-custom radio-primary">
+                                <input type="radio" id="chkCsaMantica" name="TipoOrden">
+                                <label for="chkCsaMantica">Casa Mántica</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-2 col-sm-2 col-md-2">
+                            <div class="radio-custom radio-primary">
+                                <input type="radio" id="chkIndependiente" name="TipoOrden">
+                                <label for="chkIndependiente">Independiente</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-2 col-sm-2 col-md-2">
+                            <div class="radio-custom radio-primary">
+                                <input type="radio" id="chkAdelanto" name="TipoOrden">
+                                <label for="chkAdelanto">Adelanto</label>
+                            </div>
+                        </div>
+                        </div>
+                        <br>
+                    </div>
 
 					<hr class="dotted">
 

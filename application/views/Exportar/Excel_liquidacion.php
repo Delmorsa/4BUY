@@ -57,12 +57,15 @@ else {
 		$(document).ready(function () {
             let myArr = new Array(), results = '';
             let ref = '', ref1 = '',ref2 = '', remision = 0, dev = 0, cargaPaseante = 0;
-            let libras = 0, peso = 0, suma = 0;
+            let libras = 0, peso = 0, suma = 0, suma2 = 0,totalCargaPas = 0, lbsremision=0;
+            let sumatoria = 0;
 
 			$("#tblDetFactLiq tbody tr").each(function (index, element) {
 				ref = $(element).find("th").eq(0).html();
 				myArr[index] = ref;
             });
+			let articulo;
+            let bandera = false;
 			$.each(myArr, function (i, index) {
                 results = myArr.filter(i => i === ''+index+'').length;
                 if(results > 1){
@@ -87,6 +90,28 @@ else {
                     libras = (dev*peso)/454;
                     $(".libras"+index).eq(0).html(Number(libras).toFixed(2));
 				}
+                //TOTAL CARGA PASEANTE
+               /* ref2 = Number($(".dev"+index).eq(results-1).html());
+                suma2 += ref2;
+                totalCargaPas = (suma2/Number($("#totalRemision").html()))*100;
+                $("#CargaPaseanteSuma").html(totalCargaPas.toFixed(2)+"%");*/
+                //496sumatoria += lbsremision;
+
+                if (bandera){
+                    if(myArr[i] == articulo){
+                        sumatoria += 0;
+                        articulo = myArr[i];
+                    }else{
+                        lbsremision = Number($(".librasRem"+index).eq(0).html());
+                        sumatoria += lbsremision;
+                        articulo = myArr[i];
+                    }
+                }else{
+                    articulo = myArr[i];
+                    bandera = true;
+                    lbsremision = Number($(".librasRem"+index).eq(0).html());
+                    sumatoria += lbsremision;
+                }
             });
 
             $("#tblDetFactLiq tbody tr").each(function (index, element) {
@@ -94,8 +119,11 @@ else {
                 suma += ref1;
             });
             $("#librasSuma").html(Number(suma).toFixed(2));
+            $("#sumaLbsRem").html(sumatoria.toFixed(2));
+            let totalCargaPaseante = (Number(suma).toFixed(2)/sumatoria.toFixed(2))*100;
+            $("#CargaPaseanteSuma").html(totalCargaPaseante.toFixed(2)+"%");
         });
-		window.print();
+		//window.print();
 	</script>
 </head>
 <body>
@@ -226,6 +254,7 @@ else {
 							<th class="text-right">IVA</th>
 							<th class="text-right">Tot <br> Contado</th>
 							<th class="text-right">Tot <br> Credito</th>
+                            <th class="text-right">Libras <br> Remision</th>
 							<th class="text-right">Libras <br> Vendidas</th>
                             <th class="text-right">Libras <br> Devueltas</th>
 							<th class="text-right">Lbs <br> Merma</th>
@@ -234,6 +263,7 @@ else {
 						</thead>
 						<tbody>
 						<?php
+                        $pesolbsrem = 0;
 						$devolucion = 0;
 						$acumulado = 0;
 						$paseante = 0;
@@ -244,6 +274,7 @@ else {
 						if(!$liqdet){
 						}else{
 							foreach ($liqdet as $item) {
+							    $pesolbsrem = ($item["Carga"]*$item["PesoGramos"])/454;
 								echo "
 									   <tr style='font-size:9px;'>
 											<th class='codigo".$item["Codigo"]."'>".$item["Codigo"]."</th>
@@ -251,7 +282,7 @@ else {
 										".substr($item["Descripcion"],0,15)."</th>
 										<th class='peso".$item["Codigo"]."'>".$item["PesoGramos"]."</th>
 										<th>".number_format($item["Precio"],2)."</th>
-								        <th class='rem".$item["Codigo"]."'>".number_format($item["Carga"],2)."</th>
+								        <th id='rem' class='rem".$item["Codigo"]."'>".number_format($item["Carga"],2)."</th>
 								        <th class='dev".$item["Codigo"]."'>".number_format($item["Devolucion"],2)."</th> 
 								        <th>".number_format($item["UnidadesVenCredito"],2)."</th>
 										<th>".number_format($item["UnidadesVenContado"],2)."</th>
@@ -262,8 +293,9 @@ else {
 										<th>".number_format(($item["IvaContado"]+$item["IvaCredito"]),2)."</th>
 										<th>".number_format($item["TotalContado"],2)."</th>
 										<th>".number_format($item["TotalCredito"],2)."</th>
+										<th id='librasRem' class='librasRem".$item["Codigo"]."'>".number_format($pesolbsrem,2)."</th>
 										<th>".number_format($item["LibrasVendidas"],2)."</th>
-										<th id='libras' class='libras".$item["Codigo"]."'>0.0</th>
+										<th id='libras' class='libras".$item["Codigo"]."'></th>
 										<th>".number_format($item["Merma"],2)."</th>
 										<th class='codigo1".$item["Codigo"]."'>0.0%</th>
 									  </tr> 
@@ -310,21 +342,22 @@ else {
 											<th></th>
 											<th></th>
 											<th></th>
-											<th class='text-right bold'>".$remision."</th>
-											<th class='text-right bold'></th>
-											<th class='text-right bold'>".$unidCred."</th>
-											<th class='text-right bold'>".$unid."</th>
-											<th class='text-right bold'>".$unidTotal."</th>
-											<th class='text-right bold'>".number_format($subtotal,2)."</th>
-											<th class='text-right bold'>".number_format($subcred,2)."</th>
-											<th class='text-right bold'>".number_format(($isc+$isccred),2)."</th>
-											<th class='text-right bold'>".number_format(($iva+$ivacred),2)."</th>
-											<th class='text-right bold'>".number_format($total,2)."</th>
-											<th class='text-right bold'>".number_format($totalcred,2)."</th>
-											<th class='text-right bold'>".number_format($libras,2)."</th>
-											<th id='librasSuma' class='text-right bold'>0.0</th>
-											<th class='text-right bold'></th>
-											<th class='text-right bold'></th>
+											<th id='totalRemision' class='text-left bold'>".$remision."</th>
+											<th class='text-left bold'></th>
+											<th class='text-left bold'>".$unidCred."</th>
+											<th class='text-left bold'>".$unid."</th>
+											<th class='text-left bold'>".$unidTotal."</th>
+											<th class='text-left bold'>".number_format($subtotal,2)."</th>
+											<th class='text-left bold'>".number_format($subcred,2)."</th>
+											<th class='text-left bold'>".number_format(($isc+$isccred),2)."</th>
+											<th class='text-left bold'>".number_format(($iva+$ivacred),2)."</th>
+											<th class='text-left bold'>".number_format($total,2)."</th>
+											<th class='text-left bold'>".number_format($totalcred,2)."</th>
+											<th id='sumaLbsRem' class='text-left bold'>0</th>
+											<th class='text-left bold'>".number_format($libras,2)."</th>
+											<th id='librasSuma' class='text-left bold'>0.0</th>
+											<th class='text-left bold'></th>
+											<th id='CargaPaseanteSuma' class='text-left bold'></th>
 										</tr> 
 								   ";
 						}

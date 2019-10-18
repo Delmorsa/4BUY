@@ -105,6 +105,7 @@ $("#fileUpload").change(function(e){
 								let gramos = inde["GRAMOS"];	
 								let cantidad = gr.toFixed(2);	
 								oTable.fnUpdate( [data[0],data[1], parseFloat(gramos).toFixed(0), data[3], cantidad, data[5]],index );
+								console.log(gr);
 						 });	
 					});	
 			  	});
@@ -351,7 +352,7 @@ $("#btnSaveRem").on("click", function(){
 			let tipo = 0,i = 0, array = new Array();
 			let table = $("#tblRemisiones").DataTable();
 			let coment = '', rotador = '';
-			if($("#chkOrden").prop("checked")== true){
+            if($("#chkOrden").prop("checked")== true){
 				tipo = 1;
 				coment = "";
 			}else if($("#chkPreventa").prop("checked")== true){
@@ -370,14 +371,22 @@ $("#btnSaveRem").on("click", function(){
 				}else{
 					rotador = 'NULL';
 				}
-			}
+			}else if($("#chkWalmart").prop("checked")== true){
+                tipo = 5;
+                coment = "";
+            }else if($("#chkCsaMantica").prop("checked")== true){
+                tipo = 6;
+                coment = "";
+            }else if($("#chkIndependiente").prop("checked")== true){
+                tipo = 7;
+                coment = "";
+            }
 
 			table.rows().eq(0).each(function(index){
 				let row = table.row(index);
 				let datos = row.data();
 				array[i] = datos[0] +","+ datos[1] +","+ datos[2] +","+ datos[3] +","+ datos[4]+","+ datos[5];
 				i++;
-				console.log(array);
 			});
 
 			let form_data = {
@@ -385,6 +394,8 @@ $("#btnSaveRem").on("click", function(){
 				top: [$("#ddlRutas option:selected").val(),$("#vendedor").val(),
 					$("#Rubro option:selected").val(),$("#fechaEntrega").val(),$("#fechaLiquida").val(),tipo,$("#Ref").val(),0,coment,rotador]
 			};
+
+			console.log(form_data);
 
 			$.ajax({
 				url: "SaveRemision",

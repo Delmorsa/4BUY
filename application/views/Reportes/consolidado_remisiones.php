@@ -98,6 +98,18 @@
 									<input type="checkbox" id="chkRecargo" name="chk" value="3">
 									<label for="chkRecargo">Recargo</label>
 								</div>
+                                <div class="checkbox-custom checkbox-primary col-1 col-sm-1 col-md-1">
+                                    <input type="checkbox" id="chkWalmart" name="chk" value="5">
+                                    <label for="chkWalmart">Walmart</label>
+                                </div>
+                                <div class="checkbox-custom checkbox-primary col-2 col-sm-2 col-md-2">
+                                    <input type="checkbox" id="chkcasaMant" name="chk" value="6">
+                                    <label for="chkcasaMant">Casa Mantica</label>
+                                </div>
+                                <div class="checkbox-custom checkbox-primary col-1 col-sm-1 col-md-2">
+                                    <input type="checkbox" id="chkindepend" name="chk" value="7">
+                                    <label for="chkindepend">Independiente</label>
+                                </div>
 								<div class="checkbox-custom checkbox-primary col-1 col-sm-1 col-md-1">
 									<input type="checkbox" id="chkAdelanto" name="chk" value="4">
 									<label for="chkAdelanto">Adelanto</label>

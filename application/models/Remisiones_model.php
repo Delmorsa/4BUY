@@ -259,6 +259,171 @@ and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users."
 		return $retornar;
 	}
 
+    public function listaWalmart($start,$length,$search){
+        $srch = "";
+        $users = '';
+
+        if($this->session->userdata("Rol") != "Supervisor"){
+            $array = array();
+            $con = $this->db->distinct()
+                ->select('IdUsuario')
+                ->get("cm_Lista_Remisiones");
+            for ($i=0; $i < count($con->result_array()); $i++) {
+                $array[] = $con->result_array()[$i]["IdUsuario"];
+            }
+            $users= 'and IdUsuario in ('."'".implode("','",$array)."'".') ';
+
+        }else{
+            $users = "and IdUsuario = '".$this->session->userdata("id")."' ";
+        }
+
+        if ($search){
+            $srch = "and (
+					FechaEntrega like '%".$search."%' or	
+					CantTotal like '%".$search."%' or
+					TotalLbs like '%".$search."%' or
+					FechaLiq like '%".$search."%' or	
+					FechaCrea like '%".$search."%' or	
+					FechaEdita like '%".$search."%'	or
+					FechaBaja like '%".$search."%'
+			)";
+        }
+
+        $qnr = "SELECT count(1) 'Cantidad' FROM [4BUY].[dbo].cm_Lista_Remisiones where CodTipo = '5' 
+		and CAST(FechaEntrega AS DATE) BETWEEN DATEADD(DAY,-7,GETDATE() -1)
+and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users;
+        $qnr = $this->db->query($qnr);
+        $qnr = $qnr->result_array()[0]["Cantidad"];
+
+        if($length == -1){
+            $q = $this->db->query("select * from [4BUY].[dbo].cm_Lista_Remisiones where CodTipo = '5' 
+			 and CAST(FechaEntrega AS DATE) BETWEEN DATEADD(DAY,-7,GETDATE() -1)
+and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users."
+		                      order by IdRemision");//
+        }else{
+            $q = $this->db->query("select * from [4BUY].[dbo].cm_Lista_Remisiones where CodTipo = '5'
+			 and CAST(FechaEntrega AS DATE) BETWEEN DATEADD(DAY,-7,GETDATE() -1)
+and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users."
+		                      order by IdRemision OFFSET ".$start." ROWS FETCH NEXT ".$length." ROWS ONLY;");//
+        }
+
+        $retornar = array(
+            "numDataTotal" => $qnr,
+            "datos" => $q
+        );
+        return $retornar;
+    }
+
+    public function listaCasaMant($start,$length,$search){
+        $srch = "";
+        $users = '';
+
+        if($this->session->userdata("Rol") != "Supervisor"){
+            $array = array();
+            $con = $this->db->distinct()
+                ->select('IdUsuario')
+                ->get("cm_Lista_Remisiones");
+            for ($i=0; $i < count($con->result_array()); $i++) {
+                $array[] = $con->result_array()[$i]["IdUsuario"];
+            }
+            $users= 'and IdUsuario in ('."'".implode("','",$array)."'".') ';
+
+        }else{
+            $users = "and IdUsuario = '".$this->session->userdata("id")."' ";
+        }
+
+        if ($search){
+            $srch = "and (
+					FechaEntrega like '%".$search."%' or	
+					CantTotal like '%".$search."%' or
+					TotalLbs like '%".$search."%' or
+					FechaLiq like '%".$search."%' or	
+					FechaCrea like '%".$search."%' or	
+					FechaEdita like '%".$search."%'	or
+					FechaBaja like '%".$search."%'
+			)";
+        }
+
+        $qnr = "SELECT count(1) 'Cantidad' FROM [4BUY].[dbo].cm_Lista_Remisiones where CodTipo = '6' 
+		and CAST(FechaEntrega AS DATE) BETWEEN DATEADD(DAY,-7,GETDATE() -1)
+and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users;
+        $qnr = $this->db->query($qnr);
+        $qnr = $qnr->result_array()[0]["Cantidad"];
+
+        if($length == -1){
+            $q = $this->db->query("select * from [4BUY].[dbo].cm_Lista_Remisiones where CodTipo = '6' 
+			 and CAST(FechaEntrega AS DATE) BETWEEN DATEADD(DAY,-7,GETDATE() -1)
+and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users."
+		                      order by IdRemision");//
+        }else{
+            $q = $this->db->query("select * from [4BUY].[dbo].cm_Lista_Remisiones where CodTipo = '6'
+			 and CAST(FechaEntrega AS DATE) BETWEEN DATEADD(DAY,-7,GETDATE() -1)
+and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users."
+		                      order by IdRemision OFFSET ".$start." ROWS FETCH NEXT ".$length." ROWS ONLY;");//
+        }
+
+        $retornar = array(
+            "numDataTotal" => $qnr,
+            "datos" => $q
+        );
+        return $retornar;
+    }
+
+    public function listaIndependiente($start,$length,$search){
+        $srch = "";
+        $users = '';
+
+        if($this->session->userdata("Rol") != "Supervisor"){
+            $array = array();
+            $con = $this->db->distinct()
+                ->select('IdUsuario')
+                ->get("cm_Lista_Remisiones");
+            for ($i=0; $i < count($con->result_array()); $i++) {
+                $array[] = $con->result_array()[$i]["IdUsuario"];
+            }
+            $users= 'and IdUsuario in ('."'".implode("','",$array)."'".') ';
+
+        }else{
+            $users = "and IdUsuario = '".$this->session->userdata("id")."' ";
+        }
+
+        if ($search){
+            $srch = "and (
+					FechaEntrega like '%".$search."%' or	
+					CantTotal like '%".$search."%' or
+					TotalLbs like '%".$search."%' or
+					FechaLiq like '%".$search."%' or	
+					FechaCrea like '%".$search."%' or	
+					FechaEdita like '%".$search."%'	or
+					FechaBaja like '%".$search."%'
+			)";
+        }
+
+        $qnr = "SELECT count(1) 'Cantidad' FROM [4BUY].[dbo].cm_Lista_Remisiones where CodTipo = '7' 
+		and CAST(FechaEntrega AS DATE) BETWEEN DATEADD(DAY,-7,GETDATE() -1)
+and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users;
+        $qnr = $this->db->query($qnr);
+        $qnr = $qnr->result_array()[0]["Cantidad"];
+
+        if($length == -1){
+            $q = $this->db->query("select * from [4BUY].[dbo].cm_Lista_Remisiones where CodTipo = '7' 
+			 and CAST(FechaEntrega AS DATE) BETWEEN DATEADD(DAY,-7,GETDATE() -1)
+and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users."
+		                      order by IdRemision");//
+        }else{
+            $q = $this->db->query("select * from [4BUY].[dbo].cm_Lista_Remisiones where CodTipo = '7'
+			 and CAST(FechaEntrega AS DATE) BETWEEN DATEADD(DAY,-7,GETDATE() -1)
+and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users."
+		                      order by IdRemision OFFSET ".$start." ROWS FETCH NEXT ".$length." ROWS ONLY;");//
+        }
+
+        $retornar = array(
+            "numDataTotal" => $qnr,
+            "datos" => $q
+        );
+        return $retornar;
+    }
+
 	public function listaAdelantos($start,$length,$search){
 		$srch = "";
 		$users = '';

@@ -238,11 +238,13 @@
 					}
 				});
 
+
 				table.rows().eq(0).each(function(index){
 					let row = table.row(index);
 					let data = row.data();
 					datos[it] = data[0];
 					if(data[0] === codigo){
+                        bandera = false;
 							let sum = $("#tblRemisionesDet tbody tr").find("td:eq(3)").eq(it).html();
 							let sumlbs = $("#tblRemisionesDet tbody tr").find("td:eq(4)").eq(it).html();
 							let suma = Number(cant) + Number(sum);

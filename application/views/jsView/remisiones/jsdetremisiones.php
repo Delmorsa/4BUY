@@ -360,7 +360,16 @@
 						rotador = $("#RotadorNom").val();
 					}
 
-				}
+				}else if($("#chkWalmart").prop("checked")== true){
+                    tipo = 5;
+                    coment = "";
+                }else if($("#chkCsaMantica").prop("checked")== true){
+                    tipo = 6;
+                    coment = "";
+                }else if($("#chkIndependiente").prop("checked")== true){
+                    tipo = 7;
+                    coment = "";
+                }
 
 				table.rows().eq(0).each(function(index){
 					let row = table.row(index);

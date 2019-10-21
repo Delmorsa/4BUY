@@ -200,27 +200,46 @@
 							</div>
 						</div>
 						<br>
-						<?php
-						$attr = '';
-						$attr1 = '';
-						$attr2 = '';
-						$attr3 = '';
-							if(!$enc){
-							}else{
-								foreach ($enc as $item) {
-									if ($item["Tipo"] == 1) {
-										$attr = "checked";
-									}
-									if ($item["Tipo"] == 2) {
-										$attr1 = "checked";
-									}
-									if ($item["Tipo"] == 3){
-										$attr2 = "checked";
-									}
-									if ($item["Tipo"] == 4){
-										$attr3 = "checked";
-									}
-									echo '
+					</div>
+
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <?php
+                            $attr = '';
+                            $attr1 = '';
+                            $attr2 = '';
+                            $attr3 = '';
+                            $attr4 = '';
+                            $attr5 = '';
+                            $attr6 = '';
+                            if(!$enc){
+                            }else{
+                                foreach ($enc as $item) {
+                                    switch ($item["Tipo"])
+                                    {
+                                        case 1:
+                                            $attr = "checked";
+                                            break;
+                                        case 2:
+                                            $attr1 = "checked";
+                                            break;
+                                        case 3 :
+                                            $attr2 = "checked";
+                                            break;
+                                        case 4:
+                                            $attr6 = "checked";
+                                            break;
+                                        case 5:
+                                            $attr3 = "checked";
+                                            break;
+                                        case 6:
+                                            $attr4 = "checked";
+                                            break;
+                                        case 7:
+                                            $attr5 = "checked";
+                                            break;
+                                    }
+                                    echo '
 										<div class="form-group col-1 col-sm-1 col-md-1">
 											<div class="radio-custom radio-primary">
 												<input type="radio" id="chkOrden" name="TipoOrden" '.$attr.'>
@@ -239,17 +258,37 @@
 												<label for="chkRecargo">Recargo</label>
 											</div>
 										</div>
+										<div class="form-group col-2 col-sm-2 col-md-2">
+                                            <div class="radio-custom radio-primary">
+                                                <input type="radio" id="chkWalmart" name="TipoOrden" '.$attr3.'>
+                                                <label for="chkWalmart">Walmart</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-2 col-sm-2 col-md-2">
+                                            <div class="radio-custom radio-primary">
+                                                <input type="radio" id="chkCsaMantica" name="TipoOrden" '.$attr4.'>
+                                                <label for="chkCsaMantica">Casa Mántica</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-2 col-sm-2 col-md-2">
+                                            <div class="radio-custom radio-primary">
+                                                <input type="radio" id="chkIndependiente" name="TipoOrden" '.$attr5.'>
+                                                <label for="chkIndependiente">Independiente</label>
+                                            </div>
+                                        </div>
 										<div class="form-group col-1 col-sm-1 col-md-1">
 											<div class="radio-custom radio-primary">
-												<input type="radio" id="chkAdelanto" name="TipoOrden" '.$attr3.'>
+												<input type="radio" id="chkAdelanto" name="TipoOrden" '.$attr6.'>
 												<label for="chkAdelanto">Adelanto</label>
 											</div>
 										</div>
 									';
-								}
-							}
-						?>
-					</div>
+                                }
+                            }
+                            ?>
+                        </div>
+                        <br>
+                    </div>
 
 					<hr class="dotted">
 

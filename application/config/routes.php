@@ -175,6 +175,9 @@ $route["RptVentas"] = "Reportes_controller/ReporteDeVentas";
 
 $route["ExcelLiquidacion/(:any)"] = "Liquidacion_controller/exportarExcelLiquidacion/$1";
 $route["ExcelLiqUnid/(:any)"] = "Liquidacion_controller/exportarExcelLiquidacionUnidades/$1";
+/*****************************************************************************************/
+//GUARDAR TOTALES LIQUIDACION
+$route["guardarTotalesLiq"] = "Liquidacion_controller/guardarTotalesLiquidacion";
 
 $route["createXLS/(:any)/(:any)"] = "Reportes_controller/createXLS/$1/$2";
 $route["createXLSDetallado/(:any)/(:any)"] = "Reportes_controller/createXLSDetallado/$1/$2";

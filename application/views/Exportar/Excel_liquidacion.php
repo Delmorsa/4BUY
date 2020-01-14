@@ -122,8 +122,35 @@ else {
             $("#sumaLbsRem").html(sumatoria.toFixed(2));
             let totalCargaPaseante = (Number(suma).toFixed(2)/sumatoria.toFixed(2))*100;
             $("#CargaPaseanteSuma").html(totalCargaPaseante.toFixed(2)+"%");
+
+						guardarTotalesLiq();
         });
-		//window.print();
+
+				function guardarTotalesLiq(){
+					let porcentajeCarga = $("#CargaPaseanteSuma").text();
+					let sumaLbsMerma = 0.0;
+					if($("#sumaLbsMerma").text() != ""){
+						sumaLbsMerma = $("#sumaLbsMerma").text();
+					}
+					let form_data = {
+						idperiodo: $("#idPeriodoTotal").val(),
+						idliquidacion: $("#idLiquidacionTotal").val(),
+						librasRemision: $("#sumaLbsRem").text(),
+						librasVendidas: $("#sumaLbsVend").text(),
+						librasDev: $("#librasSuma").text(),
+						librasMerma: sumaLbsMerma,
+						cargaPaseante: porcentajeCarga.slice(0, -1)
+					};
+						$.ajax({
+							url: '<?php echo base_url("index.php/guardarTotalesLiq");?>',
+							type: 'POST',
+							data: form_data,
+							success: function(data){
+									console.log(data);
+							}
+						});
+				}
+		window.print();
 	</script>
 </head>
 <body>
@@ -135,15 +162,26 @@ else {
 						<div class="col-sm-2 mt-md">
 							<h2 style="font-size:12px;" class="h2 mt-none mb-sm text-dark text-bold">LIQUIDACION</h2>
 							<?php
+							$idliquidacion = 0;
+							if(!$liqdet){
+							}else{
+								foreach ($liqdet as $item) {
+									$idliquidacion = $item["IdLiquidacion"];
+								}
+								echo '<input id="idLiquidacionTotal" type="hidden" name="" value="'.$idliquidacion.'">';
+								echo '<input id="idPeriodoTotal" type="hidden" name="" value="'.$this->uri->segment(2).'">';
+							}
+							?>
+							<?php
 							$fecha1 = '';$fecha2 = '';
 							if(!$liq){
 							}
 							else{
 								foreach ($liq as $key)
 								{
-									echo "				
+									echo "
 										   <p style='font-size:11px;' class='bold text-dark text-semibold'>
-											 Desde : ".date_format(new DateTime($key["FechaInicio"]),"Y-m-d h:i:s")." 
+											 Desde : ".date_format(new DateTime($key["FechaInicio"]),"Y-m-d h:i:s")."
 										   </p>
 										   <p style='font-size:11px;' class='bold text-dark text-semibold'>
 											 Hasta: ".date_format(new DateTime($key["FechaFinal"]), "Y-m-d h:i:s")."
@@ -283,7 +321,7 @@ else {
 										<th class='peso".$item["Codigo"]."'>".$item["PesoGramos"]."</th>
 										<th>".number_format($item["Precio"],2)."</th>
 								        <th id='rem' class='rem".$item["Codigo"]."'>".number_format($item["Carga"],2)."</th>
-								        <th class='dev".$item["Codigo"]."'>".number_format($item["Devolucion"],2)."</th> 
+								        <th class='dev".$item["Codigo"]."'>".number_format($item["Devolucion"],2)."</th>
 								        <th>".number_format($item["UnidadesVenCredito"],2)."</th>
 										<th>".number_format($item["UnidadesVenContado"],2)."</th>
 										<th>".number_format($item["UnidadesVenTotal"],2)."</th>
@@ -298,7 +336,7 @@ else {
 										<th id='libras' class='libras".$item["Codigo"]."'></th>
 										<th>".number_format($item["Merma"],2)."</th>
 										<th class='codigo1".$item["Codigo"]."'>0.0%</th>
-									  </tr> 
+									  </tr>
 								   ";
 								$i++;
 							}
@@ -354,11 +392,11 @@ else {
 											<th class='text-left bold'>".number_format($total,2)."</th>
 											<th class='text-left bold'>".number_format($totalcred,2)."</th>
 											<th id='sumaLbsRem' class='text-left bold'>0</th>
-											<th class='text-left bold'>".number_format($libras,2)."</th>
+											<th id='sumaLbsVend' class='text-left bold'>".number_format($libras,2)."</th>
 											<th id='librasSuma' class='text-left bold'>0.0</th>
-											<th class='text-left bold'></th>
+											<th id='sumaLbsMerma' class='text-left bold'></th>
 											<th id='CargaPaseanteSuma' class='text-left bold'></th>
-										</tr> 
+										</tr>
 								   ";
 						}
 						?>

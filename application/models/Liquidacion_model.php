@@ -55,7 +55,7 @@ class Liquidacion_model extends CI_Model
 	}
 
 	public function validacionFechIinicio($fechaIn,$ruta){
-		$query = $this->db->query("select FechaFinal from Periodos 
+		$query = $this->db->query("select FechaFinal from Periodos
 									where Activo in ('Y','N','P')
 									and cast(FechaFinal as date) = '".$fechaIn."'
 									and IdRuta = '".$ruta."' ");
@@ -113,7 +113,7 @@ class Liquidacion_model extends CI_Model
 					$mensaje[0]["tipo"] = "success";
 					echo json_encode($mensaje);
 				}else{
-					$mensaje[0]["mensaje"] = "No se puede crear el nuevo periodo de liquidacion para la ruta ".$ruta." 
+					$mensaje[0]["mensaje"] = "No se puede crear el nuevo periodo de liquidacion para la ruta ".$ruta."
 				 por que existe un perido activo. Debe liquidar las facturas del periodo vigente para esta ruta";
 					$mensaje[0]["tipo"] = "error";
 					echo json_encode($mensaje);
@@ -121,7 +121,7 @@ class Liquidacion_model extends CI_Model
 			}
 		 }else{
 
-		        $mensaje[0]["mensaje"] = "La fecha del nuevo periodo no puede iniciar con ".$fechaIn." ya que otro periodo  
+		        $mensaje[0]["mensaje"] = "La fecha del nuevo periodo no puede iniciar con ".$fechaIn." ya que otro periodo
 				 que ya esta liquidado termina con esta fecha para la ruta ".$ruta."";
 				$mensaje[0]["tipo"] = "error";
 				echo json_encode($mensaje);
@@ -171,7 +171,7 @@ class Liquidacion_model extends CI_Model
 					echo json_encode($mensaje);
 				}
 			}else{
-				$mensaje[0]["mensaje"] = "Ya existe un periodo de liquidacion en espera para la ruta ".$ruta.". 
+				$mensaje[0]["mensaje"] = "Ya existe un periodo de liquidacion en espera para la ruta ".$ruta.".
 				Debe liquidar las facturas del periodo pendiente";
 				$mensaje[0]["tipo"] = "error";
 				echo json_encode($mensaje);
@@ -186,7 +186,7 @@ class Liquidacion_model extends CI_Model
 
 	public function evitarDuplicados($fechainicio, $fechafinal, $ruta){
 		$query = $this->db->query("select cast(FechaInicio as date), cast(FechaFinal as date),
-		   IdRuta from Periodos where  cast(FechaInicio as date) = "."'".$fechainicio."'"." 
+		   IdRuta from Periodos where  cast(FechaInicio as date) = "."'".$fechainicio."'"."
 		   and cast(FechaFinal as date) = "."'".$fechafinal."'"."
 		   and IdRuta = "."'".$ruta."'"."
 		   and Activo <> 'C' ");
@@ -207,7 +207,7 @@ class Liquidacion_model extends CI_Model
 		$queryFactDet = $this->db->where("IDPERIODO", $idPeriodo)
 							     ->get("cm_Detalle_Encabezado_Factura");
 
-		$queryFactDet1 = $this->db->query("EXEC	[dbo].[SP_PRODUCTOS_LIQUIDAR] @IDPERIODO = '".$idPeriodo."'"); 
+		$queryFactDet1 = $this->db->query("EXEC	[dbo].[SP_PRODUCTOS_LIQUIDAR] @IDPERIODO = '".$idPeriodo."'");
 		//ITEMS VENDIDOS POR EL VENDEDOR
 		foreach ($queryFactDet1->result_array() as $key) {
 				$json[$i]["CODIGO"] = $key["CODIGO"];
@@ -237,10 +237,10 @@ class Liquidacion_model extends CI_Model
 
 		//ITEMS NO VENDIDOS POR EL VENDEDOR
 		$artNoVendidos = $this->Hana_model->getArtNoVendidos($query->result_array()[0]["FechaInicio"],$query->result_array()[0]["FechaFinal"],$notin,$query->result_array()[0]["IdRuta"]);
-		//print_r($artNoVendidos);4	
-		
+		//print_r($artNoVendidos);4
+
 		foreach ($artNoVendidos as $key) {
-			
+
 			$json[$i]["CODIGO"] = $key["CODIGO"];
 			$json[$i]["DESCRIPCION"] = $key["DESCRIPCION"];
 			$json[$i]["GRAMOS"] = $key["GRAMOS"];
@@ -273,7 +273,7 @@ class Liquidacion_model extends CI_Model
 		return $retorno;
 	}
 
-	
+
 	public function guardarLiquidacion($top,$datos){
 		date_default_timezone_set("America/Managua");
 		$this->db->trans_begin();
@@ -453,21 +453,21 @@ class Liquidacion_model extends CI_Model
 		/*pinky code*/
 		/*$query = $this->db->query("SELECT IDPERIODO,CODIGO,DESCRIPCION,REMISION, GRAMOS,SUM(UNIDTOTAL) UNIDADES,SUM(LIBRAS) LIBRAS,
 									SUM(TOTALCREDITO)+SUM(TOTALCONTADO) AS TOTAL,
-									 ROUND(REMISION - SUM(UNIDTOTAL), 2) DEVOLUCION FROM 
-									[dbo].[View_Facturas_Liquidaciones] 
+									 ROUND(REMISION - SUM(UNIDTOTAL), 2) DEVOLUCION FROM
+									[dbo].[View_Facturas_Liquidaciones]
 									WHERE IDPERIODO = ".$idperiodo."
 									GROUP BY IDPERIODO,CODIGO,DESCRIPCION,REMISION,GRAMOS
 									ORDER BY CODIGO");*/
         $query = $this->db->query("SELECT  T0.Codigo CODIGO,T0.Descripcion DESCRIPCION, T0.PesoGramos GRAMOS,
 									(SELECT MAX(Carga) FROM Liquidacion_Detalle WHERE IdLiquidacion = T0.IdLiquidacion AND Codigo = T0.Codigo) REMISION
 									,SUM(UnidadesVenTotal) UNIDADES,
-									(SELECT Min(Devolucion) 
+									(SELECT Min(Devolucion)
 									FROM Liquidacion_Detalle WHERE IdLiquidacion = T0.IdLiquidacion AND Codigo = T0.Codigo) DEVOLUCION,
 									SUM(t0.LibrasVendidas) LIBRAS,
 									SUM(TotalCredito)+SUM(TotalContado) TOTAL,
 									SUM(Merma) MERMA
 									FROM Liquidacion_Detalle T0
-									INNER JOIN Liquidacion t1 on t1.IdLiquidacion = t0.IdLiquidacion 
+									INNER JOIN Liquidacion t1 on t1.IdLiquidacion = t0.IdLiquidacion
 									WHERE T1.IdPeriodo = ".$idperiodo."
 									GROUP BY T0.IdLiquidacion, T0.Codigo,T0.Descripcion, T0.PesoGramos");
 		if($query->num_rows() > 0){
@@ -480,12 +480,12 @@ class Liquidacion_model extends CI_Model
 		/*pinky code*/
 		$query = $this->db->query("SELECT IDPERIODO,CODIGO,DESCRIPCION,REMISION, GRAMOS,SUM(UNIDTOTAL) UNIDADES,SUM(LIBRAS) LIBRAS,
 									SUM(TOTALCREDITO)+SUM(TOTALCONTADO) AS TOTAL,
-									 ROUND(REMISION - SUM(UNIDTOTAL), 2) DEVOLUCION FROM 
-									[dbo].[View_Facturas_Liquidaciones] 
+									 ROUND(REMISION - SUM(UNIDTOTAL), 2) DEVOLUCION FROM
+									[dbo].[View_Facturas_Liquidaciones]
 									WHERE IDPERIODO = ".$idperiodo."
 									GROUP BY IDPERIODO,CODIGO,DESCRIPCION,REMISION,GRAMOS
 									ORDER BY CODIGO");
-        
+
 		if($query->num_rows() > 0){
 			return $query->result_array();
 		}
@@ -514,6 +514,25 @@ class Liquidacion_model extends CI_Model
 		);
 		return $retorno;
 	}
+
+	/***************************************************************************/
+	//GUARDAR TOTALES LIQUIDACION
+	public function guardarTotalesLiquidacion($idperiodo,$idliquidacion,$librasRemision,$librasVendidas,$librasDev,$librasMerma,$cargaPaseante){
+		$id = $this->db->query("SELECT ISNULL(MAX(ID),0)+1 as id FROM Totales_Liquidacion");
+		$datos = array(
+				"ID" => $id->result_array()[0]["id"],
+				"IDPERIODO" => $idperiodo,
+				"IDLIQUIDACION" => $idliquidacion,
+				"FECHAINGRESO" => gmdate(date("Y-m-d H:i:s")),
+				"LIBRAS_REMISION" => $librasRemision,
+				"LIBRAS_VENDIDAS" => $librasVendidas,
+				"LIBRAS_DEVUELTAS" => $librasDev,
+				"LIBRAS_MERMA" => $librasMerma,
+				"CARGA_PASEANTE" => $cargaPaseante
+		);
+		$insert = $this->db->insert("Totales_Liquidacion",$datos);
+	}
+
 }
 
 /* End of file .php */

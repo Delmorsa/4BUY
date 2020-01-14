@@ -141,6 +141,19 @@ class Liquidacion_controller extends CI_Controller {
 		$this->Liquidacion_model->anularPeriodo($idperiodo);
 	}
 
+	/***************************************************************************/
+	//GUARDAR TOTALES LIQUIDACION
+	public function guardarTotalesLiquidacion(){
+		$idperiodo = $this->input->get_post("idperiodo");
+		$idliquidacion = $this->input->get_post("idliquidacion");
+		$librasRemision = $this->input->get_post("librasRemision");
+		$librasVendidas = $this->input->get_post("librasVendidas");
+		$librasDev = $this->input->get_post("librasDev");
+		$librasMerma = $this->input->get_post("librasMerma");
+		$cargaPaseante = $this->input->get_post("cargaPaseante");
+		$this->Liquidacion_model->guardarTotalesLiquidacion($idperiodo,$idliquidacion,$librasRemision,$librasVendidas,$librasDev,$librasMerma,$cargaPaseante);
+	}
+
 }
 
 /* End of file Liquidacion_controller.php */

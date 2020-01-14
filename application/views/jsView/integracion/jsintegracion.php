@@ -161,7 +161,7 @@
 	$('#dtFacturasAjax').on( 'init.dt', function () {
 		Sumar();
 	} );
-	
+
 	function detalleFactura(idEncabezado) {
 		$("#tabla").html("");
 		$("#subtotal").html();
@@ -175,7 +175,7 @@
 			async:true,
 			success: function (data) {
 				$.each(JSON.parse(data), function (i, item) {
-					subtotal = item.TOTAL - (item.IVA - item.ISC);
+					subtotal = item.TOTAL - item.IVA - item.ISC;
 					subtotalsuma += subtotal;
 					iva += Number(item.IVA);
 					isc += Number(item.ISC);

@@ -6,7 +6,7 @@
 			<a href="#" class="logo">
 				<img src="<?php echo base_url()?>assets/img/LOGOS_DELMOR.png" style="width:100px; vertical-align:middle; margin-top:-2vh;" alt="4BUY" />
 			</a>
-			
+
 			<div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html"
 			 data-fire-event="sidebar-left-opened">
 				<i class="fa fa-bars" aria-label="Toggle sidebar"></i>
@@ -14,12 +14,12 @@
 		</div>
 
 		<!-- start: search & user box -->
-		<div class="header-left alternative-font">					
+		<div class="header-left alternative-font">
 			<h2>SISTEMA DE VENTAS</h2>
 		</div>
 		<div class="header-right">
 
-			<!--<form action="pages-search-results.html" class="search nav-form">						
+			<!--<form action="pages-search-results.html" class="search nav-form">
 						<div class="input-group input-search">
 							<input type="text" class="form-control" name="q" id="q" placeholder="Search...">
 							<span class="input-group-btn">
@@ -211,7 +211,7 @@
 						if ($this->session->userdata("Sexo") == 1) {
 							$img = 'user2.png';
 						}else{
-							$img = 'female.jpg';	
+							$img = 'female.jpg';
 						}
 						 echo "<img src='".base_url()."/assets/img/".$img."' alt='".$this->session->userdata('User')."'
 						  class='img-circle' data-lock-picture='".base_url()."/assets/img/".$img."'/>";
@@ -279,8 +279,8 @@
 											<span>Ver Logs</span>
 										</a>
 									</li>
-								   ';	
-								}								
+								   ';
+								}
 							?>
 							<li class="nav-parent">
 								<a>
@@ -312,7 +312,7 @@
 											Crear y Administrar Usuarios
                                         </a>
                                         <a href="<?php echo base_url("index.php/Roles")?>">
-                                            Roles    
+                                            Roles
                                         </a>
 									</li>
 								</ul>
@@ -430,10 +430,10 @@
 										</a>
 									</li>
 									<li>
-										<a href="<?php echo base_url("index.php/rptDevolucionesRuta")?>"> 
+										<a href="<?php echo base_url("index.php/rptDevolucionesRuta")?>">
 											Reporte de Devoluciones por ruta
 										</a>
-									</li>	
+									</li>
 									<li>
 										<a href="<?php echo base_url("index.php/rptconsecutivos")?>">
 											Reporte de Consecutivos
@@ -449,13 +449,13 @@
 
 							<br>
 							<li>
-								<img src="<?php echo base_url()?>assets/img/LOGOS_DELMOR.png" style="text-align: center;width:100%; vertical-align:middle; margin-top:-4vh;"
-								alt="4BUY" />
+								<!--<img src="<?php echo base_url()?>assets/img/LOGOS_DELMOR.png" style="text-align: center;width:100%; vertical-align:middle; margin-top:-4vh;"
+								alt="4BUY" />-->
 							</li>
 						</ul>
 						<br><br>
 						<!--<div class="center">
-							
+
 						</div>-->
 					</nav>
 
@@ -481,4 +481,3 @@
 					<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 				</div>
 			</header>
-

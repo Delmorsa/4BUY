@@ -24,7 +24,7 @@ class Integracion_model extends CI_Model {
 								  t1.*
 								  FROM [4BUY].[dbo].[cm_encabezado_facturas] t1
 								  inner join Periodos t2 on t1.IDPERIODO = t2.IdPeriodo
-								  where t1.CODVENDEDOR = '".$ruta."' and CAST(t1.FECHA AS DATE) BETWEEN '".$fechaInicio."' 
+								  where t1.CODVENDEDOR = '".$ruta."' and CAST(t1.FECHA AS DATE) BETWEEN '".$fechaInicio."'
 								  AND '".$fechaFin."' AND t1.ESTADOAPP = '1' and  t2.Liquidado = 'Y'");
 		foreach ($query->result_array() as $key){
 			$serie = explode("-",$key["IDFACTURA"]);
@@ -52,7 +52,7 @@ class Integracion_model extends CI_Model {
 			$json["data"][$i]["IVA"] = number_format($key["IVA"],2);
 			$json["data"][$i]["TOTAL_CREDITO"] = number_format($key["TOTAL_CREDITO"],2);
 			$json["data"][$i]["TOTAL_CONTADO"] = number_format($key["TOTAL_CONTADO"],2);
-			$json["data"][$i]["Detalles"] = "<a onclick='detalleFactura(".$key["IDENCABEZADO"].")' id='Fact".$key["IDENCABEZADO"]."' href='#' style='text-align:center !important;' 
+			$json["data"][$i]["Detalles"] = "<a onclick='detalleFactura(".$key["IDENCABEZADO"].")' id='Fact".$key["IDENCABEZADO"]."' href='#' style='text-align:center !important;'
 			class='btn btn-sm btn-link btn-block center'><i class='fa fa-expand left'></i></a>";
 			$i++;
 		}
@@ -81,15 +81,17 @@ class Integracion_model extends CI_Model {
 			$json[$i]["CANTIDAD"] = $key["CANTIDAD"];
 			$json[$i]["PRECIO"] = $key["PRECIO"];
 			$json[$i]["ISC"] = $key["ISCDET"];
-            $json[$i]["IVA"] = $key["IVADET"];
-            $json[$i]["TOTAL"] = $key["TOTALDET"];
-            $json[$i]["CODALMACEN"] = $key["CODALMACEN"];
+      $json[$i]["IVA"] = $key["IVADET"];
+      $json[$i]["TOTAL"] = $key["TOTALDET"];
+      $json[$i]["CODALMACEN"] = $key["CODALMACEN"];
 			$i++;
 		}
 		echo json_encode($json);
 	}
 
 	public function IntegrarFacturas($ruta, $fechaInicio, $fechaFin,$fechaInt){
+
+		try{
 		$Array = array();
 		$enc = $this->db->query("SELECT t1.*,t2.Liquidado FROM Facturas t1
 								inner join Periodos t2 on t1.IDPERIODO = t2.IdPeriodo
@@ -101,9 +103,11 @@ class Integracion_model extends CI_Model {
 		$this->db2->trans_begin();
 		if($enc->num_rows() > 0){
 			foreach ($enc->result_array() as $item) {
+				$desc_porcentaje = 0;// ($item["DESCUENTO"]/$item["SUBTOTAL"])*100;
+
 				$this->db2->query("EXEC SP_INSERT_DOCUMENTOS 1,".$item["IDENCABEZADO"].",'I','N','N','O','O','N','RMS','I',13,
                 '".$fechaInt."','".$fechaInt."','".$item["CODCLIENTE"]."',
-                       '".utf8_encode($item["NOMBRE"])."','".$item["RUC"]."','".$item["IDFACTURA"]."',0,'COR',
+                       '".utf8_encode($item["NOMBRE"])."','".$item["RUC"]."','".$item["IDFACTURA"]."',".$desc_porcentaje.",'COR',
                        'Generado por APP 4BUY',".$item["CODCONDPAGO"].",".$item["CODVENDEDOR"].",116,120,'13',
                        ".$item["TOTAL"].",1,1,''");
 
@@ -190,6 +194,9 @@ class Integracion_model extends CI_Model {
 				}
 			}
 		}
+		}catch(Exception $e) {
+	    echo $e->getMessage();
+	  }
 	}
 
 	public function VerificarEstadoIntegrado(){

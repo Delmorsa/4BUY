@@ -50,8 +50,8 @@
 					</div>
 				</div>
 
-				<p class="text-center text-semibold text-muted mt-md mb-md">
-					&copy; Copyright DELMOR <?php echo date("Y")?> Todos los derechos reservados.</p>
+				<p class="text-center text-semibold text-muted mt-md mb-md"> <!--DELMOR-->
+					&copy; Copyright <?php echo date("Y")?> Todos los derechos reservados.</p>
 			</div>
 		</section>
 		<!-- end: page -->

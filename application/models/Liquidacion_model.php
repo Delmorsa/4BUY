@@ -526,11 +526,11 @@ class Liquidacion_model extends CI_Model
 					"IDPERIODO" => $idperiodo,
 					"IDLIQUIDACION" => $idliquidacion,
 					"FECHAINGRESO" => gmdate(date("Y-m-d H:i:s")),
-					"LIBRAS_REMISION" => $librasRemision,
-					"LIBRAS_VENDIDAS" => $librasVendidas,
-					"LIBRAS_DEVUELTAS" => $librasDev,
-					"LIBRAS_MERMA" => $librasMerma,
-					"CARGA_PASEANTE" => $cargaPaseante
+					"LIBRAS_REMISION" => str_replace(",","",$librasRemision),
+					"LIBRAS_VENDIDAS" => str_replace(",","",$librasVendidas),
+					"LIBRAS_DEVUELTAS" => str_replace(",","",$librasDev),
+					"LIBRAS_MERMA" => str_replace(",","",$librasMerma),
+					"CARGA_PASEANTE" => str_replace(",","",$cargaPaseante)
 			);
 			$insert = $this->db->insert("Totales_Liquidacion",$datos);
 		}

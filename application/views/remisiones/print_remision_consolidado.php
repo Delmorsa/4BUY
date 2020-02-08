@@ -203,6 +203,20 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 						?></span>
 				</td>
 			</tr>
+			<tr>
+				<td colspan="1" class="negrita">Código Remisiones</td>
+				<td colspan="7"><span style="font-size:11pt;">
+						<?php
+						$codigos = "";
+						if (!$enc) {
+						} else {
+							foreach ($enc as $key) {
+								$codigos .= $key["IdRemision"].",";
+							}
+							echo substr($codigos,0,-1);
+						}
+						?></span></td>
+			</tr>
 			</thead>
 			<tbody>
 

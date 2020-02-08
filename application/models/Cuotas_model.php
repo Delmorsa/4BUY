@@ -46,7 +46,7 @@ class Cuotas_model extends CI_Model
 
 			if($validar->num_rows() > 0){
 				$mensaje[0]["tipo"] = "error";
-				$mensaje[0]["mensaje"] = "Ya existe una cuota para la ".strtolower( ucfirst($string[1]))." 
+				$mensaje[0]["mensaje"] = "Ya existe una cuota para la ".strtolower( ucfirst($string[1]))."
 			con mes ".$mes.'/'.$anio." ";
 				echo json_encode($mensaje);
 			}else{
@@ -124,26 +124,26 @@ class Cuotas_model extends CI_Model
 		$query = $this->db->query("
 		    WITH TABLA AS
 			(
-			SELECT t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL, 
+			SELECT t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL,
 			SUM(t0.LibrasVendidas) LIBRAS_VENDIDAS,T3.DIAS_EFECTIVOS,
 			CAST('01-'+CAST(T3.MES AS CHAR)+'-'+CAST(T3.ANIO AS CHAR) AS DATE) AS PRIMER_DIA,
-			datediff(dd, '".$fechaInicio."', '".$fechaFin."') - (datediff(wk, '".$fechaInicio."', '".$fechaFin."')) 
+			datediff(dd, '".$fechaInicio."', '".$fechaFin."') - (datediff(wk, '".$fechaInicio."', '".$fechaFin."'))
 			-((DATEDIFF(day,'".$fechaInicio."', '".$fechaFin."')-DATEPART(dw,'".$fechaFin."')+7)/7)*0.5 DIAS_TRANSCURRIDOS,
 			T1.IDCatRuta,T4.Descripcion,
 			t2.liquidado as Liquidado,
 			t3.MES
 			FROM [dbo].[Liquidacion] t0
-			
+
 			inner join [dbo].[Usuarios] t1 on t0.IdRuta=t1.IdRuta
 			inner join periodos t2 on t2.IdPeriodo= t0.IdPeriodo
 			inner join Cuotas t3 on t1.IdRuta = t3.idruta
 			inner join CategoriasRutas t4 on T1.IDCatRuta = t4.ID
-			WHERE t2.liquidado='Y' AND  
-			(CAST (t2.FechaInicio AS date)>= '".$fechaInicio."' and 
-			CAST(t2.FechaInicio AS date)<= '".$fechaFin."') or (CAST (t2.FechaFinal AS date)>= '".$fechaInicio."' and 
+			WHERE t2.liquidado='Y' AND
+			(CAST (t2.FechaInicio AS date)>= '".$fechaInicio."' and
+			CAST(t2.FechaInicio AS date)<= '".$fechaFin."') or (CAST (t2.FechaFinal AS date)>= '".$fechaInicio."' and
 			CAST(t2.FechaFinal AS date)<= '".$fechaFin."')   and t1.ESTADO ='1'
 			GROUP BY  t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL,T3.DIAS_EFECTIVOS,T3.MES,T3.ANIO,t2.liquidado,T1.IDCatRuta, T4.Descripcion,t3.MES
-			) 
+			)
 			SELECT IdRuta,Descripcion,Nombre,Apellidos,CUOTAMENSUAL,cast (LIBRAS_VENDIDAS as decimal (18,2)) as LIBRAS_VENDIDAS,
 			cast((CUOTAMENSUAL/DIAS_EFECTIVOS)*DIAS_TRANSCURRIDOS as decimal(18,2)) AS CUOTA_A_LLEVAR,
 			cast(LIBRAS_VENDIDAS-(CUOTAMENSUAL/DIAS_EFECTIVOS)*DIAS_TRANSCURRIDOS as decimal (18,2)) AS GAP_LIBRAS,
@@ -189,26 +189,26 @@ class Cuotas_model extends CI_Model
 		$query = $this->db->query("
 		    WITH TABLA AS
 			(
-			SELECT t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL, 
+			SELECT t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL,
 			SUM(t0.LibrasVendidas) LIBRAS_VENDIDAS,T3.DIAS_EFECTIVOS,
 			CAST('01-'+CAST(T3.MES AS CHAR)+'-'+CAST(T3.ANIO AS CHAR) AS DATE) AS PRIMER_DIA,
-			datediff(dd, '".$fechaInicio."', '".$fechaFin."') - (datediff(wk, '".$fechaInicio."', '".$fechaFin."')) 
+			datediff(dd, '".$fechaInicio."', '".$fechaFin."') - (datediff(wk, '".$fechaInicio."', '".$fechaFin."'))
 			-((DATEDIFF(day,'".$fechaInicio."', '".$fechaFin."')-DATEPART(dw,'".$fechaFin."')+7)/7)*0.5 DIAS_TRANSCURRIDOS,
 			T1.IDCatRuta,T4.Descripcion,
 			t2.liquidado as Liquidado,
 			t3.MES
 			FROM [dbo].[Liquidacion] t0
-			
+
 			inner join [dbo].[Usuarios] t1 on t0.IdRuta=t1.IdRuta
 			inner join periodos t2 on t2.IdPeriodo= t0.IdPeriodo
 			inner join Cuotas t3 on t1.IdRuta = t3.idruta
 			inner join CategoriasRutas t4 on T1.IDCatRuta = t4.ID
-			WHERE t2.liquidado='Y' AND  
-			(CAST (t2.FechaInicio AS date)>= '".$fechaInicio."' and 
-			CAST(t2.FechaInicio AS date)<= '".$fechaFin."') or (CAST (t2.FechaFinal AS date)>= '".$fechaInicio."' and 
+			WHERE t2.liquidado='Y' AND
+			(CAST (t2.FechaInicio AS date)>= '".$fechaInicio."' and
+			CAST(t2.FechaInicio AS date)<= '".$fechaFin."') or (CAST (t2.FechaFinal AS date)>= '".$fechaInicio."' and
 			CAST(t2.FechaFinal AS date)<= '".$fechaFin."')   and t1.ESTADO ='1'
 			GROUP BY  t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL,T3.DIAS_EFECTIVOS,T3.MES,T3.ANIO,t2.liquidado,T1.IDCatRuta, T4.Descripcion,t3.MES
-			) 
+			)
 			SELECT IdRuta,Descripcion,Nombre,Apellidos,CUOTAMENSUAL,cast (LIBRAS_VENDIDAS as decimal (18,2)) as LIBRAS_VENDIDAS,
 			cast((CUOTAMENSUAL/DIAS_EFECTIVOS)*DIAS_TRANSCURRIDOS as decimal(18,2)) AS CUOTA_A_LLEVAR,
 			cast(LIBRAS_VENDIDAS-(CUOTAMENSUAL/DIAS_EFECTIVOS)*DIAS_TRANSCURRIDOS as decimal (18,2)) AS GAP_LIBRAS,
@@ -250,25 +250,25 @@ class Cuotas_model extends CI_Model
 		$query = $this->db->query("
 		    WITH TABLA AS
 			(
-			SELECT t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL, 
+			SELECT t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL,
 			SUM(t0.LibrasVendidas) LIBRAS_VENDIDAS,T3.DIAS_EFECTIVOS,
 			CAST('01-'+CAST(T3.MES AS CHAR)+'-'+CAST(T3.ANIO AS CHAR) AS DATE) AS PRIMER_DIA,
-			datediff(dd, '".$fechaInicio."', '".$fechaFin."') - (datediff(wk, '".$fechaInicio."', '".$fechaFin."')) 
+			datediff(dd, '".$fechaInicio."', '".$fechaFin."') - (datediff(wk, '".$fechaInicio."', '".$fechaFin."'))
 			-((DATEDIFF(day,'".$fechaInicio."', '".$fechaFin."')-DATEPART(dw,'".$fechaFin."')+7)/7)*0.5 DIAS_TRANSCURRIDOS,
 			T1.IDCatRuta,T4.Descripcion,
 			t2.liquidado as Liquidado,
 			t3.MES
 			FROM [dbo].[Liquidacion] t0
-			
+
 			inner join [dbo].[Usuarios] t1 on t0.IdRuta=t1.IdRuta
 			inner join periodos t2 on t2.IdPeriodo= t0.IdPeriodo
 			inner join Cuotas t3 on t1.IdRuta = t3.idruta
 			inner join CategoriasRutas t4 on T1.IDCatRuta = t4.ID
-			WHERE t2.liquidado='Y' AND  
-			CAST (t2.FechaInicio AS date)>= '".$fechaInicio."' and 
+			WHERE t2.liquidado='Y' AND
+			CAST (t2.FechaInicio AS date)>= '".$fechaInicio."' and
 			CAST(t2.FechaInicio AS date)<= '".$fechaFin."'  and t1.ESTADO ='1'
 			GROUP BY  t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL,T3.DIAS_EFECTIVOS,T3.MES,T3.ANIO,t2.liquidado,T1.IDCatRuta, T4.Descripcion,t3.MES
-			) 
+			)
 			SELECT IdRuta,Descripcion,Nombre,Apellidos,CUOTAMENSUAL,cast (LIBRAS_VENDIDAS as decimal (18,2)) as LIBRAS_VENDIDAS,
 			cast((CUOTAMENSUAL/DIAS_EFECTIVOS)*DIAS_TRANSCURRIDOS as decimal(18,2)) AS CUOTA_A_LLEVAR,
 			cast(LIBRAS_VENDIDAS-(CUOTAMENSUAL/DIAS_EFECTIVOS)*DIAS_TRANSCURRIDOS as decimal (18,2)) AS GAP_LIBRAS,
@@ -294,7 +294,7 @@ class Cuotas_model extends CI_Model
 			CASE  WHEN DATEPART(dw,T0.FECHA) = 5 THEN  (T1.CANTIDAD*T1.GRAMOS)/454 ELSE 0 END AS 'JUEVES',
 			CASE  WHEN DATEPART(dw,T0.FECHA) = 6 THEN  (T1.CANTIDAD*T1.GRAMOS)/454 ELSE 0 END AS 'VIERNES',
 			CASE  WHEN DATEPART(dw,T0.FECHA) = 7 THEN  (T1.CANTIDAD*T1.GRAMOS)/454 ELSE 0 END AS 'SABADO'
-			FROM Facturas T0 
+			FROM Facturas T0
 			INNER JOIN Facturas_Detalles T1 ON T1.IDENCABEZADO = T0.IDENCABEZADO
 			WHERE T0.ESTADOAPP <>4 AND CAST(T0.FECHA AS DATE) >= '".$fecha1."' AND CAST(T0.FECHA AS DATE) <= '".$fecha2."'
 			AND T0.CODVENDEDOR = ".$codvendedor."
@@ -308,7 +308,7 @@ class Cuotas_model extends CI_Model
 		if($query->num_rows() > 0){
 			echo json_encode($query->result_array());
 			return;
-			
+
 		 }
          echo 0; return;
 	}

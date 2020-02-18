@@ -102,14 +102,14 @@ else {
                         sumatoria += 0;
                         articulo = myArr[i];
                     }else{
-                        lbsremision = Number($(".librasRem"+index).eq(0).html());
+                        lbsremision = Number.parseFloat($(".librasRem"+index).eq(0).html());
                         sumatoria += lbsremision;
                         articulo = myArr[i];
                     }
                 }else{
                     articulo = myArr[i];
                     bandera = true;
-                    lbsremision = Number($(".librasRem"+index).eq(0).html());
+                    lbsremision = Number.parseFloat($(".librasRem"+index).eq(0).html());
                     sumatoria += lbsremision;
                 }
             });
@@ -119,9 +119,9 @@ else {
                 suma += ref1;
             });
             $("#librasSuma").html(Number(suma).toFixed(2));
-            $("#sumaLbsRem").html(sumatoria.toFixed(2));
+            $("#sumaLbsRem").html(Number(sumatoria).toFixed(2));
             let totalCargaPaseante = (Number(suma).toFixed(2)/sumatoria.toFixed(2))*100;
-            $("#CargaPaseanteSuma").html(totalCargaPaseante.toFixed(2)+"%");
+            $("#CargaPaseanteSuma").html(Number(totalCargaPaseante).toFixed(2)+"%");
 
 						guardarTotalesLiq();
         });

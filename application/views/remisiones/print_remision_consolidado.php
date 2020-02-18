@@ -215,7 +215,7 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 
 								$codigos .= $key["IdRemision"].",";
 								$salto++;
-								if ($salto ==10) {
+								if ($salto ==12) {
 									$codigos .="<br>";
 									$salto = 0;
 								}

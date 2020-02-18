@@ -49,4 +49,3 @@ $db['dbintegracion'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
-

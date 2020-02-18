@@ -477,7 +477,13 @@ class Liquidacion_model extends CI_Model
 	}
 
 	public function preliquidacionXUnidad($idperiodo){
+		$array = array(); $i = 0;
 		/*pinky code*/
+
+		$periodo = $this->db->query("SELECT IdPeriodo, CAST(FechaInicio AS DATE)FECHAINICIO,
+		CAST(FechaFinal AS DATE)FECHAFINAL, IdRuta
+		FROM Periodos WHERE IdPeriodo =".$idperiodo."");
+
 		$query = $this->db->query("SELECT IDPERIODO,CODIGO,DESCRIPCION,REMISION, GRAMOS,SUM(UNIDTOTAL) UNIDADES,SUM(LIBRAS) LIBRAS,
 									SUM(TOTALCREDITO)+SUM(TOTALCONTADO) AS TOTAL,
 									 ROUND(REMISION - SUM(UNIDTOTAL), 2) DEVOLUCION FROM
@@ -487,7 +493,18 @@ class Liquidacion_model extends CI_Model
 									ORDER BY CODIGO");
 
 		if($query->num_rows() > 0){
-			return $query->result_array();
+			foreach ($query->result_array() as $key) {
+					$array[$i]["CODIGO"] = $key["CODIGO"];
+					$array[$i]["DESCRIPCION"] = $key["DESCRIPCION"];
+					$array[$i]["GRAMOS"] = $key["GRAMOS"];
+					$array[$i]["REMISION"] = $this->Hana_model->getremisionSAP($periodo->result_array()[0]["FECHAINICIO"],$periodo->result_array()[0]["FECHAFINAL"],$periodo->result_array()[0]["IdRuta"],$key["CODIGO"]);
+					$array[$i]["UNIDADES"] = $key["UNIDADES"];
+					$array[$i]["DEVOLUCION"] = $key["DEVOLUCION"];
+					$array[$i]["LIBRAS"] = $key["LIBRAS"];
+					$array[$i]["TOTAL"] = $key["TOTAL"];
+					$i++;
+			}
+			return $array;
 		}
 		return 0;
 	}

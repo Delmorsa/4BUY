@@ -9,9 +9,9 @@ class Hana_model extends CI_Model
     }
 
     public $BD = 'SBO_DELMOR';
-    
 
-    public  function OPen_database_odbcSAp(){//CONEXION A HANA DELMOR      
+
+    public  function OPen_database_odbcSAp(){//CONEXION A HANA DELMOR
          $conn = @odbc_connect("HANAPHP","DELMOR","CazeheKuS2th", SQL_CUR_USE_ODBC);
          if(!$conn){
             echo '<div class="row errorConexion white-text center">
@@ -19,7 +19,7 @@ class Hana_model extends CI_Model
                 </div>';
          } else {
            return $conn;
-         }        
+         }
     }
 
 
@@ -31,57 +31,57 @@ class Hana_model extends CI_Model
                       ->where("IdSupervisor", $this->session->userdata('id'))
                       ->get("cm_Rutas_Asignadas");
 
-             for ($i=0; $i < count($rutas->result_array()); $i++) { 
+             for ($i=0; $i < count($rutas->result_array()); $i++) {
                 $array[] = $rutas->result_array()[$i]["IdRuta"];
-             } 
+             }
 
              $result = 'and "SlpCode" in ('."'".implode("','",$array)."'".')';
             }
 
         $conn = $this->OPen_database_odbcSAp();
-        
+
         if (isset($rutas)) {
             if ($rutas->num_rows() > 0) {
-                $query = 'SELECT "SlpCode","SlpName" FROM '.$this->BD.'.OSLP'.' 
+                $query = 'SELECT "SlpCode","SlpName" FROM '.$this->BD.'.OSLP'.'
                 WHERE "SlpName" LIKE '."'%Vendedor RUTA%'".'
                 '.$result.'
                 ORDER BY "SlpCode" ASC';
             }
         }else{
-            $query = 'SELECT "SlpCode","SlpName" FROM '.$this->BD.'.OSLP'.' 
+            $query = 'SELECT "SlpCode","SlpName" FROM '.$this->BD.'.OSLP'.'
                 WHERE "SlpName" LIKE '."'%Vendedor RUTA%'".'
                 ORDER BY "SlpCode" ASC';
         }
-        
+
         $resultado =  @odbc_exec($conn,$query);
-        $json = array();  
-        $i=0;      
+        $json = array();
+        $i=0;
 
         while ($fila = @odbc_fetch_array($resultado)){
-            $json[$i]["IdRuta"] = $fila["SlpCode"];  
-            $json[$i]["Ruta"] = $fila["SlpName"];          
+            $json[$i]["IdRuta"] = $fila["SlpCode"];
+            $json[$i]["Ruta"] = $fila["SlpName"];
             $i++;
         }
          return $json;
-    }    
+    }
 
     //MOSTRAR CLIENTES DESDE SB1
     public function getClientes($search){
        $conn = $this->OPen_database_odbcSAp();
-       $query = ' SELECT "CardCode","CardName" 
+       $query = ' SELECT "CardCode","CardName"
                   FROM '.$this->BD.'.OCRD
-                  WHERE "CardName" LIKE '."'%".$search."%'".' 
-                  LIMIT 10'; 
+                  WHERE "CardName" LIKE '."'%".$search."%'".'
+                  LIMIT 10';
        $resultado = @odbc_exec($conn,$query);
        $json = array();
        $i = 0;
        while ($fila = @odbc_fetch_array($resultado)) {
             $json[$i]["Codigo"] = $fila["CardCode"];
-            $json[$i]["Nombre"] = utf8_encode($fila["CardName"]);                     
+            $json[$i]["Nombre"] = utf8_encode($fila["CardName"]);
             $i++;
-        }        
-        echo json_encode($json);  
-        echo @odbc_errormsg($conn);        
+        }
+        echo json_encode($json);
+        echo @odbc_errormsg($conn);
     }
 
     //Cargar Inventario desde SB1 cuyo stock sea mayor a 0
@@ -91,10 +91,10 @@ class Hana_model extends CI_Model
         if ($search) {
             $srch = 'and ( T0."ItemCode" LIKE '."'%".$search."%'".' OR
                            T1."ItemName" LIKE '."'%".$search."%'".' OR
-                           T1."SalUnitMsr" LIKE '."'%".$search."%'".' OR     
-                           T0."WhsCode" LIKE '."'%".$search."%'".' OR     
-                           T2."WhsName" LIKE '."'%".$search."%'".' OR     
-                           T0."OnHand" LIKE '."'%".$search."%'".'                
+                           T1."SalUnitMsr" LIKE '."'%".$search."%'".' OR
+                           T0."WhsCode" LIKE '."'%".$search."%'".' OR
+                           T2."WhsName" LIKE '."'%".$search."%'".' OR
+                           T0."OnHand" LIKE '."'%".$search."%'".'
                         )';
         }
 
@@ -154,10 +154,10 @@ class Hana_model extends CI_Model
         if ($search) {
             $srch = 'and ( T0."ItemCode" LIKE '."'%".$search."%'".' OR
                            T1."ItemName" LIKE '."'%".$search."%'".' OR
-                           T1."SalUnitMsr" LIKE '."'%".$search."%'".' OR     
-                           T0."WhsCode" LIKE '."'%".$search."%'".' OR     
-                           T2."WhsName" LIKE '."'%".$search."%'".' OR     
-                           T0."OnHand" LIKE '."'%".$search."%'".'                
+                           T1."SalUnitMsr" LIKE '."'%".$search."%'".' OR
+                           T0."WhsCode" LIKE '."'%".$search."%'".' OR
+                           T2."WhsName" LIKE '."'%".$search."%'".' OR
+                           T0."OnHand" LIKE '."'%".$search."%'".'
                         )';
         }
 
@@ -212,9 +212,9 @@ class Hana_model extends CI_Model
            "numDataTotal" => $arrayqnr[0]
         );
 
-        return $retorno;   
+        return $retorno;
         echo odbc_errormsg ($conn);
-    } 
+    }
 
     //Cargar Inventario por rutas desde SB1
     public function inventarioRutas($start,$length,$search){
@@ -228,23 +228,23 @@ class Hana_model extends CI_Model
                 $rutas = $this->db->select("IdRuta")
                       ->get("Usuarios");
             }
-            
-             for ($i=0; $i < count($rutas->result_array()); $i++) { 
+
+             for ($i=0; $i < count($rutas->result_array()); $i++) {
                 $array[] = $rutas->result_array()[$i]["IdRuta"];
-             }          
+             }
 
         $conn = $this->OPen_database_odbcSAp();
-            if ($rutas->num_rows() > 0) {    
-               $srch = '';     
+            if ($rutas->num_rows() > 0) {
+               $srch = '';
                if ($search) {
                 $srch = 'and ( T0."ItemCode" LIKE '."'%".$search."%'".' OR
                            T1."ItemName" LIKE '."'%".$search."%'".' OR
-                           T1."SalUnitMsr" LIKE '."'%".$search."%'".' OR     
-                           T0."WhsCode" LIKE '."'%".$search."%'".' OR     
-                           T2."WhsName" LIKE '."'%".$search."%'".' OR     
+                           T1."SalUnitMsr" LIKE '."'%".$search."%'".' OR
+                           T0."WhsCode" LIKE '."'%".$search."%'".' OR
+                           T2."WhsName" LIKE '."'%".$search."%'".' OR
                            T0."OnHand" LIKE '."'%".$search."%'".' OR
                            T3."SlpCode" LIKE '."'%".$search."%'".' OR
-                           T3."SlpName" LIKE '."'%".$search."%'".'               
+                           T3."SlpName" LIKE '."'%".$search."%'".'
                         )';
                 }
 
@@ -253,7 +253,7 @@ class Hana_model extends CI_Model
                     INNER JOIN '.$this->BD.'.OITM T1 on T0."ItemCode" = T1."ItemCode"
                     INNER JOIN '.$this->BD.'.OWHS T2 on T0."WhsCode" = T2."WhsCode"
                     INNER JOIN '.$this->BD.'.VIEW_BODEGAS_VENDEDORES T3 on T0."WhsCode" = T3."WhsCode"
-                    WHERE T0."OnHand" <> '.'0'.' and T1."ItmsGrpCod" = '.'101'.'  
+                    WHERE T0."OnHand" <> '.'0'.' and T1."ItmsGrpCod" = '.'101'.'
                     and T3."SlpCode" in ('."'".implode("','",$array)."'".') '.$srch;
 
 
@@ -263,7 +263,7 @@ class Hana_model extends CI_Model
                     INNER JOIN '.$this->BD.'.OITM T1 on T0."ItemCode" = T1."ItemCode"
                     INNER JOIN '.$this->BD.'.OWHS T2 on T0."WhsCode" = T2."WhsCode"
                     INNER JOIN '.$this->BD.'.VIEW_BODEGAS_VENDEDORES T3 on T0."WhsCode" = T3."WhsCode"
-                    WHERE T0."OnHand" <> '.'0'.' and T1."ItmsGrpCod" = '.'101'.' 
+                    WHERE T0."OnHand" <> '.'0'.' and T1."ItmsGrpCod" = '.'101'.'
                     and T3."SlpCode" in ('."'".implode("','",$array)."'".')
                     '.$srch.'
                     ORDER BY T0."ItemCode" ASC ';
@@ -273,14 +273,14 @@ class Hana_model extends CI_Model
                     INNER JOIN '.$this->BD.'.OITM T1 on T0."ItemCode" = T1."ItemCode"
                     INNER JOIN '.$this->BD.'.OWHS T2 on T0."WhsCode" = T2."WhsCode"
                     INNER JOIN '.$this->BD.'.VIEW_BODEGAS_VENDEDORES T3 on T0."WhsCode" = T3."WhsCode"
-                    WHERE T0."OnHand" <> '.'0'.' and T1."ItmsGrpCod" = '.'101'.' 
+                    WHERE T0."OnHand" <> '.'0'.' and T1."ItmsGrpCod" = '.'101'.'
                     and T3."SlpCode" in ('."'".implode("','",$array)."'".')
                     '.$srch.'
                     ORDER BY T0."ItemCode" ASC
                     LIMIT '.$length.' OFFSET '.$start.' ';
 				}
             }
-        
+
         $resultadoqnr = @odbc_exec($conn,$qnr);
         $jsonqnr = array();
         $iqnr = 0;
@@ -306,7 +306,7 @@ class Hana_model extends CI_Model
         $retorno = array(
             "datos" => $json,
             "numDataTotal" => $jsonqnr[0]
-        ); 
+        );
 
         return $retorno;
      }
@@ -324,31 +324,31 @@ class Hana_model extends CI_Model
                       ->get("Usuarios");
             }
 
-             for ($i=0; $i < count($rutas->result_array()); $i++) { 
+             for ($i=0; $i < count($rutas->result_array()); $i++) {
                 $array[] = $rutas->result_array()[$i]["IdRuta"];
-             }          
+             }
 
         $conn = $this->OPen_database_odbcSAp();
             if ($rutas->num_rows() > 0) {
-               $srch = '';     
+               $srch = '';
                if ($search) {
                 $srch = 'and ( T0."ItemCode" LIKE '."'%".$search."%'".' OR
                            T1."ItemName" LIKE '."'%".$search."%'".' OR
-                           T1."SalUnitMsr" LIKE '."'%".$search."%'".' OR     
-                           T0."WhsCode" LIKE '."'%".$search."%'".' OR     
-                           T2."WhsName" LIKE '."'%".$search."%'".' OR     
+                           T1."SalUnitMsr" LIKE '."'%".$search."%'".' OR
+                           T0."WhsCode" LIKE '."'%".$search."%'".' OR
+                           T2."WhsName" LIKE '."'%".$search."%'".' OR
                            T0."OnHand" LIKE '."'%".$search."%'".' OR
                            T3."SlpCode" LIKE '."'%".$search."%'".' OR
-                           T3."SlpName" LIKE '."'%".$search."%'".'               
+                           T3."SlpName" LIKE '."'%".$search."%'".'
                         )';
-                }    
+                }
 
             $qnr = 'SELECT COUNT(1) "Total"
                     FROM '.$this->BD.'.OITW T0
                     INNER JOIN '.$this->BD.'.OITM T1 on T0."ItemCode" = T1."ItemCode"
                     INNER JOIN '.$this->BD.'.OWHS T2 on T0."WhsCode" = T2."WhsCode"
                     INNER JOIN '.$this->BD.'.VIEW_BODEGAS_VENDEDORES T3 on T0."WhsCode" = T3."WhsCode"
-                    WHERE T1."ItmsGrpCod" = '.'101'.' 
+                    WHERE T1."ItmsGrpCod" = '.'101'.'
                     and T3."SlpCode" in ('."'".implode("','",$array)."'".')
                     and T1."ItemName" not like '."'%CODIGO VACIO%'".'
                     and T0."ItemCode" between '."'1101'".' and '."'88999'".' '.$srch;
@@ -359,7 +359,7 @@ class Hana_model extends CI_Model
                     INNER JOIN '.$this->BD.'.OITM T1 on T0."ItemCode" = T1."ItemCode"
                     INNER JOIN '.$this->BD.'.OWHS T2 on T0."WhsCode" = T2."WhsCode"
                     INNER JOIN '.$this->BD.'.VIEW_BODEGAS_VENDEDORES T3 on T0."WhsCode" = T3."WhsCode"
-                    WHERE T1."ItmsGrpCod" = '.'101'.' 
+                    WHERE T1."ItmsGrpCod" = '.'101'.'
                     and T3."SlpCode" in ('."'".implode("','",$array)."'".')
                     and T1."ItemName" not like '."'%CODIGO VACIO%'".'
                     and T0."ItemCode" between '."'1101'".' and '."'88999'".'
@@ -371,7 +371,7 @@ class Hana_model extends CI_Model
                     INNER JOIN '.$this->BD.'.OITM T1 on T0."ItemCode" = T1."ItemCode"
                     INNER JOIN '.$this->BD.'.OWHS T2 on T0."WhsCode" = T2."WhsCode"
                     INNER JOIN '.$this->BD.'.VIEW_BODEGAS_VENDEDORES T3 on T0."WhsCode" = T3."WhsCode"
-                    WHERE T1."ItmsGrpCod" = '.'101'.' 
+                    WHERE T1."ItmsGrpCod" = '.'101'.'
                     and T3."SlpCode" in ('."'".implode("','",$array)."'".')
                     and T1."ItemName" not like '."'%CODIGO VACIO%'".'
                     and T0."ItemCode" between '."'1101'".' and '."'88999'".'
@@ -402,7 +402,7 @@ class Hana_model extends CI_Model
             $json[$i]["SlpName"] = $fila["SlpName"];
             $i++;
         }
-        
+
         $retorno = array(
             "datos" => $json,
             "numDataTotal" => $jsonqnr[0]
@@ -425,7 +425,7 @@ class Hana_model extends CI_Model
                         OR "ItemCode" LIKE '."'%".$search."%'".'';
 		}
         $conn = $this->OPen_database_odbcSAp();
-                    $query = 'SELECT DISTINCT "ItemCode","ItemName","SWeight1" 
+                    $query = 'SELECT DISTINCT "ItemCode","ItemName","SWeight1"
                         FROM '.$this->BD.'."VIEW_BODEGAS_EXISTENCIAS"
                         '.$qfilter.'
                         ORDER BY "ItemCode" ASC
@@ -451,7 +451,7 @@ class Hana_model extends CI_Model
                         OR "ItemCode" LIKE '."'%".$search."%'".')';
 		}
         $conn = $this->OPen_database_odbcSAp();
-                    $query = 'SELECT DISTINCT "ItemCode","ItemName","SWeight1" 
+                    $query = 'SELECT DISTINCT "ItemCode","ItemName","SWeight1"
                         FROM '.$this->BD.'."VIEW_BODEGAS_EXISTENCIAS"
                         WHERE "MERMA" = '."'Y'".' AND "WhsCode" = '."'01'".'
                         '.$qfilter.'
@@ -490,6 +490,41 @@ class Hana_model extends CI_Model
         @odbc_close($conn);
 		//echo json_encode(@odbc_error($conn));
 	}
+
+	public function getStockSistemaSAP($idperiodo)	{
+		    //articulos y su existencia
+		 $conn = $this->OPen_database_odbcSAp();
+		 //$query = 'SELECT * from '.$this->BD.'.APP_ARTICULOS_EXISTENCIA WHERE CODVENDEDOR = '."'".$codVendedor."'".' AND "EXISTENCIA">0';
+
+		 $periodo = $this->db->query("SELECT IdPeriodo, CAST(FechaInicio AS DATE)FECHAINICIO,
+		 CAST(FechaFinal AS DATE)FECHAFINAL, IdRuta
+		 FROM Periodos WHERE IdPeriodo =".$idperiodo."");
+		 //echo "SELECT IdPeriodo, CAST(FechaInicio AS DATE)FECHAINICIO,CAST(FechaFinal AS DATE)FECHAFINAL FROM Periodos WHERE Activo = 'Y' AND Liquidado = 'N' AND IdRuta =".$codVendedor."";
+		 if ($periodo->num_rows() == 0) {
+				 return 0;
+		 }
+
+		 $query = 'CALL '.$this->BD.'.SP_APP_EXISTENCIA_ARTICULOS('."'".$periodo->result_array()[0]["FECHAINICIO"]."'".','."'".$periodo->result_array()[0]["FECHAFINAL"]."'".','.$periodo->result_array()[0]["IdRuta"].')';
+		 //echo $query;
+		 $resultado = @odbc_exec($conn,$query);
+		 $json = array();
+		 $i=0;
+
+		 if (@odbc_num_rows($resultado)==0) {
+				 $json['results'][$i]["mCod"] = "NO RESULTADOS";
+				 echo json_encode($json);
+				 return;
+		 }
+
+		 while ($fila = @odbc_fetch_array($resultado)){
+				 if ($fila['EXISTENCIA'] > 0) {
+						// $json['results'][$i]["mExistencia"] = number_format($fila['EXISTENCIA']-$this->stock4Buy($fila['CODIGO'],$codVendedor),2);
+						 //$json['results'][$i]["mExistenciaOriginal"] = number_format($fila['EXISTENCIA'],2);
+						 return  number_format($fila['EXISTENCIA'],2);
+				 }
+		 }
+		 //echo json_encode($json);
+ }
 
 	public function anularFactura($refFactura, $comentario){
 		/*Variables*/
@@ -607,7 +642,7 @@ class Hana_model extends CI_Model
 					INNER JOIN '.$this->BD.'.OUSR T1 ON T0."UserSign" = T1."USERID"
 					LEFT JOIN '.$this->BD.'.OWHS T2 ON T2."WhsCode" = t0."ToWhsCode"
 					LEFT JOIN '.$this->BD.'.OWHS T3 ON T3."WhsCode" = t0."Filler"
-					WHERE CAST(t0."DocDate" as DATE) >= '."'".$fecha1."'".' and 
+					WHERE CAST(t0."DocDate" as DATE) >= '."'".$fecha1."'".' and
 					CAST(t0."DocDate" as DATE) <= '."'".$fecha2."'".' ';
 
 		$resultado =  @odbc_exec($conn,$query);
@@ -667,15 +702,15 @@ class Hana_model extends CI_Model
     $json = array();
     $i=0;
 
-    $query = 'SELECT "CODIGO","DESCRIPCION","UM","GRAMOS",SUM("EXISTENCIA")- 
+    $query = 'SELECT "CODIGO","DESCRIPCION","UM","GRAMOS",SUM("EXISTENCIA")-
                (
                 SELECT IFNULL(SUM("Quantity"),0) FROM '.$this->BD.'.OWTR TI0 INNER JOIN '.$this->BD.'.WTR1 TI1 ON TI0."DocEntry" = TI1."DocEntry"
-                WHERE TI0."Filler" = T0."BODEGADESTINO" AND TI1."ItemCode" = T0."CODIGO" 
+                WHERE TI0."Filler" = T0."BODEGADESTINO" AND TI1."ItemCode" = T0."CODIGO"
                 AND CAST(TI0."DocDate" AS DATE) >= '."'".$fecha1."'".' AND CAST(TI0."DocDate" AS DATE) <= '."'".$fecha2."'".') "EXISTENCIA"
           FROM '.$this->BD.'.VIEW_ARTICULOS_EXISTENCIA T0
           WHERE T0."CODIGO" BETWEEN '."'1101'".' AND '."'88999'".'
           AND CAST(T0."CODVENDEDOR" AS CHAR) = '."'".$idRuta."'".'
-          AND CAST(T0."FECHA" AS DATE) >= CAST('."'".$fecha1."'".' AS DATE) AND CAST(T0."FECHA" AS DATE) <= CAST('."'".$fecha2."'".'AS DATE) 
+          AND CAST(T0."FECHA" AS DATE) >= CAST('."'".$fecha1."'".' AS DATE) AND CAST(T0."FECHA" AS DATE) <= CAST('."'".$fecha2."'".'AS DATE)
           AND T0."CODIGO" NOT IN('.$notin.')
           GROUP BY "CODIGO","DESCRIPCION","UM","GRAMOS","BODEGADESTINO"';
       //echo $query;
@@ -686,25 +721,25 @@ class Hana_model extends CI_Model
         $json[$i]["DESCRIPCION"] = utf8_encode($fila["DESCRIPCION"]);
         $json[$i]["UM"] = $fila["UM"];
         $json[$i]["GRAMOS"] = utf8_encode($fila["GRAMOS"]);
-        $json[$i]["EXISTENCIA"] = number_format($fila["EXISTENCIA"],2);        
+        $json[$i]["EXISTENCIA"] = number_format($fila["EXISTENCIA"],2);
         $i++;
       }
       //echo json_encode($json);
-      
+
       return $json;
       echo odbc_errormsg($conn);
   }
   public function getremisionSAP($fechainicio,$fechafinal,$idruta,$codArticulo){
     $conn = $this->OPen_database_odbcSAp();
      $query = 'CALL '.$this->BD.'.SP_APP_EXISTENCIA_POR_ARTICULO('."'".$fechainicio."'".','."'".$fechafinal."'".','.$idruta.','.$codArticulo.')';
-    
+
     $resultado = @odbc_exec($conn,$query);
     //echo @odbc_num_rows($resultado);
-    if (@odbc_num_rows($resultado)==0) {            
+    if (@odbc_num_rows($resultado)==0) {
             return 0;
     }
          while ($fila = @odbc_fetch_array($resultado)){
-            if ($fila['EXISTENCIA'] > 0) { 
+            if ($fila['EXISTENCIA'] > 0) {
                 return str_replace(",", "", $fila['EXISTENCIA']);
             }
         }

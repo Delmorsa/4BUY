@@ -28,9 +28,9 @@
 					      	else{
 					      		foreach ($liq as $key)
 								{
-									echo "				
+									echo "
 									   <p class='text-dark text-semibold'>
-									     Desde : ".date_format(new DateTime($key["FechaInicio"]),"Y-m-d H:i:s")." 
+									     Desde : ".date_format(new DateTime($key["FechaInicio"]),"Y-m-d H:i:s")."
 									   </p>
 									   <p class='text-dark text-semibold'>
 									     Hasta: ".date_format(new DateTime($key["FechaFinal"]), "Y-m-d H:i:s")."
@@ -242,7 +242,7 @@
 										<td>".$item["GRAMOS"]."</td>
 										<td>".number_format($item["PRECIO"],2)."</td>
 								        <td>".number_format(str_replace(",","",$item["REMISION"]),2)."</td>
-								        <td class='text-dark'>".number_format($devolucion,2)."</td> 
+								        <td class='text-dark'>".number_format($devolucion,2)."</td>
 								        <td>".number_format($item["UVENCREDITO"],2)."</td>
 										<td>".number_format($item["UVENCONTADO"],2)."</td>
 										<td>".number_format($item["UNIDTOTAL"],2)."</td>
@@ -258,10 +258,10 @@
 										<td>".number_format($item["TOTALCREDITO"],2)."</td>
 										<td>".number_format($item["LIBRAS"],2)."</td>
 										<td class='text-danger text-bold'>0</td>
-							      </tr> 
+							      </tr>
 							   ";
 										$i++;
-									}	
+									}
 								}
 								?>
 								</tbody>
@@ -340,14 +340,14 @@
 										foreach ($unidades as $key) {
 											echo "
 												<tr>
-													<td style='width: 10px'>".$key["CODIGO"]."</td>	
-													<td>".$key["DESCRIPCION"]."</td>	
+													<td style='width: 10px'>".$key["CODIGO"]."</td>
+													<td>".$key["DESCRIPCION"]."</td>
 													<td>".number_format($key["GRAMOS"],2)."</td>
 													<td>".number_format($key["REMISION"],2)."</td>	
-													<td>".number_format($key["UNIDADES"],2)."</td>	
-													<td>".number_format($key["DEVOLUCION"],2)."</td>	
-													<td>".number_format($key["LIBRAS"],2)."</td>	
-													<td>".number_format($key["TOTAL"],2)."</td>	
+													<td>".number_format($key["UNIDADES"],2)."</td>
+													<td>".number_format($key["DEVOLUCION"],2)."</td>
+													<td>".number_format($key["LIBRAS"],2)."</td>
+													<td>".number_format($key["TOTAL"],2)."</td>
 													<td class='text-danger text-bold'>0</td>
 												</tr>
 											";
@@ -468,5 +468,3 @@
 		</div>
 	</div>
 </div>
-
-

@@ -58,8 +58,9 @@ class Facturas_controller extends CI_Controller {
 		$fecha1 = $this->input->get_post('fecha1');
 		$fecha2 = $this->input->get_post('fecha2');
 		$ruta = $this->input->get_post('ruta');
+		$tipo = $this->input->get_post('tipo');
 
-		$result = $this->Facturas_model->mostrarFacturas($start,$length,$search,$fecha1, $fecha2, $ruta);
+		$result = $this->Facturas_model->mostrarFacturas($start,$length,$search,$fecha1, $fecha2, $ruta, $tipo);
 		$resultado = $result["datos"];
 		$totalDatos = $result["numDataTotal"];
 
@@ -106,7 +107,7 @@ class Facturas_controller extends CI_Controller {
             $array["ISC"] = number_format($key["ISC"],2);
             $array["IVA"] = number_format($key["IVA"],2);
 			$array["TOTAL"] = number_format($key["TOTAL"],2);
-			$array["Detalles"] = "<a id='Fact".$key["IDENCABEZADO"]."' href='DetalleFacturas/".$key["IDENCABEZADO"]."' style='text-align:center !important;' 
+			$array["Detalles"] = "<a id='Fact".$key["IDENCABEZADO"]."' href='DetalleFacturas/".$key["IDENCABEZADO"]."' style='text-align:center !important;'
 			class='btn btn-sm btn-link btn-block center'><i class='fa fa-expand left'></i></a>";
 			$datos[] = $array;
 		}

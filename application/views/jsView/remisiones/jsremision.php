@@ -22,7 +22,7 @@ $(document).ready(function(){
 		allowClear: true
 	});
 
-});	
+});
 
 $("#fileUpload").change(function(e){
 	let table = $("#tblRemisiones").DataTable();
@@ -32,11 +32,11 @@ $("#fileUpload").change(function(e){
 	reader.readAsArrayBuffer(e.target.files[0]);
 	reader.onload = function(e){
 		let data = new Uint8Array(reader.result);
-		let wb = XLSX.read(data, {type:'array'});	
+		let wb = XLSX.read(data, {type:'array'});
 		let htmlstr = "<td>"+XLSX.write(wb,{sheet:"", type:'binary',bookType:'html'})+"</td>";
 		$("#wrapper table tbody")[0].innerHTML += htmlstr;
-		
-		let cuerpo = $("#wrapper>table>tbody>tr>td>table>tbody").html();	
+
+		let cuerpo = $("#wrapper>table>tbody>tr>td>table>tbody").html();
 		$("#wrapper").html("");
 		$("#wrapper").append('<table id="tblRemisiones" class="display table table-condensed table-bordered table-responsive table-striped mb-none table-sm"" style="width:100%">' +
                 ' <thead>' +
@@ -44,9 +44,9 @@ $("#fileUpload").change(function(e){
                 '  <th>Codigo</th>' +
                 '  <th>Descripción</th>' +
                 '  <th>GR</th>' +
-				'  <th>Cantidad</th>' +
-				'  <th>Cantidad LBS</th>' +
-				'  <th>Precio</th>' +
+								'  <th>Cantidad</th>' +
+								'  <th>Cantidad LBS</th>' +
+								'  <th>Precio</th>' +
                 ' </tr>' +
                 '</thead>' +
                 ' <tbody>'+cuerpo+
@@ -102,12 +102,12 @@ $("#fileUpload").change(function(e){
 							$.each(obj, function(i,inde){
 								let oTable = $('#tblRemisiones').dataTable();
 								let gr = (data[3] * inde["GRAMOS"])/454;
-								let gramos = inde["GRAMOS"];	
-								let cantidad = gr.toFixed(2);	
+								let gramos = inde["GRAMOS"];
+								let cantidad = gr.toFixed(2);
 								oTable.fnUpdate( [data[0],data[1], parseFloat(gramos).toFixed(0), data[3], cantidad, data[5]],index );
 								console.log(gr);
-						 });	
-					});	
+						 });
+					});
 			  	});
 			 }
 		});
@@ -119,9 +119,9 @@ $("#fileUpload").change(function(e){
                 '                <th>Codigo</th>' +
                 '                <th>Descripción</th>' +
                 '                <th>GR</th>' +
-				'                <th>Cantidad</th>' +
-				'                <th>Cantidad LBS</th>' +
-				'                <th>Precio</th>' +
+								'                <th>Cantidad</th>' +
+								'                <th>Cantidad LBS</th>' +
+								'                <th>Precio</th>' +
                 '            </tr>' +
                 '        </thead>' +
                 '        <tbody>'+
@@ -289,7 +289,7 @@ $("#btnAgregar").click(function(){
 			         oTable.fnUpdate( [codigo,texto, parseFloat(peso).toFixed(0), suma, sumalbs.toFixed(2), precio],index ); // Row
 					/*$("#tblRemisiones tbody tr").find("td:eq(3)").eq(i).html(suma);
 					$("#tblRemisiones tbody tr").find("td:eq(4)").eq(i).html(sumalbs.toFixed(4));*/
-					Sumar();		
+					Sumar();
 					//$("#SumCant").text(suma.toFixed(2));
 	                //$("#SumLbs").text(sumalbs.toFixed(2));
 

@@ -40,6 +40,14 @@ class Liquidacion_controller extends CI_Controller {
 	public function Liquidacion($idperiodo){
 		$permiso = $this->Autorizaciones_model->validarPermiso($this->session->userdata("id"), "1027");
 		if($permiso){
+			$this->Login_model->insertLog(
+					 $this->session->userdata('id'),
+					 "Liquidacion",
+					 "El usuario ".$this->session->userdata("User")." ingreso al modulo liquidar ruta",
+					 "Hora:".date("Y-m-d H:i:s"),
+					 "codigo de periodo ".$idperiodo,
+						1
+			);
 			$var = $this->Liquidacion_model->Liquidacion($idperiodo);
 			$unid = $this->Liquidacion_model->preliquidacionXUnidad($idperiodo);
 			$liq = $var["periodos"];

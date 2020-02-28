@@ -4,10 +4,15 @@ $(document).ready(function(){
 		allowClear: true,
 		placeholder: '--- Ruta---'
 	});
+
+	$("#searchSelect_regexTipo").select2({
+		allowClear: true,
+		placeholder: '--- Tipo Factura ---'
+	});
 	cargarFacturas();
-	setInterval(function () {
+/*	setInterval(function () {
 		cargarFacturas();
-	},120000);
+	},120000);*/
 });
 
 $("#btnActualizarFacturas").click(function () {
@@ -32,6 +37,7 @@ function cargarFacturas(){
 				d.fecha1 = $("#fechaFac1").val();
 				d.fecha2 = $("#fechaFac2").val();
 				d.ruta = $("#searchSelect_regex option:selected").val();
+				d.tipo = $("#searchSelect_regexTipo option:selected").val();
 				// d.custom = $('#myInput').val();
 				// etc
 			}

@@ -499,7 +499,7 @@ class Liquidacion_model extends CI_Model
 					$array[$i]["GRAMOS"] = $key["GRAMOS"];
 					$array[$i]["REMISION"] = $this->Hana_model->getremisionSAP($periodo->result_array()[0]["FECHAINICIO"],$periodo->result_array()[0]["FECHAFINAL"],$periodo->result_array()[0]["IdRuta"],$key["CODIGO"]);
 					$array[$i]["UNIDADES"] = $key["UNIDADES"];
-					$array[$i]["DEVOLUCION"] = $key["DEVOLUCION"];
+					$array[$i]["DEVOLUCION"] = $array[$i]["REMISION"] - $key["UNIDADES"];//$key["DEVOLUCION"];
 					$array[$i]["LIBRAS"] = $key["LIBRAS"];
 					$array[$i]["TOTAL"] = $key["TOTAL"];
 					$i++;

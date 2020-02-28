@@ -26,7 +26,7 @@
 										<i class="fa fa-file fileupload-exists"></i>
 										<span class="fileupload-preview"></span>
 									</div>
-									<span class="btn btn-primary btn-file">
+									<span class="btn btn-primary btn-file"> 
 										<span class="fileupload-exists">Cambiar</span>
 										<span class="fileupload-new">Seleccionar archivo</span>
 										<input type="file" id="fileUpload" name="fileSelect">

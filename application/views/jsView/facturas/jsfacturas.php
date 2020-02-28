@@ -37,7 +37,7 @@ function cargarFacturas(){
 				d.fecha1 = $("#fechaFac1").val();
 				d.fecha2 = $("#fechaFac2").val();
 				d.ruta = $("#searchSelect_regex option:selected").val();
-				d.tipo = $("#searchSelect_regexTipo option:selected").val();
+				d.tipo = $("#searchSelect_regexTipo option:selected").val(); 
 				// d.custom = $('#myInput').val();
 				// etc
 			}

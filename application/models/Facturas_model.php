@@ -83,7 +83,7 @@ class Facturas_model extends CI_Model
 		}
 
 		$retornar = array(
-			"numDataTotal" => $qnr,
+			"numDataTotal" => $qnr, 
 			"datos" => $q
 		);
 		return $retornar;

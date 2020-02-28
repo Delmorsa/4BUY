@@ -50,7 +50,7 @@ class Facturas_controller extends CI_Controller {
 	}
 	//endregion
 
-	public function mostrarFacturas(){
+	public function mostrarFacturas(){ 
 		$start = $this->input->get_post('start');
 		$length = $this->input->get_post('length');
 		$search = $this->input->get_post('search')['value'];

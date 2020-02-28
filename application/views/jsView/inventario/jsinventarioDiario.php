@@ -42,7 +42,7 @@
       				"ordering": false,
       				"searching":false,
       				"order": [
-      					[0, "asc"]
+      					[0, "asc"] 
       				],
       				/*"dom": 'T<"clear">lfrtip',
                        "tableTools": {

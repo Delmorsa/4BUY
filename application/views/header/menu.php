@@ -319,6 +319,19 @@
 							</li>
 							<li class="nav-parent">
 								<a>
+									<i class="fa fa-cubes" aria-hidden="true"></i>
+									<span>Inventario</span>
+								</a>
+								<ul class="nav nav-children">
+									<li>
+										<a href="<?php echo base_url("index.php/Inventario")?>">
+											Inventario Diario
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="nav-parent">
+								<a>
 									<i class="fa fa-truck" aria-hidden="true"></i>
 									<span>Ventas</span>
 								</a>

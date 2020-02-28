@@ -37,6 +37,12 @@
 						?>
 					</select>
 
+					<select  name="ruta_regex" id="searchSelect_regexTipo" class="">
+						<option></option>
+						<option value="-1">Contado</option>
+						<option value="3">Credito</option>
+					</select>
+
 					<div class="form-group col-3 col-sm-3 col-md-3 pull-left">
 						<div class="input-group input-group-icon">
 								<span class="input-group-addon">
@@ -113,4 +119,3 @@
 <div class="row">
 
 </div>
-

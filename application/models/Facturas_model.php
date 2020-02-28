@@ -16,8 +16,8 @@ class Facturas_model extends CI_Model
 		$this->load->database();
 	}
 
-	public function mostrarFacturas($start,$length,$search,$fecha1,$fecha2,$ruta){
-		$vendedor= ''; $filter_dates = ""; $filter_rout = "";
+	public function mostrarFacturas($start,$length,$search,$fecha1,$fecha2,$ruta,$tipo){
+		$vendedor= ''; $filter_dates = ""; $filter_rout = ""; $filter_tipo = "";
 		$array = array();
 		$srch = '';
 		if($this->session->userdata("IdRol") == 4){
@@ -43,6 +43,10 @@ class Facturas_model extends CI_Model
 			$filter_rout = "";
 			$filter_rout = "CODVENDEDOR = '".$ruta."' ";
 		}
+
+		if($tipo){
+			$filter_tipo = "and CODCONDPAGO = '".$tipo."' ";
+		}
 		/*******************************PARAMETROS DEL FILTRO************************************************/
 
 		if ($search) {
@@ -58,7 +62,7 @@ class Facturas_model extends CI_Model
       					   DESCUENTO LIKE '."'%".$search."%'".' OR
       					   ISC LIKE '."'%".$search."%'".' OR
       					   IVA LIKE '."'%".$search."%'".' OR
-      					   TOTAL LIKE '."'%".$search."%'".'    
+      					   TOTAL LIKE '."'%".$search."%'".'
                         )';
 		}
 
@@ -70,16 +74,16 @@ class Facturas_model extends CI_Model
 
 		if($length == -1){
 			$q = $this->db->query("select * from cm_encabezado_facturas WHERE  ".$filter_rout."
-			                   ".$filter_dates."  ".$srch."
+			                   ".$filter_dates." ".$filter_tipo."  ".$srch."
 							   order by IDFACTURA DESC");
 		}else{
 			$q = $this->db->query("select * from cm_encabezado_facturas where  ".$filter_rout."
-			                   ".$filter_dates."  ".$srch."
+			                   ".$filter_dates." ".$filter_tipo." ".$srch."
 							   order by IDFACTURA DESC OFFSET ".$start." ROWS FETCH NEXT ".$length." ROWS ONLY;");
 		}
 
 		$retornar = array(
-			"numDataTotal" => $qnr,
+			"numDataTotal" => $qnr, 
 			"datos" => $q
 		);
 		return $retornar;

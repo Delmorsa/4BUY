@@ -54,104 +54,104 @@ else {
 		*/
 	</style>
 	<script type="text/javascript">
-			$(document).ready(function () {
-	            let myArr = new Array(), results = '';
-	            let ref = '', ref1 = '',ref2 = '', remision = 0, dev = 0, cargaPaseante = 0;
-	            let libras = 0, peso = 0, suma = 0, suma2 = 0,totalCargaPas = 0, lbsremision=0;
-	            let sumatoria = 0;
+		$(document).ready(function () {
+            let myArr = new Array(), results = '';
+            let ref = '', ref1 = '',ref2 = '', remision = 0, dev = 0, cargaPaseante = 0;
+            let libras = 0, peso = 0, suma = 0, suma2 = 0,totalCargaPas = 0, lbsremision=0;
+            let sumatoria = 0;
 
-				$("#tblDetFactLiq tbody tr").each(function (index, element) {
-					ref = $(element).find("th").eq(0).html();
-					myArr[index] = ref;
-	            });
-				let articulo;
-	            let bandera = false;
-				$.each(myArr, function (i, index) {
-	                results = myArr.filter(i => i === ''+index+'').length;
-	                if(results > 1){
-	                    //$(".codigo"+index).eq(results-1).addClass("danger");
-	                    remision = $(".rem"+index).eq(results-1).html();
-	                    dev = $(".dev"+index).eq(results-1).html();
-						cargaPaseante = (dev/remision)*100;
-	                    $(".codigo1"+index).eq(results-1).html(Number(cargaPaseante).toFixed(2)+"%");
+			$("#tblDetFactLiq tbody tr").each(function (index, element) {
+				ref = $(element).find("th").eq(0).html();
+				myArr[index] = ref;
+            });
+			let articulo;
+            let bandera = false;
+			$.each(myArr, function (i, index) {
+                results = myArr.filter(i => i === ''+index+'').length;
+                if(results > 1){
+                    //$(".codigo"+index).eq(results-1).addClass("danger");
+                    remision = $(".rem"+index).eq(results-1).html();
+                    dev = $(".dev"+index).eq(results-1).html();
+					cargaPaseante = (dev/remision)*100;
+                    $(".codigo1"+index).eq(results-1).html(Number(cargaPaseante).toFixed(2)+"%");
 
-	                    peso = $(".peso"+index).eq(results-1).html();
-	                    libras = (dev*peso)/454;
-	                    $(".libras"+index).eq(results-1).html(Number(libras).toFixed(2));
-	                    //console.log("el codigo "+index+" se repite "+results);
-						//console.log("remi: "+remision+" dev: "+dev);
-					}else{
-	                    remision = $(".rem"+index).eq(0).html();
-	                    dev = $(".dev"+index).eq(0).html();
-	                    cargaPaseante = (dev/remision)*100;
-	                    $(".codigo1"+index).eq(0).html(Number(cargaPaseante).toFixed(2)+"%");
+                    peso = $(".peso"+index).eq(results-1).html();
+                    libras = (dev*peso)/454;
+                    $(".libras"+index).eq(results-1).html(Number(libras).toFixed(2));
+                    //console.log("el codigo "+index+" se repite "+results);
+					//console.log("remi: "+remision+" dev: "+dev);
+				}else{
+                    remision = $(".rem"+index).eq(0).html();
+                    dev = $(".dev"+index).eq(0).html();
+                    cargaPaseante = (dev/remision)*100;
+                    $(".codigo1"+index).eq(0).html(Number(cargaPaseante).toFixed(2)+"%");
 
-	                    peso = $(".peso"+index).eq(0).html();
-	                    libras = (dev*peso)/454;
-	                    $(".libras"+index).eq(0).html(Number(libras).toFixed(2));
+                    peso = $(".peso"+index).eq(0).html();
+                    libras = (dev*peso)/454;
+                    $(".libras"+index).eq(0).html(Number(libras).toFixed(2));
+				}
+                //TOTAL CARGA PASEANTE
+               /* ref2 = Number($(".dev"+index).eq(results-1).html());
+                suma2 += ref2;
+                totalCargaPas = (suma2/Number($("#totalRemision").html()))*100;
+                $("#CargaPaseanteSuma").html(totalCargaPas.toFixed(2)+"%");*/
+                //496sumatoria += lbsremision;
+
+                if (bandera){
+                    if(myArr[i] == articulo){
+                        sumatoria += 0;
+                        articulo = myArr[i];
+                    }else{
+                        lbsremision = Number.parseFloat($(".librasRem"+index).eq(0).html());
+                        sumatoria += lbsremision;
+                        articulo = myArr[i];
+                    }
+                }else{
+                    articulo = myArr[i];
+                    bandera = true;
+                    lbsremision = Number.parseFloat($(".librasRem"+index).eq(0).html());
+                    sumatoria += lbsremision;
+                }
+            });
+
+            $("#tblDetFactLiq tbody tr").each(function (index, element) {
+                ref1 = Number($(element).find("#libras").eq(0).html());
+                suma += ref1;
+            });
+            $("#librasSuma").html(Number(suma).toFixed(2));
+            $("#sumaLbsRem").html(Number(sumatoria).toFixed(2));
+            let totalCargaPaseante = (Number(suma).toFixed(2)/sumatoria.toFixed(2))*100;
+            $("#CargaPaseanteSuma").html(Number(totalCargaPaseante).toFixed(2)+"%");
+
+						guardarTotalesLiq();
+        });
+
+				function guardarTotalesLiq(){
+					let porcentajeCarga = $("#CargaPaseanteSuma").text();
+					let sumaLbsMerma = 0.0;
+					if($("#sumaLbsMerma").text() != ""){
+						sumaLbsMerma = $("#sumaLbsMerma").text();
 					}
-	                //TOTAL CARGA PASEANTE
-	               /* ref2 = Number($(".dev"+index).eq(results-1).html());
-	                suma2 += ref2;
-	                totalCargaPas = (suma2/Number($("#totalRemision").html()))*100;
-	                $("#CargaPaseanteSuma").html(totalCargaPas.toFixed(2)+"%");*/
-	                //496sumatoria += lbsremision;
-
-	                if (bandera){
-	                    if(myArr[i] == articulo){
-	                        sumatoria += 0;
-	                        articulo = myArr[i];
-	                    }else{
-	                        lbsremision = Number.parseFloat($(".librasRem"+index).eq(0).html());
-	                        sumatoria += lbsremision;
-	                        articulo = myArr[i];
-	                    }
-	                }else{
-	                    articulo = myArr[i];
-	                    bandera = true;
-	                    lbsremision = Number.parseFloat($(".librasRem"+index).eq(0).html());
-	                    sumatoria += lbsremision;
-	                }
-	            });
-
-	            $("#tblDetFactLiq tbody tr").each(function (index, element) {
-	                ref1 = Number($(element).find("#libras").eq(0).html());
-	                suma += ref1;
-	            });
-	            $("#librasSuma").html(Number(suma).toFixed(2));
-	            $("#sumaLbsRem").html(Number(sumatoria).toFixed(2));
-	            let totalCargaPaseante = (Number(suma).toFixed(2)/sumatoria.toFixed(2))*100;
-	            $("#CargaPaseanteSuma").html(Number(totalCargaPaseante).toFixed(2)+"%");
-
-							guardarTotalesLiq();
-	        });
-
-					function guardarTotalesLiq(){
-						let porcentajeCarga = $("#CargaPaseanteSuma").text();
-						let sumaLbsMerma = 0.0;
-						if($("#sumaLbsMerma").text() != ""){
-							sumaLbsMerma = $("#sumaLbsMerma").text();
-						}
-						let form_data = {
-							idperiodo: $("#idPeriodoTotal").val(),
-							idliquidacion: $("#idLiquidacionTotal").val(),
-							librasRemision: $("#sumaLbsRem").text(),
-							librasVendidas: $("#sumaLbsVend").text(),
-							librasDev: $("#librasSuma").text(),
-							librasMerma: sumaLbsMerma,
-							cargaPaseante: porcentajeCarga.slice(0, -1)
-						};
-							$.ajax({
-								url: '<?php echo base_url("index.php/guardarTotalesLiq");?>',
-								type: 'POST',
-								data: form_data,
-								success: function(data){
-										console.log(data);
-								}
-							});
-					}
-			window.print();
-		</script>
+					let form_data = {
+						idperiodo: $("#idPeriodoTotal").val(),
+						idliquidacion: $("#idLiquidacionTotal").val(),
+						librasRemision: $("#sumaLbsRem").text(),
+						librasVendidas: $("#sumaLbsVend").text(),
+						librasDev: $("#librasSuma").text(),
+						librasMerma: sumaLbsMerma,
+						cargaPaseante: porcentajeCarga.slice(0, -1)
+					};
+						$.ajax({
+							url: '<?php echo base_url("index.php/guardarTotalesLiq");?>',
+							type: 'POST',
+							data: form_data,
+							success: function(data){
+									console.log(data);
+							}
+						});
+				}
+		window.print();
+	</script>
 </head>
 <body>
 	<section class="panel" id="printHTML">

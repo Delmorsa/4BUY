@@ -31,7 +31,7 @@
 			font-family: 'arial'!important;
 			text-transform: uppercase!important;
 			border-collapse: collapse;
-			width: 1000px;
+			width: 1000px!important;
 			margin: 0 auto;
 			margin-bottom: 5px;
 		}
@@ -205,17 +205,25 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 			</tr>
 			<tr>
 				<td colspan="1" class="negrita">Código Remisiones</td>
-				<td colspan="7"><span style="font-size:11pt;">
+				<td colspan="7">					
 						<?php
+						$salto = 0;
 						$codigos = "";
 						if (!$enc) {
 						} else {
 							foreach ($enc as $key) {
+
 								$codigos .= $key["IdRemision"].",";
+								$salto++;
+								if ($salto ==12) {
+									$codigos .="<br>";
+									$salto = 0;
+								}
 							}
 							echo substr($codigos,0,-1);
 						}
-						?></span></td>
+						?>
+					</td>
 			</tr>
 			</thead>
 			<tbody>

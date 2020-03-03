@@ -195,3 +195,5 @@ $route["librasXdia"] = "Cuotas_controller/librasXdia";
 
 //INVENTARIOS DIARIOS SUBIDOS POR PRODUCCION
 $route["Inventario"] = "Inventario_controller";
+$route["guardarInventario"] = "Inventario_controller/guardarInventario";
+$route["getCategoriaById/(:any)"] = "Inventario_controller/getCategoriaById/$1";

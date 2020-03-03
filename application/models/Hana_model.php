@@ -745,5 +745,25 @@ class Hana_model extends CI_Model
         }
   }
 
+	//mostrar Categoria de cada producto al momento de subir inventario
+	public function getCategoriaById($itemcode){
+		$conn = $this->OPen_database_odbcSAp();
+		$query = 'SELECT "CodCategoria", "Categoria" FROM "SBO_DELMOR"."VIEW_ARTICULOS_CATEGORIA"
+							  WHERE "ItemCode" = '."'".$itemcode."'".' ';
+
+		$resultado = @odbc_exec($conn,$query);
+		$json = array();
+		$i = 0;
+		while ($fila = @odbc_fetch_array($resultado)) {
+			$json[$i]["CodCategoria"] = utf8_encode($fila["CodCategoria"]);
+      $json[$i]["Categoria"] = utf8_encode($fila["Categoria"]);
+            //$json[$i]["GRAMOS"] = number_format(12,0);
+			$i++;
+		}
+		echo json_encode($json);
+        @odbc_close($conn);
+		//echo json_encode(@odbc_error($conn));
+	}
+
 }
 ?>

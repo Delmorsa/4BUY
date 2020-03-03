@@ -1,9 +1,13 @@
 <script type="text/javascript">
   $(document).ready(function() {
-
+    $("#ddlCategorias").select2({
+  		allowClear: true,
+  		placeholder: '--- Tipo ---'
+  	});
   });
 
   $("#fileUpload").change(function(e){
+    $("#btnSaveInv").hide();
     let table = $("#tblInventario").DataTable();
     table.destroy();
     if($(this).val() != ""){
@@ -28,6 +32,7 @@
                         '  <th>GRM</th>' +
         								'  <th>UND/LBRS</th>' +
         								'  <th>LIBRAS</th>' +
+                        '  <th>CATEGORIA</th>' +
                         ' </tr>' +
                         '</thead>' +
                         ' <tbody>'+cuerpo+
@@ -42,7 +47,7 @@
       				"ordering": false,
       				"searching":false,
       				"order": [
-      					[0, "asc"] 
+      					[0, "asc"]
       				],
       				/*"dom": 'T<"clear">lfrtip',
                        "tableTools": {
@@ -68,7 +73,31 @@
       						"next": "Siguiente",
       						"previous": "Anterior"
       					}
-      				}
+      				},
+              "initComplete":	function(settings, json){
+                let contador = 0;
+      			  	let tablA = $("#tblInventario").DataTable();
+      			  	tablA.rows().eq(0).each(function(index){
+      			  		let row = tablA.row(index);
+      			  		let data = row.data();
+      			  		$.ajax({
+      							method: "POST",
+      							async: true,
+      							url: "<?php echo base_url("index.php/getCategoriaById")?>"+"/"+Number(data[0])
+      						}).success(function(response){
+      							let obj = jQuery.parseJSON(response);
+      							$.each(obj, function(i,inde){
+      								let oTable = $('#tblInventario').dataTable();
+      								let cat = inde["Categoria"];
+      								oTable.fnUpdate( [data[0],data[1], data[2], data[3], data[4], cat],index );
+                      contador++;
+      						 });
+                   if(contador == tablA.data().length){
+                    $("#btnSaveInv").show();
+                   }
+      					});
+      			   });
+      			 }
       		});
       }
     }else{
@@ -80,6 +109,7 @@
                 '         <th>GRM</th>' +
                 '         <th>UND/LBRS</th>' +
                 '         <th>LIBRAS</th>' +
+                '         <th>CATEGORIA</th>' +
                 '        </tr>' +
                 '        </thead>' +
                 '        <tbody>'+
@@ -122,6 +152,120 @@
               					}
               				}
               		});
+    }
+  });
+
+  $("body").on("click", "tr", function(){
+  	$(this).toggleClass("danger");
+  });
+
+  $("#btnDelete").click(function() {
+  	let table = $("#tblInventario").DataTable({
+                    "autoWidth": false,
+                    "info": false,
+                    "sort": false,
+                    "processing": false,
+                    "destroy":true,
+                    "paging": false,
+                    "ordering": false,
+                    "searching":false,
+                    "lengthMenu": [
+                			[-1],
+                			["Todo"]
+                		],
+                    "order": [
+                      [0, "asc"]
+                    ]});
+     table.row(".danger").remove().draw(false);
+  });
+
+  $("#btnSaveInv").click(function (){
+    let tipo = $("#ddlCategorias option:selected").val(),
+    tipoText = $("#ddlCategorias option:selected").text(),
+    fecha = $("#fechaInventario").val();
+    let table = $("#tblInventario").DataTable({
+                    "autoWidth": false,
+                    "info": false,
+                    "sort": false,
+                    "processing": false,
+                    "destroy":true,
+                    "paging": false,
+                    "ordering": false,
+                    "searching":false,
+                    "order": [
+                      [0, "asc"]
+                    ]});
+    if(table.data().length < 1){
+      swal({
+        type: "error",
+        text: "No hay datos en la tabla",
+        allowOutsideClick: false
+      });
+    }else if(tipoText == "" || fecha == ""){
+      swal({
+        type: "error",
+        text: "Debe seleccionar un tipo y agregar una fecha",
+        allowOutsideClick: false
+      });
+    }else{
+      swal({
+    		text: "¿Estas seguro que todos los datos están correctos?",
+    		type: 'question',
+    		showCancelButton: true,
+    		confirmButtonColor: '#3085d6',
+    		cancelButtonColor: '#d33',
+    		confirmButtonText: 'Aceptar',
+    		cancelButtonText: "Cancelar",
+    		allowOutsideClick: false
+    	}).then(result => {
+
+        if(result.value){
+          $("#loading").modal("show");
+          let mensaje = '', icon = '', array = new Array(), i = 0;
+
+          table.rows().eq(0).each(function(index){
+    				let row = table.row(index);
+    				let datos = row.data();
+            array[i] = [];
+    				array[i][0] = datos[0];
+            array[i][1] = datos[1];
+            array[i][2] = datos[2];
+            array[i][3] = datos[3];
+            array[i][4] = datos[4];
+            array[i][5] = datos[5];
+    				i++;
+    			});
+
+          let form_data = {
+                  encabezado: [fecha,tipo],
+          				datos: JSON.stringify(array)
+          			};
+
+            $.ajax({
+              url: 'guardarInventario',
+              type: 'POST',
+              data: form_data,
+              success: function(data){
+                $("#loading").modal("hide");
+
+                let obj = jQuery.parseJSON(data);
+                $.each(obj, function(index, el) {
+                  mensaje = el["mensaje"];
+                  icon = el["tipo"];
+                });
+
+                swal({
+                  text: mensaje,
+                  type: icon,
+                  allowOutsideClick: false
+                }).then(result => {
+                  location.reload();
+                });
+              }
+            });
+        }
+
+      });
     }
   });
 </script>

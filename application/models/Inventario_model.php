@@ -118,7 +118,7 @@ class Inventario_model extends CI_Model{
     }else{
       $mensaje[0]["mensaje"] = "No tienes permiso para realizar esta operacion";
       $mensaje[0]["tipo"] = "error";
-      echo json_encode($mensaje);
+      echo json_encode($mensaje); 
     }
 
     if ($this->db->trans_status() === FALSE)

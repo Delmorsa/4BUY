@@ -37,7 +37,7 @@ function cargarFacturas(){
 				d.fecha1 = $("#fechaFac1").val();
 				d.fecha2 = $("#fechaFac2").val();
 				d.ruta = $("#searchSelect_regex option:selected").val();
-				d.tipo = $("#searchSelect_regexTipo option:selected").val(); 
+				d.tipo = $("#searchSelect_regexTipo option:selected").val();
 				// d.custom = $('#myInput').val();
 				// etc
 			}
@@ -176,4 +176,10 @@ function cargarFacturas(){
 	$("#Total").html("C" + new Intl.NumberFormat("en",{style: "currency", currency:"USD"}).format(sumTotal.toFixed(2)));
 }*/
 <!--endregion-->
+
+
+function DetalleFacturasPopUp(param){
+	let url = "DetalleFacturas/"+param;
+	window.open( ""+url+"", "nombrePop-Up", "width=1024,height=700, top=85,left=50");
+}
 </script>

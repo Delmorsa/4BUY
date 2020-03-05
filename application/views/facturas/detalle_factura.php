@@ -1,10 +1,10 @@
-<div class="row">
+<!-- <div class="row">
 	<div class="col-sm-3 col-md-3 col-lg-3">
 		<a  href="javascript:history.back()" class="btn btn-sm btn-primary">
 			<i class="fa fa-arrow-left"></i> Volver
 		</a>
 	</div>
-</div>
+</div>-->
 <br>
 <section class="panel">
 	<div class="panel-body">

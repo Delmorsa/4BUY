@@ -50,7 +50,7 @@ class Facturas_controller extends CI_Controller {
 	}
 	//endregion
 
-	public function mostrarFacturas(){ 
+	public function mostrarFacturas(){
 		$start = $this->input->get_post('start');
 		$length = $this->input->get_post('length');
 		$search = $this->input->get_post('search')['value'];
@@ -107,9 +107,9 @@ class Facturas_controller extends CI_Controller {
             $array["ISC"] = number_format($key["ISC"],2);
             $array["IVA"] = number_format($key["IVA"],2);
 			$array["TOTAL"] = number_format($key["TOTAL"],2);
-			$array["Detalles"] = "<a id='Fact".$key["IDENCABEZADO"]."' href='DetalleFacturas/".$key["IDENCABEZADO"]."' style='text-align:center !important;'
+			$array["Detalles"] = "<a id='Fact".$key["IDENCABEZADO"]."' onclick='DetalleFacturasPopUp(".$key["IDENCABEZADO"].")' href='javascript:void(0)' style='text-align:center !important;'
 			class='btn btn-sm btn-link btn-block center'><i class='fa fa-expand left'></i></a>";
-			$datos[] = $array;
+			$datos[] = $array; //href='DetalleFacturas/".$key["IDENCABEZADO"]."'
 		}
 
 		$totalDatosObtenidos = $resultado->num_rows();
@@ -127,7 +127,7 @@ class Facturas_controller extends CI_Controller {
 		if($permiso){
 			$data["detalles"] = $this->Facturas_model->detallesFacturas($idencabezado);
 			$this->load->view('header/header');
-			$this->load->view('header/menu');
+			//$this->load->view('header/menu');
 			$this->load->view('facturas/detalle_factura',$data);
  			$this->load->view('footer/footer');
 			$this->load->view('jsView/facturas/jsdetalle_factura');

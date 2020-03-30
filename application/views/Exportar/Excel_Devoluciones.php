@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/theme.css" />
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/skins/default.css" />
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/theme-custom.css">
+	<script src="<?php echo base_url()?>assets/js/jquery.js"></script>
 	<style>
 		body{
 			font-size: 9px;
@@ -18,6 +19,22 @@
 		.bold{font-weight: bolder}
 	</style>
 	<script type="text/javascript">
+		$(document).ready(function () {
+			[].forEach.call(document.querySelectorAll("#tablaDevoluciones tr"), function(tr){
+				let suma = 0;
+				[].forEach.call(tr.querySelectorAll("td:not(.string)"), function(td){
+					let datos = td.innerHTML;
+					let datosSinComa = datos.replace(",","");
+					suma += parseFloat(datosSinComa);
+				});
+				if(suma > 0){
+					[].forEach.call(tr.querySelectorAll(".Totales"), function(td){
+						td.innerHTML = suma.toFixed(2);
+				});
+				}
+			});
+
+		});
 		window.print();
 	</script>
 </head>
@@ -62,7 +79,7 @@
 			</header>
 
 			<div class="" style="margin-top: -18px">
-				<table class="table table-striped table-condensed table-bordered">
+				<table class="table table-striped table-condensed table-bordered" id="tablaDevoluciones">
 					<thead>
 						<tr>
 							<th class="text-center text-bold">Codigo</th>
@@ -96,6 +113,9 @@
 							<th class="text-center text-bold">ruta28</th>
 							<th class="text-center text-bold">ruta30</th>
 							<th class="text-center text-bold">ruta31</th>
+							<th class="text-center text-bold">ruta32</th>
+							<th class="text-center text-bold">ruta33</th>
+							<th class="text-center text-bold">ruta34</th>
 							<th class="text-center text-bold">Total</th>
 						</tr>	
 					</thead>
@@ -106,8 +126,8 @@
 						foreach ($dev as $key) {		
 								echo '
 									<tr>
-										<td class="text-center">'.$key["Codigo"].'</td>
-										<td class="text-center">'.$key["Descripcion"].'</td>
+										<td class="text-center string">'.$key["Codigo"].'</td>
+										<td class="text-center string">'.$key["Descripcion"].'</td>
 						                <td class="text-center">'.number_format($key["ruta1"],2).'</td>
 									    <td class="text-center">'.number_format($key["ruta2"],2).'</td>
 									    <td class="text-center">'.number_format($key["ruta3"],2).'</td>
@@ -137,7 +157,10 @@
 									    <td class="text-center">'.number_format($key["ruta28"],2).'</td>
 									    <td class="text-center">'.number_format($key["ruta30"],2).'</td>
 										<td class="text-center">'.number_format($key["ruta31"],2).'</td>
-										<td class="text-center">'.number_format($key["Total"],2).'</td>
+										<td class="text-center">'.number_format($key["ruta32"],2).'</td>
+										<td class="text-center">'.number_format($key["ruta33"],2).'</td>
+										<td class="text-center">'.number_format($key["ruta34"],2).'</td>
+										<td class="text-center Totales">0.0</td>
 									</tr>';				
 					}
 

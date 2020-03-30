@@ -89,13 +89,14 @@ $("#fileUpload").change(function(e){
 					}
 				},
 			  "initComplete":	function(settings, json){
+				 let variable1 = '', variable2 = '', stockParaRem = 0, banderaStock = false; 
 			  	let table = $("#tblRemisiones").DataTable();
 			  	table.rows().eq(0).each(function(index){
 			  		let row = table.row(index);
 			  		let data = row.data();
 			  		$.ajax({
 							method: "POST",
-							async: true,
+							async: false,
 							url: "<?php echo base_url("index.php/GetStockProdAjax")?>"+"/"+Number(data[0])
 						}).success(function(response){
 							let obj = jQuery.parseJSON(response);
@@ -104,14 +105,41 @@ $("#fileUpload").change(function(e){
 								let gr = (data[3] * inde["GRAMOS"])/454;
 								let gramos = inde["GRAMOS"];
 								let cantidad = gr.toFixed(2);
+								variable1 = inde["EXISTENCIA"];
 								oTable.fnUpdate( [data[0],data[1], parseFloat(gramos).toFixed(0), data[3], cantidad, data[5]],index );
 								console.log(gr);
 						 });
 					});
-			  	});
+
+					$.ajax({
+						url: "getCantidadRemisionByCod/"+data[0],
+						type: "POST",
+						async: false,
+						success: function (datos) { 
+							let obj = jQuery.parseJSON(datos);
+							$.each(obj, function (i,index1) {
+								variable2 = index1["CANTIDAD"];
+							});
+						}
+					});
+					stockParaRem = parseFloat(variable1) - parseFloat(variable2);
+					//alert(stockParaRem);
+
+					if(data[3] > stockParaRem){
+					    $('#tblRemisiones tbody').find("tr").eq(index).addClass("danger");
+						banderaStock = true;
+						$("#btnSaveRem").hide();
+						notificarRem("Uno o más productos no pueden ser remisionados por falta de stock. "+
+				       "Codigo: "+data[0]+" Stock: "+stockParaRem+"",
+							"fa fa-warning",
+							"notification-danger"
+							);
+					}
+			  	}); 
 			 }
 		});
     }
+	$("#buttonsRem").show();
 }else{
 		$("#wrapper").html('<table id="tblRemisiones" class="display table table-condensed table-bordered table-responsive table-striped mb-none table-sm"" style="width:100%">' +
                 '        <thead>' +
@@ -163,6 +191,7 @@ $("#fileUpload").change(function(e){
 					}
 				}
 		});
+		$("#buttonsRem").hide();
 	}
 });
 
@@ -181,7 +210,7 @@ function CargarConsecutivo(){
 	});
 }
 
-<!--region SUMA DE CANTIDADES Y LIBRAS-->
+//<!--region SUMA DE CANTIDADES Y LIBRAS-->
 function Sumar(){
 	let table = $("#tblRemisiones").DataTable();
 	let sumCant = 0;
@@ -197,7 +226,7 @@ function Sumar(){
 	$("#SumCant").text(sumCant.toFixed(2));
 	$("#SumLbs").text(sumLbs.toFixed(2));
 }
-<!--endregion-->
+//<!--endregion-->
 
  function notificar(texto,icono,tipo)
    {
@@ -208,6 +237,21 @@ function Sumar(){
 		   icon: icono,
 		   hide: true,
 		   delay: 3000,
+		   buttons: {
+			   sticker: false
+		   }
+	   });
+   }
+
+   function notificarRem(texto,icono,tipo)
+   {
+	   new PNotify({
+		   title: "Notificaciones",
+		   text: texto,
+		   addclass: ""+tipo+" stack-bottom-left", //notification-primary
+		   icon: icono,
+		   hide: false,
+		   //delay: 3000,
 		   buttons: {
 			   sticker: false
 		   }
@@ -229,8 +273,8 @@ $("#btnAgregar").click(function(){
 		if(Number(cant) > Number(stock)){
 			swal({
 				html: 'No hay stock suficiente para la operacion solicitada. <br/>' +
-				"Cod Producto: <strong>"+codigo+"</strong> "+
-				"en stock: <strong>"+Number(stock).toFixed(2)+"</strong>",
+				"Cod Producto: <strong>"+codigo+"</strong>, "+
+				"disponible para remision: <strong>"+Number(stock).toFixed(2)+"</strong>",
 				type: "error",
 				allowOutsideClick: false
 			});
@@ -327,6 +371,11 @@ $("#btnAgregar").click(function(){
 
 $("body").on("click", "tr", function(){
 	$(this).toggleClass("danger");
+	if($(this).hasClass("danger")){
+		$("#btnSaveRem").hide();
+	}else{
+		$("#btnSaveRem").show();
+	}
 });
 
 $("#btnDelete").click(function() {
@@ -468,7 +517,7 @@ $("#btnSaveRem").on("click", function(){
 	});
 });
 
-<!--region Cargar vendedor en caja de texto por ruta-->
+//<!--region Cargar vendedor en caja de texto por ruta-->
 $("#ddlRutas").change(function () {
 	let nombre = '';
 	if ($("#ddlRutas option:selected").val() == ""){
@@ -532,10 +581,11 @@ $("#ddlRutas").change(function () {
 	).trigger('change.select2');
 
 });
-<!--endregion-->
+//<!--endregion-->
 
-<!--region CARGAR STOCK POR PRODUCTO-->
+//<!--region CARGAR STOCK POR PRODUCTO-->
 $("#thisid").change(function (){
+	$("#txtstockProd").val("");
 	$("#buttonsRem").hide();
 	if($("#ddlRutas option:selected").val() == ""){
 		swal({
@@ -551,32 +601,50 @@ $("#thisid").change(function (){
 			$.ajax({
 				url: "<?php echo base_url("index.php/GetStockProdAjax")?>"+"/"+$(this).val(),
 				type: "POST",
-				async: true,
 				success: function (data) {
 					if($("#ddlRutas option:selected").val() != ""){
-						$.each(JSON.parse(data), function (i, item) {
-							$("#txtstockProd").val(Number(item["EXISTENCIA"]).toFixed(2));
-							//$("#txtbodegaProd").val(Number(item["CODBODEGA"]));
+						$.each(JSON.parse(data), function (i, item) {							
+							$("#txtbodegaProd").val(Number(item["CODBODEGA"]));
+							$("#txtstockProd").val(parseFloat(item["EXISTENCIA"])).triggerHandler("change");
+							$("#loaderButtons").hide();
+							$("#buttonsRem").show();
 						});
-						$("#loaderButtons").hide();
-						$("#buttonsRem").show();
 					}
 				}
+			});	
+			/******************************************* */
+			$("#txtstockProd").one("change",function () { 
+				let initVal = $(this).val();
+				let cantidad = 0, stockVsSap = 0;
+				$.ajax({
+					url: "getCantidadRemisionByCod/"+$("#thisid").val(),
+					type: "POST",
+					async: false,
+					success: function (data) { 
+						let obj = jQuery.parseJSON(data);
+						$.each(obj, function (i,index) {
+							cantidad = index["CANTIDAD"];
+						});
+						stockVsSap = parseFloat(initVal)- parseFloat(cantidad);
+						$("#txtstockProd").val(stockVsSap.toFixed(2));
+					}
+				});
 			});
+			//************************************ */
 		}
 	}
 });
-<!--endregion-->
+//<!--endregion-->
 
-<!--region Mostrar campo de comentarios al seleccionar Tipo: Recargo-->
+//<!--region Mostrar campo de comentarios al seleccionar Tipo: Recargo-->
 $("#chkRecargo").click(function () {
 	if($(this).prop("checked") == true){
 		$("#modalComment").modal("show");
 	}
 });
-<!--endregion-->
+//<!--endregion-->
 
-<!--region Mostrar opciones de tipo de vendedor al seleccionar Tipo: Adelanto-->
+//<!--region Mostrar opciones de tipo de vendedor al seleccionar Tipo: Adelanto-->
 $("#chkAdelanto").click(function () {
 	if($(this).prop("checked") == true){
 		$("#chkTitular").prop("checked",true);
@@ -595,5 +663,5 @@ $("#chkRotador").click(function () {
 		$("#textRotador").show();
 	}
 });
-<!--endregion-->
+//<!--endregion-->
 </script>

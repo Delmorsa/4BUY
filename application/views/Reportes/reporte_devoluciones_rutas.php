@@ -78,6 +78,9 @@
 									    <th>ruta28</th>
 									    <th>ruta30</th>
 									    <th>ruta31</th>
+										<th>ruta32</th>
+										<th>ruta33</th>
+										<th>ruta34</th>
 									</tr>
 									</thead>
 									<tbody>

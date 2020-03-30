@@ -674,6 +674,28 @@ and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users."
 	}
 	//endregion
 
+	public function getCantidadRemisionByCod($itemcode)
+	{
+		$json = array(); $i = 0;
+		/*Revisar que estado sea activo ========> Pendiente*/ 
+		$query = $this->db->query("select t2.CodigoProd,SUM(t2.Cantidad) Cantidad,
+		CAST(t1.FechaCrea as date) FechaCrea 
+		from Remisiones t1
+		inner join DetalleRemision t2 on t1.IdRemision = t2.IdRemision
+		where CAST(FechaCrea as date) = CAST(GETDATE() as date)
+		and t2.CodigoProd = '".$itemcode."'
+		and Estado = '1'
+		group by t2.CodigoProd,CAST(t1.FechaCrea as date)");
+
+		if($query->num_rows() > 0){
+			foreach ($query->result_array() as $key) {
+				$json[$i]["CANTIDAD"] = $key["Cantidad"];
+				$i++;
+			}
+			echo json_encode($json);
+		}
+	}
+
 }
 
 /* End of file Remisiones_model.php */

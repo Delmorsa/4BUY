@@ -102,6 +102,8 @@ $route["Traslados"] = "Remisiones_controller/Traslados";
 $route["MostrarTraslados/(:any)/(:any)"] = "Remisiones_controller/mostrarTraslados/$1/$2";
 $route["DetalleTraslados/(:any)"] = "Remisiones_controller/detalleTraslados/$1";
 
+$route["getCantidadRemisionByCod/(:any)"] = "Remisiones_controller/getCantidadRemisionByCod/$1";
+
 /*************************FIN RUTAS REMISIONES********************************************/
 
 //region RUTAS MODULO FACTURAS

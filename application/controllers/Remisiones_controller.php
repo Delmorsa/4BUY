@@ -672,6 +672,11 @@ class Remisiones_controller extends CI_Controller {
 		$this->Hana_model->detalleTraslados($docEntry);
 	}
 
+	public function getCantidadRemisionByCod($itemcode)
+	{
+		$this->Remisiones_model->getCantidadRemisionByCod($itemcode);
+	}
+
 	/*public function guardarRemisionExcel(){
 		$objReader = PHPExcel_IOFactory::createReader("Excel2007");
 		$this->Hana_model->guardarRemisionExcel(

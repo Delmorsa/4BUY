@@ -290,14 +290,15 @@ class Reportes_model extends CI_Model
 					 sum(ruta11) ruta11,sum(ruta12) ruta12,sum(ruta13) ruta13,sum(ruta14) ruta14,sum(ruta15) ruta15,
 					 sum(ruta16) ruta16,sum(ruta17) ruta17,sum(ruta18) ruta18,sum(ruta19) ruta19,sum(ruta21) ruta21,sum(ruta22) ruta22,
 					 sum(ruta23) ruta23,sum(ruta24) ruta24,sum(ruta25) ruta25,sum(ruta26) ruta26,sum(ruta27) ruta27,sum(ruta28) ruta28,
-					 sum(ruta30) ruta30,sum(ruta31) ruta31,SUM(DEVOLUCIONES) Total FROM
+					 sum(ruta30) ruta30,sum(ruta31) ruta31,sum(ruta32) ruta32,sum(ruta33) ruta33,sum(ruta34) ruta34,SUM(DEVOLUCIONES) Total FROM
 					 (select Ruta,NOMBRE,Codigo,Descripcion,DEVOLUCIONES,
 					 isnull([1],0) ruta1,isnull([2],0) ruta2,isnull([3],0) ruta3,isnull([4],0) ruta4,isnull([5],0) ruta5,isnull([6],0) ruta6,
 					 isnull([7],0) ruta7,isnull([8],0) ruta8,isnull([9],0) ruta9,isnull([10],0) ruta10,isnull([11],0) ruta11,
 					 isnull([12],0) ruta12,isnull([13],0) ruta13,isnull([14],0) ruta14,isnull([15],0) ruta15,isnull([16],0) ruta16,
 					 isnull([17],0) ruta17,isnull([18],0) ruta18,isnull([19],0) ruta19,isnull([21],0) ruta21,
 					 isnull([22],0) ruta22,isnull([23],0) ruta23,isnull([24],0) ruta24,isnull([25],0) ruta25,isnull([26],0) ruta26,
-					 isnull([27],0) ruta27,isnull([28],0) ruta28,isnull([78],0) ruta30,isnull([79],0) ruta31
+					 isnull([27],0) ruta27,isnull([28],0) ruta28,isnull([78],0) ruta30,isnull([79],0) ruta31,
+					 isnull([80],0) ruta32,isnull([81],0) ruta33,isnull([82],0) ruta34
 					 from(
 					 SELECT IdRuta,Ruta,NOMBRE,Codigo,Descripcion,SUM(DEVOLUCION) DEVOLUCION, SUM(DEVOLUCION) DEVOLUCIONES FROM TABLA
 					 WHERE cast (FechaCrea as date ) >='".$fecha1."' AND  cast (FechaCrea as date ) <='".$fecha2."'
@@ -310,7 +311,8 @@ class Reportes_model extends CI_Model
 					   sum(DEVOLUCION)
 					   for IdRuta in ([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],
 									  [12],[13],[14],[15],[16],[17],[18],[19],[21],
-									  [22],[23],[24],[25],[26],[27],[28],[78],[79])
+									  [22],[23],[24],[25],[26],[27],[28],[78],[79],
+									  [80],[81],[82])
 					 ) as pvt
 					 )AS TABLA2
 					 group by  Codigo,Descripcion
@@ -349,6 +351,9 @@ class Reportes_model extends CI_Model
 					$json["data"][$i]["ruta28"] = number_format($key["ruta28"],2);
 					$json["data"][$i]["ruta30"] = number_format($key["ruta30"],2);
 					$json["data"][$i]["ruta31"] = number_format($key["ruta31"],2);
+					$json["data"][$i]["ruta32"] = number_format($key["ruta32"],2);
+					$json["data"][$i]["ruta33"] = number_format($key["ruta33"],2);
+					$json["data"][$i]["ruta34"] = number_format($key["ruta34"],2);
 					$i++;
 			}
 			if ($bandera) {

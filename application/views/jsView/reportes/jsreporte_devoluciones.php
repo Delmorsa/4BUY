@@ -112,7 +112,10 @@ $("#btnGenerarRpt").click(function(){
 		{"data" : "ruta27"},
 		{"data" : "ruta28"},
 		{"data" : "ruta30"},
-		{"data" : "ruta31"}
+		{"data" : "ruta31"},
+		{"data" : "ruta32"},
+		{"data" : "ruta33"},
+		{"data" : "ruta34"}
 	]
 	});	
 	}

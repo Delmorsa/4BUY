@@ -58,7 +58,7 @@ $("#fileUpload").change(function(e){
 				"processing": true,
 				"destroy":true,
 				"paging": false,
-				"ordering": true,
+				"ordering": false,
 				"searching":false,
 				"order": [
 					[0, "asc"]

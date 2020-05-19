@@ -83,7 +83,8 @@ class Remisiones_model extends CI_Model {
 		$i = 0;
 		$query = $this->db->select("Nombre")
 		         ->select("Apellidos")
-			     ->where("IdRuta",$ruta)
+				 ->where("IdRuta",$ruta)
+				 ->where("Estado",1)
 				 ->get("Usuarios");
 
 		foreach ($query->result_array() as $key) {

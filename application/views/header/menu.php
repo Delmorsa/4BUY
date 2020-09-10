@@ -409,11 +409,11 @@
 											Cuotas actual
 										</a>
 									</li>
-									<li>
-										<a href="<?php echo base_url("index.php/ListaCuotas")?>">
+									<!--<li>
+										<a href="<?php //echo base_url("index.php/ListaCuotas")?>">
 											Lista de Cuotas
 										</a>
-									</li>
+									</li> -->
 								</ul>
 							</li>
 							<li class="nav-parent">

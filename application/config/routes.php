@@ -146,9 +146,9 @@ $route["Cuotas"] = "Cuotas_controller";
 $route["GuardarCuotas"] = "Cuotas_controller/guardarCuota";
 $route["ActualizarCuotas"] = "Cuotas_controller/actualizarCuota";
 
-/*$route["ListaCuotas"] = "Cuotas_controller/CuotaList";
+$route["ListaCuotas"] = "Cuotas_controller/CuotaList";
 $route["ReporteCuotas"] = "Cuotas_controller/ReporteCuotas";
-$route["ExportarCuota/(:any)/(:any)/(:any)/(:any)"] = "Cuotas_controller/Exportar/$1/$2/$3/$4";*/
+$route["ExportarCuota/(:any)/(:any)/(:any)/(:any)"] = "Cuotas_controller/Exportar/$1/$2/$3/$4";
 //endregion
 
 //region RUTAS PARA MODULO REPORTES

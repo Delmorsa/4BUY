@@ -649,6 +649,7 @@ and CAST(GETDATE() + 7 AS DATE) ".$srch." ".$users."
       ,[IdUsuario]
       ,[Nombre]
       ,[Apellidos]
+      ORDER BY CodigoProd ASC
   ");
 		if($query->num_rows() > 0){
 			return $query->result_array();

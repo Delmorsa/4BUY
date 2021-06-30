@@ -139,6 +139,11 @@ $route["GuardarLiquidacion"] = "Liquidacion_controller/guardarLiquidacion";
 $route["AnularPeriodo/(:any)"] = "Liquidacion_controller/anularPeriodo/$1";
 
 $route["Detalleliquidacion/(:any)"] = "Liquidacion_controller/VerDetdalleliquidacion/$1";
+
+$route["periodosSinLiq"] = "Liquidacion_controller/periodosSinLiq";
+$route["periodosPendientes"] = "Liquidacion_controller/periodosPendientes";
+$route["periodosLiquidados"] = "Liquidacion_controller/periodosLiquidados";
+$route["periodosAnulados"] = "Liquidacion_controller/periodosAnulados";
 //endregion
 
 //region RUTAS MODULO CUOTAS
@@ -190,6 +195,8 @@ $route["printReporteMermas/(:any)/(:any)"] = "Reportes_controller/printReporteMe
 $route["VentasDepositos"] = "Reportes_controller/viewReporteVentasDeposito";
 $route["reporteDeVentasDeposito"] = "Reportes_controller/reporteDeVentasDeposito";
 $route["printVentasDep/(:any)/(:any)/(:any)"] = "Reportes_controller/printReporteDeVentasDeposito/$1/$2/$3";
+$route["Reporte_facturas_empleados"] = "Reportes_controller/Reporte_facturas_empleados";
+$route["ajax_reporte_facturas_empleados"] = "Reportes_controller/ajax_reporte_facturas_empleados";
 //graficas
 
 $route["grafica/(:any)/(:any)/(:any)/(:any)"] = "Cuotas_controller/grafica/$1/$2/$3/$4";
@@ -199,3 +206,71 @@ $route["librasXdia"] = "Cuotas_controller/librasXdia";
 $route["Inventario"] = "Inventario_controller";
 $route["guardarInventario"] = "Inventario_controller/guardarInventario";
 $route["getCategoriaById/(:any)"] = "Inventario_controller/getCategoriaById/$1";
+
+/*notificacion de antiguedad de saldos*/
+$route["VerificarNotificacionAntiguedad"] = "Reportes_controller/VerificarNotificacionAntiguedad";
+$route["pagoProveedores"] = "Reportes_controller/pagoProveedores";
+
+
+
+
+/*PAGO DE COMISIONES */
+$route["Articulos"] = "Articulos_controller";
+$route["actualizarArticulos"] = "Articulos_controller/actualizarArticulos";
+
+$route["categorias"] = "Categoria_controller";
+$route["actualizarCategorias"] = "Categoria_controller/actualizarCategorias";
+
+$route["rutas"] = "Rutas_controller";
+$route["actualizarRutas"] = "Rutas_controller/actualizarRutas";
+
+$route["canales"] = "Canales_controller";
+$route["GuardarCanal"] = "Canales_controller/GuardarCanal";
+$route["EditarCanal"] = "Canales_controller/EditarCanal";
+$route["GuardarBajaCanal"] = "Canales_controller/GuardarBajaCanal";
+
+$route["VendedoresCanalaes"] = "Canales_controller/VendedoresCanalaes";
+$route["VendedoresCanalaesAjax"] = "Canales_controller/VendedoresCanalaesAjax";
+$route["traerRutasCanal"] = "Canales_controller/traerRutasCanal";
+$route["GuardarVendedoresCanal"] = "Canales_controller/GuardarVendedoresCanal";
+$route["Periodos"] = "Periodos_controller";
+$route["EditarPeriodo/(:any)"] = "Periodos_controller/EditarPeriodo/$1";
+$route["GuardarEdicionPeriodo"] = "Periodos_controller/GuardarEdicionPeriodo";
+$route["GuardarEncabezadoPeriodo"] = "Periodos_controller/GuardarEncabezadoPeriodo";
+$route["ActualizarEstadoPeriodo/(:any)/(:any)"] = "Periodos_controller/ActualizarEstadoPeriodo/$1/$2";
+$route["copiarPeriodos"] = "Periodos_controller/copiarPeriodos";
+
+/*vendedores supervisores*/
+$route["pagoComisiones"] = "Periodos_controller/pagoComisiones";
+$route["generarReportePago"] = "Periodos_controller/generarReportePago";
+$route["generarReportePagoDevoluciones"] = "Periodos_controller/generarReportePagoDevoluciones";
+$route["filtrarTrabajador"] = "Periodos_controller/filtrarTrabajador";
+$route["traerEmpleadoPeriodo"] = "Periodos_controller/traerEmpleadoPeriodo";
+
+/*impulsadoras*/
+$route["ClientesImpulsadoras"] = "Impulsadoras_controller";
+$route["ClientesList"] = "Impulsadoras_controller/ClientesList";
+$route["traerClientesImpulsadoras"] = "Impulsadoras_controller/traerClientesImpulsadoras";
+$route["GuardarClientesImpulsadoras"] = "Impulsadoras_controller/GuardarClientesImpulsadoras";
+$route["ComisionImpulsadoras"] = "Impulsadoras_controller/ComisionImpulsadoras";
+$route["EditarPeriodoImpulsadora/(:any)"] = "Impulsadoras_controller/EditarPeriodoImpulsadora/$1";
+$route["EditarValorImpulsadora"] = "Impulsadoras_controller/EditarValorImpulsadora";
+$route["traerComisionImpulsadora"] = "Impulsadoras_controller/traerComisionImpulsadora";
+$route["GuardarAdelantoImpulsadoras"] = "Impulsadoras_controller/GuardarAdelantoImpulsadoras";
+$route["EditarPeriodoJefeImpulsadora/(:any)"] = "Impulsadoras_controller/EditarPeriodoJefeImpulsadora/$1";
+$route["EditarValorJefeImpulsadora"] = "Impulsadoras_controller/EditarValorJefeImpulsadora";
+
+
+$route["printReporteImpulsadorasPagoConsolidado/(:any)/(:any)/(:any)/(:any)"] = "Periodos_controller/printReporteImpulsadorasPagoConsolidado/$1/$2/$3/$4";
+$route["printReporteImpulsadorasPago/(:any)/(:any)/(:any)/(:any)"] = "Periodos_controller/printReporteImpulsadorasPago/$1/$2/$3/$4";
+$route["printReporteImpulsadorasEspecial/(:any)/(:any)/(:any)/(:any)"] = "Impulsadoras_controller/printReporteImpulsadorasEspecial/$1/$2/$3/$4";
+$route["printReporteImpulsadorasEspecialConsolidado/(:any)/(:any)/(:any)/(:any)"] = "Impulsadoras_controller/printReporteImpulsadorasEspecialConsolidado/$1/$2/$3/$4";
+$route["printReporteJefeImpulsadoras/(:any)/(:any)/(:any)/(:any)"] = "Impulsadoras_controller/printReporteJefeImpulsadoras/$1/$2/$3/$4";
+$route["printReporteJefeImpulsadorasConsolidado/(:any)/(:any)/(:any)/(:any)"] = "Impulsadoras_controller/printReporteJefeImpulsadorasConsolidado/$1/$2/$3/$4";
+
+$route["printReportePago/(:any)/(:any)/(:any)/(:any)"] = "Periodos_controller/printReportePago/$1/$2/$3/$4";
+$route["printReportePagoConsolidado/(:any)/(:any)/(:any)/(:any)"] = "Periodos_controller/printReportePagoConsolidado/$1/$2/$3/$4";
+$route["printReportePagoSupervisores/(:any)/(:any)/(:any)/(:any)"] = "Periodos_controller/printReportePagoSupervisores/$1/$2/$3/$4";
+$route["printReportePagoSupervisoresConsolidado/(:any)/(:any)/(:any)/(:any)"] = "Periodos_controller/printReportePagoSupervisoresConsolidado/$1/$2/$3/$4";
+
+$route["printReportePagoGerenteVentas/(:any)/(:any)/(:any)/(:any)"] = "Periodos_controller/printReportePagoGerenteVentas/$1/$2/$3/$4";

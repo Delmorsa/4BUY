@@ -119,6 +119,25 @@
 	  $("#notBell").click(function () {
 		  $("#notificaciones").html("")
 	  });
+
+       var hrefurl=$(location).attr("href");
+        var miUrlpAGOS=hrefurl.substr(hrefurl.lastIndexOf('/') + 1)
+        
+
+          if (miUrlpAGOS != 'pagoProveedores') {
+              $.ajax({
+                  url: "<?php echo base_url("index.php/VerificarNotificacionAntiguedad")?>",
+                  type: "POST",
+                  async: true,
+                    success: function (data) {                            
+                        console.log(data);
+                        if (data == '-1') {
+                            $('#avisoProveedores').modal('show');
+                        }
+                        
+                    }
+              });
+          }
   });
 
    /* $(".my_select_box").chosen({

@@ -11,6 +11,10 @@ div.dataTables_filter label {
 	float: right;
 }
 
+table#dtFacturasAjax{
+	table-layout: fixed!important;
+}
+
 div.dataTables_info {
 	padding-top: 26px;
 }

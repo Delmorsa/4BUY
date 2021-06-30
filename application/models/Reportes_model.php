@@ -565,6 +565,51 @@ class Reportes_model extends CI_Model
 		 }
 		 return 0;
 	}	
+
+	public function ajax_reporte_facturas_empleados($fechaInicio,$fechaFin,$ruta,$bandera){
+	
+		$json = array(); $i = 0; $queryRuta = '';
+		if($ruta){
+			$queryRuta = "AND CODVENDEDOR = '".$ruta."' ";
+		}
+		$consulta = "SELECT FECHA,CODCLIENTE,NOMBRE,IDFACTURA,CODVENDEDOR,NOMBREVENDEDOR,sum(total) total, CODALMACEN,
+						(
+						SELECT  COUNT(distinct ti.IDFACTURA) FROM [VIEW_VENTAS_4BUY] ti 
+						WHERE CAST(ti.FECHA AS DATE) >= '".$fechaInicio."' AND CAST(ti.FECHA AS DATE)<= '".$fechaFin."' 
+						and ti.CODCLIENTE = T0.CODCLIENTE AND T0.CODVENDEDOR = ti.CODVENDEDOR 
+						) AS CANTIDAD
+						from [dbo].[VIEW_VENTAS_4BUY] T0
+						where T0.CODCLIENTE LIKE '6%' AND T0.ESTADOAPP <> 4 
+						AND CAST(T0.FECHA AS DATE) >= '".$fechaInicio."' AND CAST(T0.FECHA AS DATE)<= '".$fechaFin."' 
+						AND T0.CODVENDEDOR = '79'
+						group by T0.FECHA,T0.CODCLIENTE,T0.NOMBRE,T0.IDFACTURA,T0.CODVENDEDOR,T0.NOMBREVENDEDOR,T0.CODALMACEN
+						ORDER BY T0.CODCLIENTE";
+	
+		$query = $this->db->query($consulta);
+		 
+		//echo $consulta;
+
+		if($query->num_rows() > 0){
+			foreach ($query->result_array() as $key) {
+				$json["data"][$i]["FECHA"] = $key["FECHA"];
+				$json["data"][$i]["CODCLIENTE"] = $key["CODCLIENTE"];
+				$json["data"][$i]["NOMBRE"] = $key["NOMBRE"];
+				$json["data"][$i]["IDFACTURA"] = $key["IDFACTURA"];
+				$json["data"][$i]["CODVENDEDOR"] = $key["CODVENDEDOR"];
+				$json["data"][$i]["NOMBREVENDEDOR"] = $key["NOMBREVENDEDOR"];
+				$json["data"][$i]["total"] = number_format($key["total"],2);
+				$json["data"][$i]["CANTIDAD"] = $key["CANTIDAD"];
+				$i++;
+			}
+
+			if ($bandera) {
+				echo json_encode($json);
+				return;
+			}
+			return $query->result_array();
+		}
+		return 0;
+	}
 } 
 
 /* End of file Reportes_model.php */

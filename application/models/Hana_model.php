@@ -1,7 +1,7 @@
 <?php
 class Hana_model extends CI_Model
 {
-	private $db2;
+    private $db2;
     public function __construct(){
         parent::__construct();
         $this->load->database();
@@ -68,9 +68,10 @@ class Hana_model extends CI_Model
     //MOSTRAR CLIENTES DESDE SB1
     public function getClientes($search){
        $conn = $this->OPen_database_odbcSAp();
-       $query = ' SELECT "CardCode","CardName"
+       $query = ' SELECT "CardCode","CardName","CardFName"
                   FROM '.$this->BD.'.OCRD
                   WHERE "CardName" LIKE '."'%".$search."%'".'
+                  OR "CardCode" LIKE '."'%".$search."%'".'
                   LIMIT 10';
        $resultado = @odbc_exec($conn,$query);
        $json = array();
@@ -78,6 +79,7 @@ class Hana_model extends CI_Model
        while ($fila = @odbc_fetch_array($resultado)) {
             $json[$i]["Codigo"] = $fila["CardCode"];
             $json[$i]["Nombre"] = utf8_encode($fila["CardName"]);
+            $json[$i]["NombreComercial"] = utf8_encode($fila["CardFName"]);
             $i++;
         }
         echo json_encode($json);
@@ -765,5 +767,1229 @@ class Hana_model extends CI_Model
 		//echo json_encode(@odbc_error($conn));
 	}
 
+  public function VerificarNotificacionAntiguedad()
+  {
+    $conn = $this->OPen_database_odbcSAp();
+
+      $query = 'SELECT *
+            FROM '.$this->BD.'.ANTIGUEDAD_PROVEEDORES t0            
+            WHERE t0."1-30"  > 0';
+            //echo $query;
+      $resultado =  @odbc_exec($conn,$query);
+
+      $numero = @odbc_num_rows($resultado);
+
+      echo $numero;
+  }
+  
+  public function getPagosProveedores()
+  {
+    $conn = $this->OPen_database_odbcSAp();
+    $json = array();
+    $i=0;
+      $query = 'SELECT * FROM '.$this->BD.'.ANTIGUEDAD_PROVEEDORES t0 WHERE t0."1-30"  > 0';
+      //echo $query;
+      $resultado = @odbc_exec($conn,$query);
+
+      //print_r($resultado);
+
+        while ($fila = @odbc_fetch_array($resultado)){
+          
+          $json[$i]["DocNum"] = $fila["DocNum"];
+          $json[$i]["NumAtCard"] = $fila["NumAtCard"];
+          $json[$i]["CardCode"] = $fila["CardCode"];
+          $json[$i]["CardName"] = $fila["CardName"];
+          $json[$i]["LicTradNum"] = $fila["LicTradNum"];
+          $json[$i]["DocStatus"] = $fila["DocStatus"];
+          $json[$i]["ImpRetencion"] = $fila["ImpRetencion"];
+          $json[$i]["TIPO"] = $fila["TIPO"];
+          $json[$i]["VatSum"] = $fila["VatSum"];
+          $json[$i]["DocTotal"] = $fila["DocTotal"];
+          $json[$i]["Comments"] = $fila["Comments"];
+          $json[$i]["Fecha_Factura"] = $fila["Fecha_Factura"];
+          $json[$i]["Vencimiento"] = $fila["Vencimiento"];
+          $json[$i]["Dias"] = $fila["Dias"];
+          $json[$i]["Corriente"] = $fila["Corriente"];
+          $json[$i]["1-30"] = $fila["1-30"];
+          $json[$i]["31-60"] = $fila["31-60"];
+          $json[$i]["61-90"] = $fila["61-90"];
+          $json[$i]["91-120"] = $fila["91-120"];
+          $json[$i]["121-+"] = $fila["121-+"];
+          $json[$i]["CheckNum"] = $fila["CheckNum"];
+          $json[$i]["BankCode"] = $fila["BankCode"];
+          $json[$i]["AcctNum"] = $fila["AcctNum"];
+          $json[$i]["TASA"] = $fila["TASA"];
+          $i++;
+        }
+      return $json;
+  }
+
+  /*******comisiones***********/
+  public function actualizarArticulos()
+  {
+    $conn = $this->OPen_database_odbcSAp();
+    $json = array();
+    $insertados = 0;
+    $actualizados = 0;
+    $query = 'SELECT T0."ItemCode", T0."ItemName", T1."CodCategoria", T1."Categoria",T2."GroupCode",T2."GroupName"
+    FROM '.$this->BD.'.OITM T0
+    INNER JOIN '.$this->BD.'.VIEW_ARTICULOS_CATEGORIA t1 on t1 ."ItemCode" = T0."ItemCode"
+    INNER JOIN '.$this->BD.'.OCOG T2 ON T2."GroupCode" = T0."CommisGrp"
+    WHERE T1."CodCategoria" is not null
+    AND T2."GroupCode" <> 0
+    ORDER BY T0."ItemCode"';
+    //echo $query; return;
+    $resultado = @odbc_exec($conn,$query);
+
+    //print_r($resultado);
+
+    while ($fila = @odbc_fetch_array($resultado)){
+
+
+      $this->db->where('IdProducto',$fila["ItemCode"]);
+      $existe = $this->db->get('C_Productos');
+
+      if ($existe->num_rows()>0) {
+
+        $this->db->where("IdProducto", $fila["ItemCode"]);
+        $upd = array(
+          "Nombre" => utf8_encode($fila["ItemName"]),
+          "IdGrupo" => $fila["GroupCode"],
+          "IdCategoria" => $fila["CodCategoria"],
+          //"Categoria" => $fila["GroupName"],
+          "IdUsuarioEdita" => $this->session->userdata('id'),
+          "FechaEdita" => gmdate(date("Y-m-d H:i:s"))
+        );
+        $this->db->update("C_Productos",$upd);
+
+        $actualizados++;
+
+      }else{
+
+        $insertArray = array(
+          "IdProducto" => $fila["ItemCode"],
+          "Nombre" => utf8_encode($fila["ItemName"]),
+          "IdGrupo" => $fila["GroupCode"],
+          "IdCategoria" => $fila["CodCategoria"],
+          //"Categoria" => $fila["GroupName"],
+          "IdUsuarioCrea" => $this->session->userdata('id'),
+          "FechaCrea" => gmdate(date("Y-m-d H:i:s")),
+          "Estado" => true
+        );
+        $insert = $this->db->insert("C_Productos",$insertArray);
+        $insertados++;
+
+      }
+    }
+
+    $mensaje[0]["mensaje"] = "Se insertaron ".$insertados." artículos y se actualizaron: ".$actualizados."";
+    $mensaje[0]["tipo"] = "success";
+    $this->db->trans_commit();
+    echo json_encode($mensaje);
+    return;    
+    //return $json;
+
+  }
+
+  
+  public function actualizarCategorias()
+  {
+    $conn = $this->OPen_database_odbcSAp();
+    $json = array();
+    $insertados = 0;
+    $actualizados = 0;
+    $query = 'SELECT "ItmsTypCod","ItmsGrpNam"
+    FROM '.$this->BD.'.OITG 
+    WHERE /*"ItmsTypCod" NOT IN (16,17,23,11) AND*/ "ItmsTypCod" IN (SELECT "CodCategoria" FROM '.$this->BD.'."VIEW_ARTICULOS_CATEGORIA")
+    ORDER BY "ItmsTypCod" ASC';            
+    $resultado = @odbc_exec($conn,$query);
+
+    //echo $query;return;
+    //$this->db->query("DELETE FROM C_Categorias");
+    while ($fila = @odbc_fetch_array($resultado)){
+
+      $this->db->where('IdCategoria',$fila["ItmsTypCod"]);
+      $existe = $this->db->get('C_Categorias');
+
+      if ($existe->num_rows()>0) {
+
+        $this->db->where("IdCategoria", $fila["ItmsTypCod"]);
+          $upd = array(
+            "Nombre" => utf8_encode($fila["ItmsGrpNam"]),
+            "IdUsuarioEdita" => $this->session->userdata('id'),
+            "FechaEdita" => gmdate(date("Y-m-d H:i:s"))
+          );
+          $this->db->update("C_Categorias",$upd);
+
+          $actualizados++;
+
+      }else{
+
+        $insertArray = array(
+          "IdCategoria" => $fila["ItmsTypCod"],
+          "Nombre" =>  utf8_encode($fila["ItmsGrpNam"]),
+          "IdUsuarioCrea" => $this->session->userdata('id'),
+          "FechaCrea" => gmdate(date("Y-m-d H:i:s")),
+          "Estado" => true
+        );
+
+        $insert = $this->db->insert("C_Categorias",$insertArray);
+        $insertados++;
+      }
+
+    }
+
+    $mensaje[0]["mensaje"] = "Se insertaron ".$insertados." grupos y se actualizaron: ".$actualizados." grupos";
+    $mensaje[0]["tipo"] = "success";
+    //$this->db->trans_commit();
+    echo json_encode($mensaje);
+    return;
+  }
+
+  public function actualizarRutas()
+  {
+    $conn = $this->OPen_database_odbcSAp();
+    $json = array();
+    $insertados = 0;
+    $actualizados = 0;
+    $query = 'SELECT "SlpCode","SlpName" FROM '.$this->BD.'.OSLP ORDER BY "SlpCode" ASC';            
+    $resultado = @odbc_exec($conn,$query);
+
+    //print_r($resultado);
+    while ($fila = @odbc_fetch_array($resultado)){
+
+      $this->db->where('IdRuta',$fila["SlpCode"]);
+      $existe = $this->db->get('C_Rutas');
+
+      if ($existe->num_rows()>0) {
+
+        $this->db->where("IdRuta", $fila["SlpCode"]);
+          $upd = array(
+            "Nombre" => utf8_encode($fila["SlpName"]),
+            "IdUsuarioEdita" => $this->session->userdata('id'),
+            "FechaEdita" => gmdate(date("Y-m-d H:i:s"))
+          );
+          $this->db->update("C_Rutas",$upd);
+
+          $actualizados++;
+
+      }else{
+
+        $insertArray = array(
+          "IdRuta" => $fila["SlpCode"],
+          "Nombre" =>  utf8_encode($fila["SlpName"]),
+          "IdUsuarioCrea" => $this->session->userdata('id'),
+          "FechaCrea" => gmdate(date("Y-m-d H:i:s")),
+          "Estado" => true
+        );
+        $insert = $this->db->insert("C_Rutas",$insertArray);
+        $insertados++;
+      }
+
+    }
+
+    $mensaje[0]["mensaje"] = "Se insertaron ".$insertados." rutas y se actualizaron: ".$actualizados." rutas";
+    $mensaje[0]["tipo"] = "success";
+    //$this->db->trans_commit();
+    echo json_encode($mensaje);
+    return;
+  }
+
+  public function traerVentasDevoluciones($vendedor = null,$desde,$hasta)
+  {
+    $and = '';
+    if ($vendedor!= null) {
+      $and = ' WHERE T0."CODVENDEDOR" = '.$vendedor;
+    }
+    $conn = $this->OPen_database_odbcSAp();
+    $json = array();
+    $i=0;
+
+    $query = 'SELECT "FECHA","CODVENDEDOR","VENDEDOR","CODCOMISION","NOMBRECOMISION","CODCATEGORIA","CATEGORIA",SUM("LIBRAS_VENDIDAS") "LIBRAS_VENDIDAS",SUM("LIBRAS_DEVOLUCION")"LIBRAS_DEVOLUCION" FROM 
+      (
+      SELECT
+        cast(T0."FECHA" as date)"FECHA",
+        T0."WhsCode",
+        T0."CODVENDEDOR",
+        T0."VENDEDOR",
+        T0."CODCOMISION",
+        T0."NOMBRECOMISION",
+        T0."CODCATEGORIA",
+        T0."CATEGORIA",
+        SUM( "LIBRAS_VENDIDAS" ) "LIBRAS_VENDIDAS",
+        SUM( "LIBRAS_DEVOLUCION" ) "LIBRAS_DEVOLUCION",
+        IFNULL(
+          (
+          SELECT
+            SUM( ( ( TI0."Weight1" ) / 1000 ) / 0.454 ) "Lbs" 
+          FROM
+            SBO_DELMOR."VIEW_DEVOLUCIONES_DELMOR" TI0 
+          WHERE
+            TI0."DocType" = '."'I'".'
+            AND TI0."InvntSttus" = '."'O'".'
+            AND TI0."DocDate" >= '."'".$desde."'".' 
+            AND TI0."DocDate" <= '."'".$hasta."'".' 
+            AND TI0."SlpCode" = T0."CODVENDEDOR" 
+            AND TI0."CommisGrp" = T0."CODCOMISION" 
+            AND TI0."CodCategoria" = T0."CODCATEGORIA" 
+            AND cast(TI0."DocDate" as date) =  cast (T0."FECHA" as date)
+          ),
+          0 
+        ) "DEVOLUCION",
+        T0."COMISION" 
+      FROM
+        (
+        SELECT
+          T0."CODCLIENTE",
+          T0."CLIENTE",
+          T0."FECHA",
+          T0."WhsCode",
+          T0."CODVENDEDOR",
+          T0."VENDEDOR",
+          T0."CODCOMISION",
+          T0."NOMBRECOMISION",
+          T0."CODCATEGORIA",
+          T0."CATEGORIA",
+          T0."CODIGO",
+          T0."DESCRIPCION",
+          SUM( T0."LIBRAS" ) "LIBRAS_VENDIDAS",
+          IFNULL(
+            (
+            SELECT
+              SUM( ( ( TI1."Weight1" ) / 1000 ) / 0.454 ) "Lbs" 
+            FROM
+              SBO_DELMOR.ORIN TI0
+              INNER JOIN SBO_DELMOR.RIN1 TI1 ON TI1."DocEntry" = TI0."DocEntry" 
+            WHERE
+              TI0."DocType" = '."'I'".'
+              AND TI0."InvntSttus" = '."'O'".'
+              AND TI0."DocDate" >= '."'".$desde."'".' 
+              AND TI0."DocDate" <= '."'".$hasta."'".' 
+              AND TI1."ItemCode" = T0."CODIGO" 
+              AND TI0."SlpCode" = T0."CODVENDEDOR" 
+            ),
+            0 
+          ) "LIBRAS_DEVOLUCION",
+          T0."COMISION" 
+        FROM        
+        SBO_DELMOR."VIEW_VENTAS_DELMOR" T0 
+        WHERE
+          T0."CODVENDEDOR" <> '."'-1'".' 
+          AND T0."ESTADO" NOT IN ( '."'Y'".', '."'C'".' ) 
+          AND T0."SUBTIPO" <> '."'ND'".' 
+          AND T0."FECHA" >= '."'".$desde."'".' 
+          AND T0."FECHA" <= '."'".$hasta."'".'
+          AND T0."CODCOMISION" <> 0 
+        GROUP BY
+          T0."FECHA",
+          T0."CODCLIENTE",
+          T0."CLIENTE",
+          T0."WhsCode",
+          T0."CODVENDEDOR",
+          T0."VENDEDOR",
+          T0."CODCOMISION",
+          T0."NOMBRECOMISION",
+          T0."COMISION",
+          T0."CODCATEGORIA",
+          T0."CATEGORIA",
+          T0."CODIGO",
+          T0."DESCRIPCION" 
+        ORDER BY
+          T0."FECHA",
+          T0."CODVENDEDOR",
+          T0."CODCOMISION",
+          T0."CODCATEGORIA" 
+        ) T0 
+      GROUP BY
+        T0."FECHA",
+        T0."WhsCode",
+        T0."CODVENDEDOR",
+        T0."VENDEDOR",
+        T0."CODCOMISION",
+        T0."NOMBRECOMISION",
+        T0."COMISION",
+        T0."CODCATEGORIA",
+        T0."CATEGORIA" 
+      ORDER BY
+        T0."CODVENDEDOR",
+        T0."VENDEDOR",
+        T0."CODCOMISION",
+        T0."NOMBRECOMISION",
+        T0."CODCATEGORIA",
+        T0."CATEGORIA"
+      )
+      GROUP BY "FECHA","CODVENDEDOR","VENDEDOR","CODCOMISION","NOMBRECOMISION","CODCATEGORIA","CATEGORIA"';
+
+      // echo $query;return;
+
+      
+      $resultado = @odbc_exec($conn,$query);
+      while ($fila = @odbc_fetch_array($resultado)){
+          
+          $json[$i]["FECHA"] = $fila["FECHA"];
+          $json[$i]["CODVENDEDOR"] = $fila["CODVENDEDOR"];
+          $json[$i]["VENDEDOR"] = utf8_encode($fila["VENDEDOR"]);
+          $json[$i]["CODCOMISION"] = $fila["CODCOMISION"];
+          $json[$i]["NOMBRECOMISION"] = utf8_encode($fila["NOMBRECOMISION"]);
+          $json[$i]["CODCATEGORIA"] = $fila["CODCATEGORIA"];
+          $json[$i]["CATEGORIA"] = utf8_encode($fila["CATEGORIA"]);
+          $json[$i]["LIBRAS_VENDIDAS"] = $fila["LIBRAS_VENDIDAS"];
+          $json[$i]["LIBRAS_DEVOLUCION"] = $fila["LIBRAS_DEVOLUCION"];
+          $json[$i]["DEVOLUCION"] = $fila["DEVOLUCION"];          
+          $i++;
+        }
+      return $json;
+  }
+
+  public function getDevolucion($tipo,$ruta,$desde,$hasta,$IdCategoria,$IdGrupo)
+  { 
+    $conn = $this->OPen_database_odbcSAp();
+    $json = array();
+    if ($tipo == 1) {
+      
+      $query = 'SELECT SUM((("Weight1")/1000)/0.454) "Libras" FROM  
+                '.$this->BD.'."VIEW_DEVOLUCIONES_DELMOR"
+                WHERE "CommisGrp" = '.$IdGrupo.'
+                AND "CodCategoria" = '.$IdCategoria.'
+                AND "SlpCode" = '.$ruta.'
+                AND CAST("DocDate" as date) >= '."'".$desde."'".' and CAST("DocDate" as date) <= '."'".$hasta."'".'';
+      //echo $query.";<br>";
+      $resultado = @odbc_exec($conn,$query);   
+
+      while ($fila = @odbc_fetch_array($resultado)){
+        return $fila["Libras"];
+      }
+    }
+    return 0;
+  }
+
+  public function generarReportePagoDevoluciones($tipo,$trabajador,$desde,$hasta,$SlpCode = null,$bandera = null)
+  {
+      $conn = $this->OPen_database_odbcSAp();
+      
+      if ($tipo == 1) {
+          $json = array();
+          $i=0;
+
+          $and = '';
+          $SlpCodes = '';
+
+          $vendedores = $this->db->query("SELECT * FROM Usuarios WHERE Estado = 1 AND IdRuta IN (SELECT IdRuta FROM C_RutaCanal WHERE Estado = 1)");
+
+          if ($vendedores->result_array()>0) {
+              foreach ($vendedores->result_array() as $key) {
+                $SlpCodes .= $key["IdRuta"].",";
+              }
+            $SlpCodes = substr($SlpCodes, 0, -1);
+          }
+          if ($SlpCodes != '') {
+            $and = ' and "SlpCode" in ('.$SlpCodes.')';
+          }
+
+          if ($SlpCode != null && $trabajador != "0") {
+            $and = ' and "SlpCode" = '.$SlpCode.'';
+          }
+
+          $query = 'SELECT "SlpCode","SlpName","CommisGrp","GroupName","CodCategoria","Categoria", SUM((("Weight1")/1000)/0.454) "Libras"
+          FROM  
+          '.$this->BD.'."VIEW_DEVOLUCIONES_DELMOR"
+          WHERE CAST("DocDate" as date) >= '."'".$desde."'".' and CAST("DocDate" as date) <= '."'".$hasta."'".'
+          '.$and.'
+          GROUP BY "SlpCode","SlpName","CommisGrp","GroupName","CodCategoria","Categoria"
+          ORDER BY "SlpName","CommisGrp","Categoria" desc';
+          
+          //echo $query; return;
+          $resultado = @odbc_exec($conn,$query);
+
+          while ($fila = @odbc_fetch_array($resultado)){
+            $json["data"][$i]["Nombre"] = utf8_encode($fila["SlpName"]);
+            $json["data"][$i]["CommisGrp"] = $fila["CommisGrp"];
+            $json["data"][$i]["GroupName"] = $fila["GroupName"];
+            $json["data"][$i]["CodCategoria"] = $fila["CodCategoria"];
+            $json["data"][$i]["Categoria"] = $fila["Categoria"];
+            $json["data"][$i]["Libras"] = number_format($fila["Libras"],2);
+            $i++;
+          }
+          
+          if ($bandera != null) {            
+            return $json;
+          }
+          echo json_encode($json);
+      }
+      if ($tipo == 2) {
+
+          $json = array();
+          $i=0;
+          $and = '';      
+          $SlpCodes = '';
+
+          $vendedores = $this->db->query("SELECT * FROM Usuarios WHERE Estado = 1 AND IdRuta IN (SELECT IdRuta FROM C_RutaCanal WHERE Estado = 1)");
+          if ($vendedores->result_array()>0) {
+              foreach ($vendedores->result_array() as $key) {
+                $SlpCodes .= $key["IdRuta"].",";
+              }
+            $SlpCodes = substr($SlpCodes, 0, -1);
+          }
+
+          if ($SlpCode != null && $trabajador != "0") {
+            $vendedores = $this->db->query("SELECT * FROM Usuarios WHERE IdSupervisor =".$trabajador." AND Estado = 1 AND IdRuta IN (SELECT IdRuta FROM C_RutaCanal WHERE Estado = 1)");
+            $SlpCodes = '';
+            if ($vendedores->result_array()>0) {
+              foreach ($vendedores->result_array() as $key) {
+                $SlpCodes .= $key["IdRuta"].",";
+              }
+            }
+
+            $SlpCodes = substr($SlpCodes, 0, -1);
+          }
+
+          if ($SlpCodes != '') {
+            $and = ' and "SlpCode" in ('.$SlpCodes.')';
+          }
+
+          $query = 'SELECT "SlpCode","SlpName","CommisGrp","GroupName","CodCategoria","Categoria", SUM((("Weight1")/1000)/0.454) "Libras"
+          FROM  
+          '.$this->BD.'."VIEW_DEVOLUCIONES_DELMOR"
+          WHERE CAST("DocDate" as date) >= '."'".$desde."'".' and CAST("DocDate" as date) <= '."'".$hasta."'".'
+          '.$and.'
+          GROUP BY "SlpCode","SlpName","CommisGrp","GroupName","CodCategoria","Categoria"
+          ORDER BY "SlpName","CommisGrp","Categoria" desc';
+          
+          //echo $query; return;
+          $resultado = @odbc_exec($conn,$query);
+          $carajo = 0;
+          while ($fila = @odbc_fetch_array($resultado)){
+            $json["data"][$i]["Nombre"] = utf8_encode($fila["SlpName"]);
+            $json["data"][$i]["CommisGrp"] = $fila["CommisGrp"];
+            $json["data"][$i]["GroupName"] = $fila["GroupName"];
+            $json["data"][$i]["CodCategoria"] = $fila["CodCategoria"];
+            $json["data"][$i]["Categoria"] = $fila["Categoria"];
+            $json["data"][$i]["Libras"] = number_format($fila["Libras"],2);
+            $carajo += $fila["Libras"];
+            $i++;
+          }
+          
+          //echo $carajo;
+          if ($bandera != null) {            
+            return $json;
+          }
+          echo json_encode($json);
+      }
+      if ($tipo == 3) {
+
+          $json = array();
+          $i=0;
+          $and = '';      
+          $SlpCodes = '';
+
+          $query = 'SELECT "SlpCode","SlpName","CommisGrp","GroupName","CodCategoria","Categoria", SUM((("Weight1")/1000)/0.454) "Libras"
+          FROM  
+          '.$this->BD.'."VIEW_DEVOLUCIONES_DELMOR"
+          WHERE CAST("DocDate" as date) >= '."'".$desde."'".' and CAST("DocDate" as date) <= '."'".$hasta."'".'
+          
+          GROUP BY "SlpCode","SlpName","CommisGrp","GroupName","CodCategoria","Categoria"
+          ORDER BY "SlpName","CommisGrp","Categoria" desc';
+          
+          //echo $query; return;
+          $resultado = @odbc_exec($conn,$query);
+          while ($fila = @odbc_fetch_array($resultado)){
+            $json["data"][$i]["Nombre"] = 'Gerente de ventas';
+            $json["data"][$i]["CommisGrp"] = "";
+            $json["data"][$i]["GroupName"] = "";
+            $json["data"][$i]["CodCategoria"] = "";
+            $json["data"][$i]["Categoria"] = "";
+            $json["data"][$i]["Libras"] = number_format($fila["Libras"],2);
+            
+            $i++;
+          }
+          
+          //echo $carajo;
+          if ($bandera != null) {            
+            return $json;
+          }
+          echo json_encode($json);
+      }
+
+      if ($tipo == 4) {
+       $json = array();
+       $i=0;
+
+       $and = '';
+
+       /*validar la condicion de trabajador*********************************/
+       $and = '';
+        if ($trabajador != null && $trabajador != 0) {
+          $and = ' and IdUsuario = '.$trabajador."";
+        }
+
+          $impulsadoras = $this->db->query('SELECT * FROM Usuarios where Estado = 1 and IdRol = 20 and IdSupervisora <> 2137'.$and);//agregar rol 21 rol si se quiere a las supervisoras de  impulsadoras tambien
+
+          foreach ($impulsadoras->result_array() as $key) {
+            $inClientes = '';
+            $queryClientes = $this->db->query('SELECT * FROM C_ClientesImpulsadoras where IdImpulsadora = '.$key["IdUsuario"].' and Estado = 1');
+            
+            foreach ($queryClientes->result_array() as $key2) {
+              $inClientes .= "'".$key2["IdCliente"]."',";
+            }
+            $inClientes = substr($inClientes, 0, -1);
+
+
+            $query = 'SELECT "CodCategoria" AS "CODCATEGORIA","Categoria" as "CATEGORIA",sum( "Weight1" ) / 454 "Libras"
+            FROM "SBO_DELMOR"."VIEW_DEVOLUCIONES_DELMOR" 
+            WHERE
+            cast("DocDate" as date) >= cast('."'".$desde."'".' as date)
+            AND cast("DocDate" as date) <= cast('."'".$hasta."'".' as date)
+            AND "CardCode" IN ('.$inClientes.')
+            GROUP BY "CodCategoria","Categoria"';
+
+            //echo $query;
+            $resultado = @odbc_exec($conn,$query);
+
+            while ($fila = @odbc_fetch_array($resultado)){
+
+              $json["data"][$i]["Nombre"] = $key["Nombre"].' '.$key["Apellidos"];
+              $json["data"][$i]["CATEGORIA"] = $fila["CATEGORIA"];                    
+              $json["data"][$i]["Libras"] = number_format($fila["Libras"],2);                   
+              $i++;
+
+            }
+
+          }/////
+
+          if ($bandera != null) {
+            return $json;
+          }
+          echo json_encode($json);
+      }
+
+      if ($tipo == 5) {
+
+          $json = array();
+          $i=0;
+
+          $and = '';
+          $SlpCodes = '';
+
+         
+            $and = ' and "SlpCode" = 2';
+          
+          //2137
+          $query = 'SELECT "SlpCode","SlpName","CommisGrp","GroupName","CodCategoria","Categoria", SUM((("Weight1")/1000)/0.454) "Libras"
+          FROM  
+          '.$this->BD.'."VIEW_DEVOLUCIONES_DELMOR"
+          WHERE CAST("DocDate" as date) >= '."'".$desde."'".' and CAST("DocDate" as date) <= '."'".$hasta."'".'
+          '.$and.'
+          GROUP BY "SlpCode","SlpName","CommisGrp","GroupName","CodCategoria","Categoria"
+          ORDER BY "SlpName","CommisGrp","Categoria" desc';
+          
+          //echo $query; return;
+          $resultado = @odbc_exec($conn,$query);
+
+          while ($fila = @odbc_fetch_array($resultado)){
+            $json["data"][$i]["Nombre"] = utf8_encode($fila["SlpName"]);
+            $json["data"][$i]["CommisGrp"] = $fila["CommisGrp"];
+            $json["data"][$i]["GroupName"] = $fila["GroupName"];
+            $json["data"][$i]["CodCategoria"] = $fila["CodCategoria"];
+            $json["data"][$i]["Categoria"] = $fila["Categoria"];
+            $json["data"][$i]["Libras"] = number_format($fila["Libras"],2);
+            $i++;
+          }
+          
+          if ($bandera != null) {
+            return $json;
+          }
+          echo json_encode($json);
+      }
+
+      if ($tipo == 6) {
+       $json = array();
+       $i=0;
+
+       $and = '';
+
+       /*validar la condicion de trabajador*********************************/
+       $and = '';
+        if ($trabajador != null && $trabajador != 0) {
+          $and = ' and (IdSupervisora = '.$trabajador." or IdUsuario = ".$trabajador.")";
+        }
+
+          $impulsadoras = $this->db->query(" SELECT t0.*,
+                                             CASE WHEN t1.IdUsuario is not null then CONCAT(t1.Nombre,' ',t1.Apellidos) else CONCAT(t0.Nombre,' ',t0.Apellidos) end as jefe 
+                                             FROM Usuarios t0
+                                             LEFT JOIN Usuarios t1 on t1.IdUsuario = t0.IdSupervisora
+                                             WHERE t0.Estado = 1 and t0.IdRol = 20 and t0.IdSupervisora <> 2137".$and);
+          //agregar rol 21 rol si se quiere a las supervisoras de  impulsadoras tambien
+
+          /*echo "SELECT t0.*,
+                                             CASE WHEN t1.IdUsuario is not null then CONCAT(t1.Nombre,' ',t1.Apellidos) else CONCAT(t0.Nombre,' ',t0.Apellidos) end as jefe 
+                                             FROM Usuarios t0
+                                             LEFT JOIN Usuarios t1 on t1.IdUsuario = t0.IdSupervisora
+                                             WHERE t0.Estado = 1 and t0.IdRol = 20 and t0.IdSupervisora <> 2137".$and;
+                                             return;*/
+//          echo json_encode($impulsadoras->result_array());return;
+
+          foreach ($impulsadoras->result_array() as $key) {
+
+            
+            $inClientes = '';
+            $queryClientes = $this->db->query('SELECT * FROM C_ClientesImpulsadoras where IdImpulsadora = '.$key["IdUsuario"].' and Estado = 1');
+            
+            foreach ($queryClientes->result_array() as $key2) {
+              $inClientes .= "'".$key2["IdCliente"]."',";
+            }
+            $inClientes = substr($inClientes, 0, -1);
+
+            $query = 'SELECT "CodCategoria" AS "CODCATEGORIA","Categoria" as "CATEGORIA",sum( "Weight1" ) / 454 "Libras"
+            FROM "SBO_DELMOR"."VIEW_DEVOLUCIONES_DELMOR" 
+            WHERE
+            cast("DocDate" as date) >= cast('."'".$desde."'".' as date)
+            AND cast("DocDate" as date) <= cast('."'".$hasta."'".' as date)
+            AND "CardCode" IN ('.$inClientes.')
+            GROUP BY "CodCategoria","Categoria"';
+
+            //echo $query;
+            $resultado = @odbc_exec($conn,$query);
+            while ($fila = @odbc_fetch_array($resultado)){
+            
+              $json["data"][$i]["jefe"] = $key["jefe"];
+              $json["data"][$i]["Nombre"] = $key["Nombre"].' '.$key["Apellidos"];
+              $json["data"][$i]["CATEGORIA"] = $fila["CATEGORIA"];
+              $json["data"][$i]["Libras"] = number_format($fila["Libras"],2);
+              $i++;
+
+            }
+
+          }/////
+
+          if ($bandera != null) {
+            return $json;
+          }
+          echo json_encode($json);
+      }
+      
+  }
+
+
+  public function getDevolucionSupervisor($tipo,$supervisor,$desde,$hasta,$IdCategoria,$IdGrupo)
+  { 
+    $conn = $this->OPen_database_odbcSAp();
+    $json = array();
+    $SlpCodes = '';
+
+    $supervisores = $this->db->query("SELECT * FROM Usuarios WHERE IdSupervisor =".$supervisor." AND Estado = 1 AND IdRuta IN (SELECT IdRuta FROM C_RutaCanal WHERE Estado = 1)");
+    /*echo "SELECT * FROM Usuarios WHERE IdSupervisor =".$supervisor." AND Estado = 1 AND IdRuta IN (SELECT IdRuta FROM C_RutaCanal WHERE Estado = 1)"."<br>";*/
+
+    if ($supervisores->result_array()>0) {
+      foreach ($supervisores->result_array() as $key) {
+        $SlpCodes .= $key["IdRuta"].",";
+      }
+    }
+
+      $SlpCodes = substr($SlpCodes, 0, -1);
+
+      $query = 'SELECT IFNULL(SUM((("Weight1")/1000)/0.454),0) "Libras" FROM  
+                '.$this->BD.'."VIEW_DEVOLUCIONES_DELMOR"
+                WHERE "CommisGrp" = '.$IdCategoria.'
+                AND "CodCategoria" = '.$IdGrupo.'
+                AND "SlpCode" in ('.$SlpCodes.')
+                AND CAST("DocDate" as date) >= '."'".$desde."'".' and CAST("DocDate" as date) <= '."'".$hasta."'".'';
+                if ($supervisor == 2079) {
+                  //echo $query; return;
+                  # code...
+                }
+
+      $resultado = @odbc_exec($conn,$query);   
+
+      while ($fila = @odbc_fetch_array($resultado)){
+        return $fila["Libras"];
+      }
+    
+    return 0;
+  }
+  public function generarPagoGerente($desde,$hasta,$bandera)
+  {
+     $conn = $this->OPen_database_odbcSAp();
+     $json = array();
+     $i=0;
+
+     $and = '';   
+
+     $query = 'SELECT SUM("Lbs") "Libras", (SELECT  SUM((("Weight1")/1000)/0.454) "Libras"
+          FROM  
+          "SBO_DELMOR"."VIEW_DEVOLUCIONES_DELMOR"
+          WHERE CAST("DocDate" as date) >= '."'".$desde."'".' and CAST("DocDate" as date) <= '."'".$hasta."'".')
+      "Devolucion" 
+        FROM (
+         SELECT T0."DocNum" "Factura",T0."CardName",T3."ItmsGrpCod", T3."ItmsGrpNam",  T7."FirmName", T2."ItemCode", T2."ItemName", 
+         T1."Quantity", T1."Weight1"/1000 "Kg", (T1."Weight1"/1000)/0.454 "Lbs", T1."PriceBefDi"*T1."Quantity" "VtaBruta", (T1."PriceBefDi"*T1."Quantity")-T1."LineTotal" "Descuento",
+         T1."LineTotal",
+         T1."TaxCode", IFNULL(T5."TaxSum",0) "IVA",
+         T1."LineTotal" + (IFNULL(T6."TaxSum",0)+ IFNULL(T5."TaxSum",0)) Total,
+         IFNULL(T6."TaxSum",0) "ISC", T1."WhsCode"
+         FROM '.$this->BD.'.OINV T0     
+         INNER JOIN '.$this->BD.'.OCRD T8 ON T8."CardCode" = T0."CardCode"
+         left JOIN '.$this->BD.'.OTER T9 ON T9."territryID" = T8."Territory"
+         INNER JOIN '.$this->BD.'.INV1 T1 ON T1."DocEntry"=T0."DocEntry"
+         INNER JOIN '.$this->BD.'.OITM T2 ON T2."ItemCode"=T1."ItemCode"
+         INNER JOIN '.$this->BD.'.OITB T3 ON T3."ItmsGrpCod"=T2."ItmsGrpCod"
+         LEFT JOIN '.$this->BD.'.INV4 T5 ON T5."DocEntry"=T1."DocEntry" AND T5."LineNum"=T1."LineNum" AND T5."StaCode"='."'IVA'".'
+         LEFT JOIN '.$this->BD.'.INV4 T6 ON T6."DocEntry"=T1."DocEntry" AND T6."LineNum"=T1."LineNum" AND T6."StaCode"='."'ISC'".'
+         LEFT JOIN '.$this->BD.'.OMRC T7 ON T7."FirmCode"=T2."FirmCode"
+         WHERE T0."DocDate">= '."'".$desde."'".' AND T0."DocDate"<= '."'".$hasta."'".' 
+         AND T0."CANCELED" NOT IN ('."'Y'".', '."'C'".')
+         AND T0."DocSubType" NOT IN ('."'DN'".')
+       )';
+
+        //echo $query; return;
+      $resultado = @odbc_exec($conn,$query);
+      $json = array();
+          $i = 0;
+
+      while ($fila = @odbc_fetch_array($resultado)){
+            $json["data"][$i]["IdUsuario"] = "";
+            $json["data"][$i]["Nombre"] = "";
+            $json["data"][$i]["IdCategoria"] = "";
+            $json["data"][$i]["Categoria"] = "";
+            $json["data"][$i]["IdGrupo"] = "";
+            $json["data"][$i]["Grupo"] = "";
+            $json["data"][$i]["IdCanal"] = "";
+            $json["data"][$i]["Devolucion"] = number_format($fila["Devolucion"],2);
+            $json["data"][$i]["Libras"] = number_format($fila["Libras"],2);
+            $json["data"][$i]["Total"] = number_format(($fila["Libras"]-$fila["Devolucion"])*0.01,2);          
+            $json["data"][$i]["TotalLibras"] = number_format($fila["Libras"]-$fila["Devolucion"],2);
+            $json["data"][$i]["Comision"] = "1%";          
+        $i++;
+        ///echo "entroooo";
+      }
+      //echo $bandera;
+      //echo json_encode($json);
+      if ($bandera != null) {
+        return $json;
+      }
+      echo json_encode($json);    
+  }
+
+  public function generarPagoImpulsadoras($tipo,$trabajador,$desde,$hasta,$bandera,$consolidar = null)
+  {
+     $conn = $this->OPen_database_odbcSAp();
+     $json = array();
+     $i=0;
+
+     $and = '';   
+     
+      /*validar la condicion de trabajador*********************************/
+      $and = '';
+      if ($trabajador != null && $trabajador != 0) {
+        $and = ' and IdUsuario = '.$trabajador."";
+      }
+
+
+      $impulsadoras = $this->db->query('SELECT * FROM Usuarios where Estado = 1 and IdRol = 20 and IdSupervisora <> 2137'.$and);//agregar rol 21 rol si se quiere a las supervisoras de  impulsadoras tambien
+
+      foreach ($impulsadoras->result_array() as $key) {
+        $inClientes = '';
+        $queryClientes = $this->db->query('SELECT * FROM C_ClientesImpulsadoras where IdImpulsadora = '.$key["IdUsuario"].' and Estado = 1');
+
+        foreach ($queryClientes->result_array() as $key2) {
+          $inClientes .= "'".$key2["IdCliente"]."',";
+        }
+
+        $inClientes = substr($inClientes, 0, -1);       
+        
+        $query = 'SELECT
+          "CODCATEGORIA",
+          "CATEGORIA",
+          SUM("Libras") as "Libras",
+          SUM("Devolucion") as "Devolucion" 
+          FROM (
+          SELECT
+          "CODCATEGORIA", 
+          "CATEGORIA",
+          sum( "LIBRAS" ) "Libras",
+          IFNULL(
+          (
+          SELECT
+          sum( "Weight1" ) / 454 
+          FROM
+          "SBO_DELMOR"."VIEW_DEVOLUCIONES_DELMOR" 
+          WHERE "CodCategoria" = "CODCATEGORIA"
+          AND "CardCode" = "CODCLIENTE" 
+          AND cast("DocDate" as date) >= cast('."'".$desde."'".' as date)
+          AND cast("DocDate" as date) <= cast('."'".$hasta."'".' as date)
+          ),0) "Devolucion"
+          FROM SBO_DELMOR."VIEW_VENTAS_DELMOR" T0 
+          WHERE T0."ESTADO" NOT IN ('."'Y'".', '."'C'".')
+          AND T0."SUBTIPO" <> '."'DN'".'
+          AND cast(T0."FECHA" as date) >= cast('."'".$desde."'".' as date)
+          AND cast(T0."FECHA" as date) <= cast('."'".$hasta."'".' as date)
+          AND T0."CODCLIENTE" IN ('.$inClientes.')
+          GROUP BY
+          T0."CODCATEGORIA",T0."CATEGORIA","CODCLIENTE" 
+        ) GROUP BY "CODCATEGORIA",  "CATEGORIA"';
+
+        if ($consolidar != null) {
+          $query = 'SELECT "CODCATEGORIA",
+                  "CATEGORIA",
+                  SUM( "Libras" ) "Libras",
+                  sum( "Devolucion" ) "Devolucion" 
+                  FROM (
+                  SELECT "CODCATEGORIA","CATEGORIA","CODCLIENTE","CLIENTE","NOMBRECOMERCIAL", sum("LIBRAS") "Libras", 
+                  IFNULL((select sum ("Weight1")/454 
+                  FROM "SBO_DELMOR"."VIEW_DEVOLUCIONES_DELMOR" 
+                  WHERE "CardCode" = "CODCLIENTE" 
+                  AND cast("DocDate" as date) >= cast('."'".$desde."'".' as date)
+                  AND cast("DocDate" as date) <= cast('."'".$hasta."'".' as date)
+                  AND "CodCategoria" = "CODCATEGORIA"
+                  ),0) "Devolucion"
+                  FROM SBO_DELMOR."VIEW_VENTAS_DELMOR" T0 
+                  WHERE T0."ESTADO" NOT IN ('."'Y'".', '."'C'".')
+                  AND T0."SUBTIPO" <> '."'DN'".'
+                  AND cast(T0."FECHA" as date) >= cast('."'".$desde."'".' as date)
+                  AND cast(T0."FECHA" as date) <= cast('."'".$hasta."'".' as date)
+                  AND T0."CODCLIENTE" IN ('.$inClientes.')
+                  GROUP BY T0."CODCATEGORIA",T0."CATEGORIA",T0."CODCLIENTE",T0."CLIENTE",T0."NOMBRECOMERCIAL"
+                )
+                GROUP BY "CODCATEGORIA","CATEGORIA"';
+        }
+
+        //echo $query;return;
+
+       
+
+        $resultado = @odbc_exec($conn,$query);
+        
+        if ($consolidar == null) {
+
+            while ($fila = @odbc_fetch_array($resultado)){
+                $queryComision = $this->db->query(
+                  "SELECT ISNULL(ValorImpulsadora,0) comision
+                    FROM C_ImpulsadoraComision T0
+                    INNER JOIN C_ImpulsadoraPeriodo T1 ON T1.IdPeriodo = T0.IdPeriodo
+                    WHERE T1.Estado = 1
+                    AND T1.TIPO = 3
+                    AND T1.FechaInicial <= '".$desde."'
+                    AND T1.FechaFinal >= '".$hasta."'
+                    and month(t1.FechaInicial) = month('".$desde."')
+                    and year(t1.FechaInicial) = year('".$desde."')
+                    AND T0.IdImpulsadora = ".$key["IdUsuario"]."
+                    AND T0.IdCategoria = ".$fila["CODCATEGORIA"]
+                );
+
+                $comision = 0;
+                if ($queryComision->num_rows()>0) {
+                  $comision = $queryComision->result_array()[0]["comision"];
+                }
+
+                $timestamp = strtotime($hasta);
+                $day = date('d', $timestamp);
+
+
+                if ($comision>0) {
+
+                  $json["data"][$i]["Adelanto"] = 0;
+
+                  //if ($day == 15 || $day == 16) {//si es quincena
+                  $json["data"][$i]["Adelanto"] = number_format($this->getAdelanto($key["IdUsuario"]),2);
+                  //}
+
+                  $json["data"][$i]["IdUsuario"] = $key["IdUsuario"];
+                  $json["data"][$i]["Nombre"] = $key["Nombre"].' '.$key["Apellidos"];
+                  $json["data"][$i]["CODCATEGORIA"] = $fila["CODCATEGORIA"];
+                  $json["data"][$i]["CATEGORIA"] = utf8_encode($fila["CATEGORIA"]);
+                  $json["data"][$i]["Devolucion"] = number_format($fila["Devolucion"],2);
+                  $json["data"][$i]["Libras"] = number_format($fila["Libras"],2);
+                  $json["data"][$i]["TotalLibras"] = number_format($fila["Libras"]-$fila["Devolucion"],2);                  
+                  $json["data"][$i]["Total"] = number_format(($fila["Libras"]-$fila["Devolucion"])*$comision,2);//CALCULAR COMISION
+                  $json["data"][$i]["Comision"] = number_format($comision,2);//CALCULAR COMISION QUERY
+                  $i++;
+                }
+
+            }
+        }else{
+
+          $this->db->query("TRUNCATE TABLE C_TempV");
+            while ($fila = @odbc_fetch_array($resultado)){
+
+                $queryComision = $this->db->query(
+                  "SELECT ISNULL(ValorImpulsadora,0) comision
+                    FROM C_ImpulsadoraComision T0
+                    INNER JOIN C_ImpulsadoraPeriodo T1 ON T1.IdPeriodo = T0.IdPeriodo
+                    WHERE T1.Estado = 1
+                    AND T1.FechaInicial <= '".$desde."'
+                    AND T1.FechaFinal >= '".$hasta."'
+                    and month(t1.FechaInicial) = month('".$desde."')
+                    and year(t1.FechaInicial) = year('".$desde."')
+                    AND T0.IdImpulsadora = ".$key["IdUsuario"]."
+                    AND T0.IdCategoria = ".$fila["CODCATEGORIA"]
+                );
+
+                $comision = 0;
+                if ($queryComision->num_rows()>0) {
+                  $comision = $queryComision->result_array()[0]["comision"];
+                } 
+                if ($comision>0) {
+                   $insert = array(
+                    "IdUsuario" => $key["IdUsuario"],
+                    "Nombre" => $key["Nombre"].' '.$key["Apellidos"],
+                    "IdCategoria" => $fila["CODCATEGORIA"],
+                    "Categoria" => utf8_encode($fila["CATEGORIA"]),
+                    "Libras" => $fila["Libras"],
+                    "Devolucion" => $fila["Devolucion"],
+                    "Comision" => $comision,
+                    "TotalLibras" => $fila["Libras"] - $fila["Devolucion"],
+                    "Total" => ($fila["Libras"]-$fila["Devolucion"])*$comision
+                  );
+
+                  $this->db->insert("C_TempV",$insert);
+                }//end if ($comision>0) 
+            }
+
+            $resultado = $this->db->query("SELECT IdUsuario,Nombre, SUM(Libras) Libras,SUM(Devolucion) Devolucion, SUM(TotalLibras)TotalLibras,sum(Total)Total
+                                      FROM C_TempV 
+                                      GROUP BY IdUsuario,Nombre");
+
+            foreach ($resultado->result_array() as $key) {
+              $json["data"][$i]["Adelanto"] = number_format($this->getAdelanto($key["IdUsuario"]),2);
+
+              $json["data"][$i]["IdUsuario"] = $key["IdUsuario"];
+              $json["data"][$i]["Nombre"] = $key["Nombre"];
+              $json["data"][$i]["Devolucion"] = number_format($key["Devolucion"],2);
+              $json["data"][$i]["Libras"] = number_format($key["Libras"],2);
+              $json["data"][$i]["TotalLibras"] = number_format($key["TotalLibras"],2);
+              $json["data"][$i]["Total"] = number_format($key["Total"],2);//CALCULAR COMISION
+              //$json["data"][$i]["Comision"] = number_format($comision,2);//CALCULAR COMISION QUERY
+
+              $i++;
+            }
+
+        }
+
+    }//end foreach impulsadoras
+    
+
+    if ($bandera != null) {
+      return $json;
+    }
+    echo json_encode($json);
+  }
+
+  public function printReporteJefeImpulsadoras($tipo,$trabajador,$desde,$hasta,$bandera,$consolidar = null)
+  {
+
+    $conn = $this->OPen_database_odbcSAp();
+    $json = array();
+    $i=0;
+
+    $and = '';
+
+    /*validar la condicion de trabajador*********************************/
+    $and = '';
+    if ($trabajador != null && $trabajador != 0) {
+      $and = ' and (t0.IdSupervisora = '.$trabajador.' OR t0.IdUsuario = '.$trabajador.')';
+    }
+    $consulta = "SELECT case when t1.IdUsuario is not null then concat(t1.Nombre,' ',t1.Apellidos) else concat(t0.Nombre,' ',t0.Apellidos) end as jefe ,
+        t0.*
+        FROM Usuarios t0
+        left join Usuarios t1 on t1.IdUsuario = t0.IdSupervisora
+        where t0.IdRol in (20,21) and t0.IdSupervisora <> 2137".$and;//el 2137 es levi
+
+    $impulsadoras = $this->db->query($consulta);
+    //echo $consulta;
+
+    foreach ($impulsadoras->result_array() as $key) {
+
+      
+      $inClientes = '';
+      $queryClientes = $this->db->query('SELECT * FROM C_ClientesImpulsadoras where IdImpulsadora = '.$key["IdUsuario"].' and Estado = 1');
+
+      foreach ($queryClientes->result_array() as $key2) {
+        $inClientes .= "'".$key2["IdCliente"]."',";
+      }
+
+      $inClientes = substr($inClientes, 0, -1);
+
+      $queryImpulsadoras = 'SELECT "CODCATEGORIA",
+        "CATEGORIA",
+        SUM("Libras") as "Libras",
+        SUM("Devolucion") as "Devolucion" 
+        FROM (
+        SELECT
+        "CODCATEGORIA", 
+        "CATEGORIA",
+        sum( "LIBRAS" ) "Libras",
+        IFNULL(
+        (
+          SELECT sum( "Weight1" ) / 454 
+          FROM
+          "SBO_DELMOR"."VIEW_DEVOLUCIONES_DELMOR" 
+          WHERE "CodCategoria" = "CODCATEGORIA"
+          AND "CardCode" = "CODCLIENTE" 
+          AND cast("DocDate" as date) >= cast('."'".$desde."'".' as date)
+          AND cast("DocDate" as date) <= cast('."'".$hasta."'".' as date)
+        ),0) "Devolucion"
+        FROM SBO_DELMOR."VIEW_VENTAS_DELMOR" T0 
+        WHERE T0."ESTADO" NOT IN ('."'Y'".', '."'C'".')
+        AND T0."SUBTIPO" <> '."'DN'".'
+        AND cast(T0."FECHA" as date) >= cast('."'".$desde."'".' as date)
+        AND cast(T0."FECHA" as date) <= cast('."'".$hasta."'".' as date)
+        AND T0."CODCLIENTE" IN ('.$inClientes.')
+        GROUP BY
+        T0."CODCATEGORIA",T0."CATEGORIA","CODCLIENTE" 
+      ) GROUP BY "CODCATEGORIA",  "CATEGORIA"';
+      
+
+    if ($consolidar != null) {
+
+
+      $queryImpulsadoras = 'SELECT "CODCATEGORIA",
+        "CATEGORIA",
+        SUM("Libras") as "Libras",
+        SUM("Devolucion") as "Devolucion" 
+        FROM (
+          SELECT
+          "CODCATEGORIA", 
+          "CATEGORIA",
+          sum( "LIBRAS" ) "Libras",
+          IFNULL(
+          (
+          SELECT
+          sum( "Weight1" ) / 454 
+          FROM
+          "SBO_DELMOR"."VIEW_DEVOLUCIONES_DELMOR"
+          WHERE "CodCategoria" = "CODCATEGORIA"
+          AND "CardCode" = "CODCLIENTE" 
+          AND cast("DocDate" as date) >= cast('."'".$desde."'".' as date)
+          AND cast("DocDate" as date) <= cast('."'".$hasta."'".' as date)
+        ),0) "Devolucion"
+        FROM SBO_DELMOR."VIEW_VENTAS_DELMOR" T0 
+        WHERE T0."ESTADO" NOT IN ('."'Y'".', '."'C'".')
+        AND T0."SUBTIPO" <> '."'DN'".'
+        AND cast(T0."FECHA" as date) >= cast('."'".$desde."'".' as date)
+        AND cast(T0."FECHA" as date) <= cast('."'".$hasta."'".' as date)
+        AND T0."CODCLIENTE" IN ('.$inClientes.')
+        GROUP BY
+        T0."CODCATEGORIA",T0."CATEGORIA","CODCLIENTE" 
+      ) GROUP BY "CODCATEGORIA",  "CATEGORIA"';
+
+
+    }
+
+        //echo $query;return;
+
+
+    $resultado = @odbc_exec($conn,$queryImpulsadoras);
+
+      if ($consolidar == null) {
+
+        while ($fila = @odbc_fetch_array($resultado)){// comisiones de las impulsadoas de cada una de las jefes
+
+          $queryComision = $this->db->query(//TRAER LA COMISION DE LA JEFA
+            "SELECT t1.ValorImpulsadora 
+              FROM C_ImpulsadoraPeriodo t0
+              inner join  C_JefeImpulsadoraComision t1 on t1.IdPeriodo = t0.IdPeriodo
+              where  t0.estado = 1 and t0.Mes = month('".$desde."') and t0.Anio = year('".$desde."')"
+          );
+
+          $comision = 0;
+          if ($queryComision->num_rows()>0) {
+            $comision = $queryComision->result_array()[0]["ValorImpulsadora"];
+          }
+
+
+          //echo $key["jefe"].'->'.$key["Nombre"].' '.$key["Apellidos"].'->'.$comision."<br>";
+          if ($comision>0) {
+
+            //$json["data"][$i]["Adelanto"] = 0;
+            $json["data"][$i]["Adelanto"] = number_format($this->getAdelanto($key["IdUsuario"]),2);
+            $json["data"][$i]["IdUsuario"] = $key["IdUsuario"];
+            $json["data"][$i]["Jefe"] = $key["jefe"];
+            $json["data"][$i]["Nombre"] = $key["Nombre"].' '.$key["Apellidos"];
+            $json["data"][$i]["CODCATEGORIA"] = $fila["CODCATEGORIA"];
+            $json["data"][$i]["CATEGORIA"] = utf8_encode($fila["CATEGORIA"]);
+            $json["data"][$i]["Devolucion"] = number_format($fila["Devolucion"],2);
+            $json["data"][$i]["Libras"] = number_format($fila["Libras"],2);
+            $json["data"][$i]["TotalLibras"] = number_format($fila["Libras"]-$fila["Devolucion"],2);                  
+            $json["data"][$i]["Total"] = number_format(($fila["Libras"]-$fila["Devolucion"])*$comision,2);//CALCULAR COMISION
+            $json["data"][$i]["Comision"] = number_format($comision,2);//CALCULAR COMISION QUERY
+            $i++;
+
+          }//end comision
+        }//end while
+      }else{
+        $this->db->query("TRUNCATE TABLE C_TempV");
+        while ($fila = @odbc_fetch_array($resultado)){
+
+            $queryComision = $this->db->query(
+              "SELECT ISNULL(ValorImpulsadora,0) comision
+              FROM C_ImpulsadoraComision T0
+              INNER JOIN C_ImpulsadoraPeriodo T1 ON T1.IdPeriodo = T0.IdPeriodo
+              WHERE T1.Estado = 1
+              AND T1.FechaInicial <= '".$desde."'
+              AND T1.FechaFinal >= '".$hasta."'
+              and month(t1.FechaInicial) = month('".$desde."')
+              and year(t1.FechaInicial) = year('".$desde."')
+              AND T0.IdImpulsadora = ".$key["IdUsuario"]."
+              AND T0.IdCategoria = ".$fila["CODCATEGORIA"]
+            );
+
+            $comision = 0;
+            if ($queryComision->num_rows()>0) {
+              $comision = $queryComision->result_array()[0]["comision"];
+            } 
+            if ($comision>0) {
+              $insert = array(
+                "IdUsuario" => $key["IdUsuario"],
+                "Nombre" => $key["Nombre"].' '.$key["Apellidos"],
+                "IdCategoria" => $fila["CODCATEGORIA"],
+                "Categoria" => utf8_encode($fila["CATEGORIA"]),
+                "Libras" => $fila["Libras"],
+                "Devolucion" => $fila["Devolucion"],
+                "Comision" => $comision,
+                "TotalLibras" => $fila["Libras"] - $fila["Devolucion"],
+                "Total" => ($fila["Libras"]-$fila["Devolucion"])*$comision
+              );
+
+              $this->db->insert("C_TempV",$insert);
+            }//end if ($comision>0) 
+        }//END WHILE
+
+        $resultado = $this->db->query("SELECT IdUsuario,Nombre, SUM(Libras) Libras,SUM(Devolucion) Devolucion, SUM(TotalLibras)TotalLibras,SUM(Total)Total
+          FROM C_TempV 
+          GROUP BY IdUsuario,Nombre");
+
+            foreach ($resultado->result_array() as $key) {
+                $json["data"][$i]["Adelanto"] = number_format($this->getAdelanto($key["IdUsuario"]),2);
+                $json["data"][$i]["IdUsuario"] = $key["IdUsuario"];
+                $json["data"][$i]["Nombre"] = $key["Nombre"];
+                $json["data"][$i]["Devolucion"] = number_format($key["Devolucion"],2);
+                $json["data"][$i]["Libras"] = number_format($key["Libras"],2);
+                $json["data"][$i]["TotalLibras"] = number_format($key["TotalLibras"],2);
+                $json["data"][$i]["Total"] = number_format($key["Total"],2);//CALCULAR COMISION
+                //$json["data"][$i]["Comision"] = number_format($comision,2);//CALCULAR COMISION QUERY
+                $i++;
+            }
+        }
+
+    }//end foreach impulsadoras
+    
+    if ($bandera != null) {
+      return $json;
+      //echo json_encode($json);
+    }
+    echo json_encode($json);
+  }
+
+
+  public function getAdelanto($id)
+  {
+    //echo "SELECT isnull(Adelanto,0) Adelanto FROM Usuarios where IdUsuario = ".$id;
+    $query = $this->db->query("SELECT isnull(Adelanto,0) Adelanto FROM Usuarios where IdUsuario = ".$id);
+
+    if ($query->num_rows()>0) {
+      return $query->result_array()[0]["Adelanto"];
+    }
+    return 0;
+  }
 }
 ?>
+     

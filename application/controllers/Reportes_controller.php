@@ -277,6 +277,57 @@ class Reportes_controller extends CI_Controller {
 			$this->load->view('Exportar/Exportar_ventasDeposito',$data);	
 		}
 		//end region
+
+		public function VerificarNotificacionAntiguedad()
+		{
+			//poner permiso
+
+			$permiso = $this->Autorizaciones_model->validarPermiso($this->session->userdata("id"), "1041");
+			if($permiso){
+				$this->Hana_model->VerificarNotificacionAntiguedad();
+			}else{
+				return "noTIne permiso";
+			}
+		}
+
+		public function pagoProveedores()
+		{
+			
+			$permiso = $this->Autorizaciones_model->validarPermiso($this->session->userdata("id"), "1041");
+			if($permiso){
+				$data["pagos"] = $this->Hana_model->getPagosProveedores();
+				echo json_encode($data["pagos"]);
+				$this->load->view('header/header');
+				$this->load->view('header/menu');
+				$this->load->view('proveedores/proveedores',$data);
+				$this->load->view('footer/footer');			
+			}else{
+				redirect("Error_403", "refresh");
+			}
+		}
+
+		public function Reporte_facturas_empleados()
+		{
+			$permiso = $this->Autorizaciones_model->validarPermiso($this->session->userdata("id"), "1059");
+			if($permiso){
+				$data["foraneos"] = $this->Hana_model->getRutas();
+				$this->load->view('header/header');
+				$this->load->view('header/menu');
+				$this->load->view('Reportes/reporte_facturas_empleado',$data);
+				$this->load->view('footer/footer');
+				$this->load->view('jsView/reportes/jsreporte_facturas_empleados');
+			}else{
+				redirect("Error_403", "refresh");
+			}
+		}
+
+		
+		public function ajax_reporte_facturas_empleados(){
+			$fechaInicio = $this->input->get_post("fechainicio");
+			$fechaFin = $this->input->get_post("fechafinal");
+			$ruta = $this->input->get_post("ruta");
+			$this->Reportes_model->ajax_reporte_facturas_empleados($fechaInicio,$fechaFin,$ruta,true);
+		}
 }
 
 /* End of file Controllername.php */

@@ -14,44 +14,285 @@ class Liquidacion_model extends CI_Model
 		$this->load->database();
 	}
 
-	public function getPeriodo(){
-		$this->db->where("Activo","Y");
-		$this->db->where("Liquidado","N");
+	public function getPeriodo($start, $length, $search, $column, $order)
+	{
+		$srch = '';
+		$col = '';
+		$ord = '';
+		if ($search) {
+			$srch = 'and ( CAST(FechaInicio AS DATE) LIKE ' . "'%" . $search . "%'" . ' OR
+							CAST(FechaFinal AS DATE) LIKE ' . "'%" . $search . "%'" . ' OR
+							IdRuta LIKE ' . "'%" . $search . "%'" . ' OR
+							Nombre LIKE ' . "'%" . $search . "%'" . ' OR
+							FechaCrea LIKE ' . "'%" . $search . "%'" . ' )';
+		}
+
+		if (isset($column)) {
+			switch ($column) {
+				case '0':
+					$col = 'FechaInicio';
+					break;
+				case '1':
+					$col = 'FechaFinal';
+					break;
+				case '2':
+					$col = 'IdRuta';
+					break;
+				case '3':
+					$col = 'Nombre';
+					break;
+				case '4':
+					$col = 'FechaCrea';
+					break;
+
+				default:
+					$col = 'IdRuta';
+					break;
+			}
+		}
+
+		if (isset($order)) {
+			$ord = "ORDER BY " . $col . " " . $order;
+		}
+
+		$qnr = "SELECT COUNT(1) 'Cantidad' FROM cm_periodos WHERE Activo = 'Y' AND Liquidado = 'N' ";
+		$qnr = $this->db->query($qnr);
+		$qnr = $qnr->result_array()[0]["Cantidad"];
+
+		if ($length == -1) {
+			$q = $this->db->query("SELECT * FROM cm_periodos WHERE Activo = 'Y' AND Liquidado = 'N' " . $srch . " " . $ord . " ");
+		} else {
+			$q = $this->db->query("SELECT * FROM cm_periodos
+								   WHERE Activo = 'Y' AND Liquidado = 'N' " . $srch . " 
+								    " . $ord . " OFFSET " . $start . " ROWS FETCH NEXT " . $length . " ROWS ONLY; ");
+		}
+
+		$retornar = array(
+			"numDataTotal" => $qnr,
+			"datos" => $q
+		);
+
+		return $retornar;
+
+		/*$this->db->where("Activo", "Y");
+		$this->db->where("Liquidado", "N");
 		$query = $this->db->get("cm_periodos");
-		if ($query->num_rows() > 0){
+		if ($query->num_rows() > 0) {
 			return $query->result_array();
 		}
-		return 0;
+		return 0;*/
 	}
 
-	public function getPeriodoLiq(){
-		$this->db->where("Activo","N");
-		$this->db->where("Liquidado","Y");
+	public function getPeriodoLiq($start, $length, $search,  $column, $order)
+	{
+
+		$srch = '';
+		$col = '';
+		$ord = '';
+
+		if ($search) {
+			$srch = 'and ( CAST(FechaInicio AS DATE) LIKE ' . "'%" . $search . "%'" . ' OR
+							CAST(FechaFinal AS DATE) LIKE ' . "'%" . $search . "%'" . ' OR
+							IdRuta LIKE ' . "'%" . $search . "%'" . ' OR
+							Nombre LIKE ' . "'%" . $search . "%'" . ' OR
+							FechaCrea LIKE ' . "'%" . $search . "%'" . ' )';
+		}
+
+		if (isset($column)) {
+			switch ($column) {
+				case '0':
+					$col = 'FechaInicio';
+					break;
+				case '1':
+					$col = 'FechaFinal';
+					break;
+				case '2':
+					$col = 'IdRuta';
+					break;
+				case '3':
+					$col = 'Nombre';
+					break;
+				case '4':
+					$col = 'FechaCrea';
+					break;
+
+				default:
+					$col = 'IdRuta';
+					break;
+			}
+		}
+
+		if (isset($order)) {
+			$ord = "ORDER BY " . $col . " " . $order;
+		}
+
+		$qnr = "SELECT COUNT(1) 'Cantidad' FROM cm_periodos WHERE Activo = 'N' AND Liquidado = 'Y' ";
+		$qnr = $this->db->query($qnr);
+		$qnr = $qnr->result_array()[0]["Cantidad"];
+
+		if ($length == -1) {
+			$q = $this->db->query("SELECT * FROM cm_periodos WHERE Activo = 'N' AND Liquidado = 'Y' " . $srch . " " . $ord . " ");
+		} else {
+			$q = $this->db->query("SELECT * FROM cm_periodos
+								   WHERE Activo = 'N' AND Liquidado = 'Y' " . $srch . " 
+								   " . $ord . " OFFSET " . $start . " ROWS FETCH NEXT " . $length . " ROWS ONLY; ");
+		}
+
+		$retornar = array(
+			"numDataTotal" => $qnr,
+			"datos" => $q
+		);
+
+		return $retornar;
+		/*
+		$this->db->where("Activo", "N");
+		$this->db->where("Liquidado", "Y");
 		$query = $this->db->get("cm_periodos");
-		if ($query->num_rows() > 0){
+		if ($query->num_rows() > 0) {
 			return $query->result_array();
 		}
-		return 0;
+		return 0;*/
 	}
 
-	public function getPeriodoPend(){
-		$this->db->where("Activo","P");
-		$this->db->where("Liquidado","N");
+	public function getPeriodoPend($start, $length, $search,  $column, $order)
+	{
+		$srch = '';
+		$col = '';
+		$ord = '';
+
+		if ($search) {
+			$srch = 'and ( CAST(FechaInicio AS DATE) LIKE ' . "'%" . $search . "%'" . ' OR
+							CAST(FechaFinal AS DATE) LIKE ' . "'%" . $search . "%'" . ' OR
+							IdRuta LIKE ' . "'%" . $search . "%'" . ' OR
+							Nombre LIKE ' . "'%" . $search . "%'" . ' OR
+							FechaCrea LIKE ' . "'%" . $search . "%'" . ' )';
+		}
+
+		if (isset($column)) {
+			switch ($column) {
+				case '0':
+					$col = 'FechaInicio';
+					break;
+				case '1':
+					$col = 'FechaFinal';
+					break;
+				case '2':
+					$col = 'IdRuta';
+					break;
+				case '3':
+					$col = 'Nombre';
+					break;
+				case '4':
+					$col = 'FechaCrea';
+					break;
+
+				default:
+					$col = 'IdRuta';
+					break;
+			}
+		}
+
+		if (isset($order)) {
+			$ord = "ORDER BY " . $col . " " . $order;
+		}
+
+		$qnr = "SELECT COUNT(1) 'Cantidad' FROM cm_periodos WHERE Activo = 'P' AND Liquidado = 'N' ";
+		$qnr = $this->db->query($qnr);
+		$qnr = $qnr->result_array()[0]["Cantidad"];
+
+		if ($length == -1) {
+			$q = $this->db->query("SELECT * FROM cm_periodos WHERE Activo = 'P' AND Liquidado = 'N' " . $srch . "  " . $ord . " ");
+		} else {
+			$q = $this->db->query("SELECT * FROM cm_periodos
+								   WHERE Activo = 'P' AND Liquidado = 'N' " . $srch . " 
+								    " . $ord . " OFFSET " . $start . " ROWS FETCH NEXT " . $length . " ROWS ONLY; ");
+		}
+
+		$retornar = array(
+			"numDataTotal" => $qnr,
+			"datos" => $q
+		);
+
+		return $retornar;
+
+		/*$this->db->where("Activo", "P");
+		$this->db->where("Liquidado", "N");
 		$query = $this->db->get("cm_periodos");
-		if ($query->num_rows() > 0){
+		if ($query->num_rows() > 0) {
 			return $query->result_array();
 		}
-		return 0;
+		return 0;*/
 	}
 
-	public function getPeriodoAnul(){
-		$this->db->where("Activo","C");
-		$this->db->where("Liquidado","N");
+	public function getPeriodoAnul($start, $length, $search, $column, $order)
+	{
+		$srch = '';
+		$col = '';
+		$ord = '';
+
+		if ($search) {
+			$srch = 'and ( CAST(FechaInicio AS DATE) LIKE ' . "'%" . $search . "%'" . ' OR
+							CAST(FechaFinal AS DATE) LIKE ' . "'%" . $search . "%'" . ' OR
+							IdRuta LIKE ' . "'%" . $search . "%'" . ' OR
+							Nombre LIKE ' . "'%" . $search . "%'" . ' OR
+							FechaCrea LIKE ' . "'%" . $search . "%'" . ' )';
+		}
+
+		if (isset($column)) {
+			switch ($column) {
+				case '0':
+					$col = 'FechaInicio';
+					break;
+				case '1':
+					$col = 'FechaFinal';
+					break;
+				case '2':
+					$col = 'IdRuta';
+					break;
+				case '3':
+					$col = 'Nombre';
+					break;
+				case '4':
+					$col = 'FechaCrea';
+					break;
+
+				default:
+					$col = 'IdRuta';
+					break;
+			}
+		}
+
+		if (isset($order)) {
+			$ord = "ORDER BY " . $col . " " . $order;
+		}
+
+
+		$qnr = "SELECT COUNT(1) 'Cantidad' FROM cm_periodos WHERE Activo = 'C' AND Liquidado = 'N' ";
+		$qnr = $this->db->query($qnr);
+		$qnr = $qnr->result_array()[0]["Cantidad"];
+
+		if ($length == -1) {
+			$q = $this->db->query("SELECT * FROM cm_periodos WHERE Activo = 'C' AND Liquidado = 'N' " . $srch . " " . $ord . " ");
+		} else {
+			$q = $this->db->query("SELECT * FROM cm_periodos
+								   WHERE Activo = 'C' AND Liquidado = 'N' " . $srch . " 
+								  " . $ord . " OFFSET " . $start . " ROWS FETCH NEXT " . $length . " ROWS ONLY; ");
+		}
+
+		$retornar = array(
+			"numDataTotal" => $qnr,
+			"datos" => $q
+		);
+
+		return $retornar;
+
+		/*$this->db->where("Activo", "C");
+		$this->db->where("Liquidado", "N");
 		$query = $this->db->get("cm_periodos");
-		if ($query->num_rows() > 0){
+		if ($query->num_rows() > 0) {
 			return $query->result_array();
 		}
-		return 0;
+		return 0;*/
 	}
 
 	public function validacionFechIinicio($fechaIn,$ruta){

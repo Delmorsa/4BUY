@@ -457,6 +457,63 @@
 											Reporte de Mermas
 										</a>
 									</li>
+									<li>
+										<a href="<?php echo base_url("index.php/Reporte_facturas_empleados")?>">
+											Facturas Empleados
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="nav-parent">
+								<a>
+									<i class="fa fa-flag-checkered" aria-hidden="true"></i>
+									<span>Pago proveedores</span>
+								</a>
+								<ul class="nav nav-children">
+									<li>
+										<a href="<?php echo base_url("index.php/pagoProveedores")?>">
+											Pagos proximos
+										</a>
+									</li>									
+								</ul>
+							</li>
+							<li class="nav-parent">
+								<a>
+									<i class="fa fa-signal" aria-hidden="true"></i>
+									<span>Pago Comisiones</span>
+								</a>
+								<ul class="nav nav-children">
+									<li>
+										<a href="<?php echo base_url("index.php/Articulos")?>">
+											Artículos
+										</a>
+										<a href="<?php echo base_url("index.php/categorias")?>">
+											Categorias
+										</a>
+										<a href="<?php echo base_url("index.php/rutas")?>">
+											Rutas
+										</a>
+										<a href="<?php echo base_url("index.php/canales")?>">
+											Canales
+										</a>
+										<a href="<?php echo base_url("index.php/VendedoresCanalaes")?>">
+											Asignar vendedores a canales
+										</a>
+										<a href="<?php echo base_url("index.php/Periodos")?>">
+											Creación y edición de periodos
+										</a>
+										<hr style="border: 0;height: 1px;background-image: -webkit-linear-gradient(left, #ffffff05, rgb(255 255 255 / 20%), #ffffff12);margin: 0px!important;">
+										<a href="<?php echo base_url("index.php/ClientesImpulsadoras")?>">
+											Asignar clientes a Impulsadoras
+										</a>
+										<a href="<?php echo base_url("index.php/ComisionImpulsadoras")?>">
+											Asignar adelanto a Impulsadoras
+										</a>
+										<hr style="border: 0;height: 1px;background-image: -webkit-linear-gradient(left, #ffffff05, rgb(255 255 255 / 20%), #ffffff12);margin: 0px!important;">
+										<a href="<?php echo base_url("index.php/pagoComisiones")?>">
+											Efectuar pago de comisiones
+										</a>
+									</li>
 								</ul>
 							</li>
 
